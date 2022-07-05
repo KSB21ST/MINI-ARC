@@ -259,12 +259,7 @@ function initializeSelectable() {
         $('.selectable_grid').selectable(
             {
                 autoRefresh: false,
-                filter: '> .row > .cell',
-                start: function(event, ui) {
-                    $('.ui-selected').each(function(i, e) {
-                        $(e).removeClass('ui-selected');
-                    });
-                }
+                filter: '> .row > .cell'
             }
         );
     }
