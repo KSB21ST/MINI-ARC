@@ -7,8 +7,6 @@ var CURRENT_TEST_PAIR_INDEX = 0;
 var COPY_PASTE_DATA = new Array();
 var SELECTED_DATA = new Array();
 var LAYERS = new Array();
-// LAYERS.push(new Layer(new Array(), 0, CURRENT_INPUT_GRID.height, CURRENT_INPUT_GRID.width));
-var currentLayerIndex = 0;
 
 // Cosmetic.
 var EDITION_GRID_HEIGHT = 500;
@@ -273,7 +271,7 @@ function submitSolution() {
 function fillTestInput(inputGrid) {
     jqInputGrid = $('#evaluation_input');
     fillJqGridWithData(jqInputGrid, inputGrid);
-    fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 250, 250);
+    fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 400, 400);
 }
 
 function copyToOutput() {
@@ -298,6 +296,23 @@ function initializeSelectable() {
                 filter: '> .row > .cell'
             }
         );
+    }
+}
+
+function initializeLayerChange() {
+    infoMsg("layer selected");
+    currentLayerIndex = $('input[name=layer]:checked').val();
+    var currLayer = LAYERS.filter(layer => layer.id == currentLayerIndex);
+    if (!currLayer.length) {
+        return;
+    }
+    currLayer = currLayer[0];
+
+    // Highlight all cells included in selected layer
+    $('.ui-selected').selectable().removeClass('ui-selected');
+    for (var i = 0; i < currLayer.cells.length; i++) {
+        var currCell = currLayer.cells[i];
+        $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).selectable().addClass('ui-selected');
     }
 }
 
@@ -563,8 +578,6 @@ $(document).ready(function () {
                 ys = SELECTED_DATA.map((cell) => {return cell[1]});
                 minx = Math.min(...xs);
                 miny = Math.min(...ys);
-
-                console.log("target: ", targetx, miny)
 
                 SELECTED_DATA = SELECTED_DATA.map((cell) => {
                     rs = cell[0] - minx + targetx;

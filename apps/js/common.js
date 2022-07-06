@@ -38,6 +38,30 @@ class Layer {
         this.id = id;
     }
 
+    containsCell(r, c) {
+        for (var i = 0; i < this.cells.length; i++) {
+            if (r == this.cells[i].row && c == this.cells[i].col) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    addCell(cell) {
+        this.cells.push(cell)
+    }
+
+    removeCell(r, c) {
+        var oldSize = this.cells.length;
+        var newCells = this.cells.filter(cell => cell.row != r && cell.col != c);
+        if (newCells.size == oldSize) {
+            errorMsg("Cell not included in layer");
+        } else {
+            this.cells = newCells;
+            infoMsg("Cell removed from layer");
+        }
+    }
+
     getGrid() {
         console.log("this.cells: ", this.cells);
         if (!this.cells.length) {
