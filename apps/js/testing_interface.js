@@ -313,6 +313,9 @@ function initializeLayerChange() {
     for (var i = 0; i < currLayer.cells.length; i++) {
         var currCell = currLayer.cells[i];
         $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).selectable().addClass('ui-selected');
+        $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).each(function(i, cell) {
+            setCellSymbol($(cell), currCell.val);
+        })
     }
 }
 
