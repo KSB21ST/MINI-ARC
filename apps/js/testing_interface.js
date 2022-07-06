@@ -62,6 +62,7 @@ function setUpEditionGridListeners(jqGrid) {
             // Else: fill just this cell.
             setCellSymbol(cell, symbol);
         }
+        updateLayer();
     });
 }
 
@@ -76,6 +77,7 @@ function resizeOutputGrid() {
     dataGrid = JSON.parse(JSON.stringify(CURRENT_OUTPUT_GRID.grid));
     CURRENT_OUTPUT_GRID = new Grid(HEIGHT, WIDTH, dataGrid);
     refreshEditionGrid(jqGrid, CURRENT_OUTPUT_GRID);
+    updateLayer();
 }
 
 function resetOutputGrid() {
@@ -124,6 +126,7 @@ function fillLayerPreview(layerId) {
     var layerSlot = $('#layer_' + layerId);
     if (!layerSlot.length) {
         // Create HTML for pair.
+        console.log("layer added");
         layerSlot = $('<input type="radio" name="layer" id="' + layerId + '" value="' + layerId + '"><div id ="layer_' + layerId + '" class="layer_preivew" value="' + layerId + '"></div>');
         layerSlot.appendTo('#layer_panel');
         $('input[type=radio][name=layer]').change(function() {
@@ -149,6 +152,8 @@ function initLayerPreview() {
 }
 
 function loadJSONTask(train, test) {
+    initLayerPreview();
+
     resetTask();
     $('#modal_bg').hide();
     $('#error_display').hide();
@@ -320,6 +325,7 @@ function initializeLayerChange() {
 }
 
 function updateLayer() {
+    syncFromEditionGridToDataGrid();
     var grid = CURRENT_OUTPUT_GRID.grid;
     var nonEmptyCells = new Array();
     for (var r = 0; r < grid.length; r++) {
@@ -329,10 +335,20 @@ function updateLayer() {
             }
         }
     }
-    LAYERS[currentLayerIndex] = new Layer(nonEmptyCells, currentLayerIndex, HEIGHT, WIDTH, currentLayerIndex) 
-}
+    LAYERS[currentLayerIndex] = new Layer(nonEmptyCells, LAYERS[currentLayerIndex].z_val, HEIGHT, WIDTH, currentLayerIndex)
+    var layerSlot = $('#layer_' + currentLayerIndex);
+    console.log(currentLayerIndex);
+    var jqInputGrid = layerSlot.find('.grid_preview');
+    if (!jqInputGrid.length) {
+        jqInputGrid = $('<div class="grid_preview"></div>');
+        jqInputGrid.appendTo(layerSlot);
+    }
 
-initLayerPreview();
+    var layerGrid = LAYERS[currentLayerIndex].getGrid();
+    console.log(layerGrid);
+    fillJqGridWithData(jqInputGrid, layerGrid);
+    fitCellsToContainer(jqInputGrid, layerGrid.height, layerGrid.width, 100, 100);
+}
 
 // Initial event binding.
 
@@ -352,6 +368,7 @@ $(document).ready(function () {
                 setCellSymbol($(cell), symbol);
             });
         }
+        updateLayer();
     });
 
     $('.edition_grid').each(function(i, jqGrid) {
@@ -374,6 +391,12 @@ $(document).ready(function () {
         if (event.keyCode == 13) {
             resizeOutputGrid();
         }
+    });
+
+    $('.add_layer').on('click', function(event) {
+        LAYERS.push(new Layer(new Array(), currentLayerIndex+1, CURRENT_OUTPUT_GRID.HEIGHT, CURRENT_OUTPUT_GRID.WIDTH, currentLayerIndex+1));
+        updateLayer();
+        initLayerPreview();
     });
 
     $('body').keydown(function(event) {
