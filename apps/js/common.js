@@ -17,6 +17,83 @@ class Grid {
     }
 }
 
+class Cell {
+    constructor(r, c, value) {
+        this.row = r;
+        this.col = c;
+        this.val = value;
+    }
+}
+
+class Layer {
+    constructor(cells, z) {
+        if (typeof cells == undefined) {
+            this.cells = new Array();
+        } else {
+            this.cells = cells.filter(cell => cell.val > 0);
+        }
+        this.z = z;
+    }
+
+    containsCell(r, c) {
+        for (var i = 0; i < this.cells.length; i++) {
+            if (r == this.cells[i].row && c == this.cells[i].col) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    addCell(cell) {
+        this.cells.push(cell)
+    }
+
+    removeCell(r, c) {
+        var oldSize = this.cells.length;
+        var newCells = this.cells.filter(cell => cell.row != r && cell.col != c);
+        if (newCells.size == oldSize) {
+            errorMsg("Cell not included in layer");
+        } else {
+            this.cells = newCells;
+            infoMsg("Cell removed from layer");
+        }
+    }
+
+    getGrid() {
+        if (!this.cells.length) {
+            return new Grid(3, 3, undefined);
+        }
+        var grid = new Array()
+
+        // Get min and max row and col index
+        // Determines size of grid (tightest bounding box over cells contained in layer)
+        var minRow = Math.min(...this.cells.map(cell => cell.row));
+        var maxRow = Math.max(...this.cells.map(cell => cell.row));
+        var minCol = Math.min(...this.cells.map(cell => cell.col));
+        var maxCol = Math.max(...this.cells.map(cell => cell.col));
+
+        var width = maxCol - minCol + 1; 
+        var height = maxRow - minRow + 1;
+
+        // console.log('width = ' + width + ', height = ' + height);
+
+        for (var i = 0; i < height; i++){
+            grid[i] = new Array(width);
+            for (var j = 0; j < width; j++){
+                grid[i][j] = 0;
+            }
+        }
+        for (var i = 0; i < this.cells.length; i++) {
+            var cell = this.cells[i]
+            var offsetRow = cell.row - minRow
+            var offsetCol = cell.col - minCol
+            // console.log('row: ' + offsetRow + ', col: ' + offsetCol + ', val: ' + cell.val)
+            grid[offsetRow][offsetCol] = cell.val
+        }
+        return new Grid(height, width, grid);
+    }
+}
+
 function floodfillFromLocation(grid, i, j, symbol) {
     i = parseInt(i);
     j = parseInt(j);
