@@ -26,7 +26,7 @@ class Cell {
 }
 
 class Layer {
-    constructor(cells, z, height, width) {
+    constructor(cells, z, height, width, id) {
         if (typeof cells == undefined) {
             this.cells = new Array();
         } else {
@@ -35,6 +35,7 @@ class Layer {
         this.z = z;
         this.height = height;
         this.width = width;
+        this.id = id;
     }
 
     containsCell(r, c) {
