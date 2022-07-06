@@ -5,6 +5,9 @@ var CURRENT_OUTPUT_GRID = new Grid(3, 3);
 var TEST_PAIRS = new Array();
 var CURRENT_TEST_PAIR_INDEX = 0;
 var COPY_PASTE_DATA = new Array();
+var LAYERS = new Array();
+LAYERS.push(new Layer(new Array(), 0));
+var currentLayerIndex = 0;
 
 // Cosmetic.
 var EDITION_GRID_HEIGHT = 500;
@@ -84,6 +87,8 @@ function copyFromInput() {
     syncFromEditionGridToDataGrid();
     CURRENT_OUTPUT_GRID = convertSerializedGridToGridObject(CURRENT_INPUT_GRID.grid);
     syncFromDataGridToEditionGrid();
+    updateLayer();
+    initLayerPreview();
     $('#output_grid_size').val(CURRENT_OUTPUT_GRID.height + 'x' + CURRENT_OUTPUT_GRID.width);
 }
 
@@ -109,6 +114,42 @@ function fillPairPreview(pairId, inputGrid, outputGrid) {
     fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 200, 200);
     fillJqGridWithData(jqOutputGrid, outputGrid);
     fitCellsToContainer(jqOutputGrid, outputGrid.height, outputGrid.width, 200, 200);
+}
+
+function fillLayerPreview(layerId) {
+    var layerSlot = $('#layer_' + layerId);
+    if (!layerSlot.length) {
+        // Create HTML for pair.
+        layerSlot = $('<div id ="layer_' + layerId + '" class="layer_preivew" index="' + layerId + '"></div>');
+        layerSlot.appendTo('#layer_panel');
+    }
+
+    var jqInputGrid = layerSlot.find('.grid_preview');
+    if (!jqInputGrid.length) {
+        jqInputGrid = $('<div class="grid_preview"></div>');
+        jqInputGrid.appendTo(layerSlot);
+    }
+
+    layerGrid = LAYERS[layerId].getGrid();
+    fillJqGridWithData(jqInputGrid, layerGrid);
+    fitCellsToContainer(jqInputGrid, layerGrid.height, layerGrid.width, 50, 50);
+    layerSlot.selectable(
+        {
+            autoRefresh: false,
+            filter: '.layer_preview',
+            start: function(event, ui) {
+                $('.ui-selected').each(function(i, e) {
+                    $(e).removeClass('ui-selected');
+                });
+            }
+        }
+    );
+}
+
+function initLayerPreview() {
+    for (var id = 0; id < LAYERS.length; id++) {
+        fillLayerPreview(id);
+    }
 }
 
 function loadJSONTask(train, test) {
@@ -237,7 +278,7 @@ function submitSolution() {
 function fillTestInput(inputGrid) {
     jqInputGrid = $('#evaluation_input');
     fillJqGridWithData(jqInputGrid, inputGrid);
-    fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 400, 400);
+    fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 250, 250);
 }
 
 function copyToOutput() {
@@ -265,7 +306,23 @@ function initializeSelectable() {
     }
 }
 
+function updateLayer() {
+    var grid = CURRENT_OUTPUT_GRID.grid;
+    var nonEmptyCells = new Array();
+    for (var r = 0; r < grid.length; r++) {
+        for (var c = 0; c < grid[r].length; c++) {
+            if (grid[r][c] > 0) {
+                nonEmptyCells.push(new Cell(r, c, grid[r][c]));
+            }
+        }
+    }
+    LAYERS[currentLayerIndex] = new Layer(nonEmptyCells, currentLayerIndex) 
+}
+
+initLayerPreview();
+
 // Initial event binding.
+
 
 $(document).ready(function () {
     $('#symbol_picker').find('.symbol_preview').click(function(event) {
@@ -476,5 +533,35 @@ $(document).ready(function () {
                 errorMsg('Can only paste at a specific location; only select *one* cell as paste destination.');
             }
         }
+
+        // // LAYER functionality [o]
+
+        // if (event.which == 79) {
+        //     selected = $('.ui-selected');
+        //     if (selected.length == 0) {
+        //         return;
+        //     }
+
+        //     SELECTED_DATA = [];
+        //     for (var i = 0; i < selected.length; i ++) {
+        //         r = parseInt($(selected[i]).attr('x'));
+        //         c = parseInt($(selected[i]).attr('y'));
+        //         val = parseInt($(selected[i]).attr('symbol'));
+        //         SELECTED_DATA.push(new Cell(r, c, val))
+        //     }
+
+
+            
+        //     if (SELECTED_DATA.length == 0) {
+        //         errorMsg('No data selected');
+        //         return;
+        //     }
+
+        //     var z_val = LAYERS.length
+        //     LAYERS.push(new Layer(SELECTED_DATA, z_val))
+
+        //     infoMsg(`Data added to Layer ${LAYERS.length}`)
+        //     initLayerPreview();
+        // }
     });
 });

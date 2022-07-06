@@ -58,6 +58,19 @@ body {
     padding-bottom: 5px;
 }
 
+#layer_panel_view {
+    float: left;
+    width: 400px;
+    margin: 10px;
+}
+
+.layer_preview {
+    float: left;
+    margin: 10px;
+    padding: 10px;
+    background: white;
+}
+
 #resize_control_btns {
     width: 100%;
     float:left;
