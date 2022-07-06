@@ -327,7 +327,7 @@ $(document).ready(function () {
 
         }
         if (event.which == 86) {
-            // Press P
+            // Press V
             if (COPY_PASTE_DATA.length == 0) {
                 errorMsg('No data to paste.');
                 return;
@@ -361,6 +361,110 @@ $(document).ready(function () {
                     y = ys[i];
                     symbol = symbols[i];
                     newx = x - minx + targetx;
+                    newy = y - miny + targety;
+                    res = jqGrid.find('[x="' + newx + '"][y="' + newy + '"] ');
+                    if (res.length == 1) {
+                        cell = $(res[0]);
+                        setCellSymbol(cell, symbol);
+                    }
+                }
+            } else {
+                errorMsg('Can only paste at a specific location; only select *one* cell as paste destination.');
+            }
+        }
+
+        if (event.which == 79) { //flip-flop on y-axis, axis on the middle
+            // Press O
+            if (COPY_PASTE_DATA.length == 0) {
+                errorMsg('No data to paste.');
+                return;
+            }
+            selected = $('.edition_grid').find('.ui-selected');
+            if (selected.length == 0) {
+                errorMsg('Select a target cell on the output grid.');
+                return;
+            }
+
+            jqGrid = $(selected.parent().parent()[0]);
+
+            if (selected.length == 1) {
+                targetx = parseInt(selected.attr('x'));
+                targety = parseInt(selected.attr('y'));
+
+                xs = new Array();
+                ys = new Array();
+                symbols = new Array();
+
+                for (var i = 0; i < COPY_PASTE_DATA.length; i ++) {
+                    xs.push(COPY_PASTE_DATA[i][0]);
+                    ys.push(COPY_PASTE_DATA[i][1]);
+                    symbols.push(COPY_PASTE_DATA[i][2]);
+                }
+
+                minx = Math.min(...xs);
+                miny = Math.min(...ys);
+                
+                newys = ys.map((v) => {return (v - miny + targety)});
+                newminy = Math.min(...newys);
+                newmaxy = Math.max(...newys);
+
+                for (var i = 0; i < xs.length; i ++) {
+                    x = xs[i];
+                    y = ys[i];
+                    symbol = symbols[i];
+                    newx = x - minx + targetx;
+                    newy = (newmaxy + newminy) - newys[i];
+                    res = jqGrid.find('[x="' + newx + '"][y="' + newy + '"] ');
+                    if (res.length == 1) {
+                        cell = $(res[0]);
+                        setCellSymbol(cell, symbol);
+                    }
+                }
+            } else {
+                errorMsg('Can only paste at a specific location; only select *one* cell as paste destination.');
+            }
+        }
+
+        if (event.which == 80) { //flip-flop on x-axis, axis on the middle
+            // Press P
+            if (COPY_PASTE_DATA.length == 0) {
+                errorMsg('No data to paste.');
+                return;
+            }
+            selected = $('.edition_grid').find('.ui-selected');
+            if (selected.length == 0) {
+                errorMsg('Select a target cell on the output grid.');
+                return;
+            }
+
+            jqGrid = $(selected.parent().parent()[0]);
+
+            if (selected.length == 1) {
+                targetx = parseInt(selected.attr('x'));
+                targety = parseInt(selected.attr('y'));
+
+                xs = new Array();
+                ys = new Array();
+                symbols = new Array();
+
+                for (var i = 0; i < COPY_PASTE_DATA.length; i ++) {
+                    xs.push(COPY_PASTE_DATA[i][0]);
+                    ys.push(COPY_PASTE_DATA[i][1]);
+                    symbols.push(COPY_PASTE_DATA[i][2]);
+                }
+
+                minx = Math.min(...xs);
+                miny = Math.min(...ys);
+                
+                newxs = xs.map((v) => {return (v - minx + targetx)});
+                newminx = Math.min(...newxs);
+                newmaxx = Math.max(...newxs);
+
+                for (var i = 0; i < xs.length; i ++) {
+                    x = xs[i];
+                    y = ys[i];
+                    symbol = symbols[i];
+                    newx = (newmaxx + newminx) - newxs[i];
                     newy = y - miny + targety;
                     res = jqGrid.find('[x="' + newx + '"][y="' + newy + '"] ');
                     if (res.length == 1) {
