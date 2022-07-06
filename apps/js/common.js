@@ -63,22 +63,11 @@ class Layer {
     }
 
     getGrid() {
+        console.log("this.cells: ", this.cells);
         if (!this.cells.length) {
             return new Grid(3, 3, undefined);
         }
         var grid = new Array(this.height)
-
-        // Get min and max row and col index
-        // Determines size of grid (tightest bounding box over cells contained in layer)
-        // var minRow = Math.min(...this.cells.map(cell => cell.row));
-        // var maxRow = Math.max(...this.cells.map(cell => cell.row));
-        // var minCol = Math.min(...this.cells.map(cell => cell.col));
-        // var maxCol = Math.max(...this.cells.map(cell => cell.col));
-
-        // var width = maxCol - minCol + 1; 
-        // var height = maxRow - minRow + 1;
-
-        // console.log('width = ' + width + ', height = ' + height);
 
         for (var i = 0; i < this.height; i++){
             grid[i] = new Array(this.width);
@@ -88,10 +77,12 @@ class Layer {
         }
         for (var i = 0; i < this.cells.length; i++) {
             var cell = this.cells[i]
-            // var offsetRow = cell.row - minRow
-            // var offsetCol = cell.col - minCol
-            // console.log('row: ' + offsetRow + ', col: ' + offsetCol + ', val: ' + cell.val)
-            grid[cell.row][cell.col] = cell.val
+            if(cell.val == undefined){
+                grid[cell.row][cell.col] = 0;
+            }else{
+                grid[cell.row][cell.col] = cell.val;
+            }
+            
         }
         return new Grid(this.height, this.width, grid);
     }
