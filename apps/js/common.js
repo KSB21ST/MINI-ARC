@@ -38,6 +38,21 @@ class Layer {
         this.id = id;
     }
 
+    updateCell(cells) {
+        this.cells = cells;
+    }
+
+    updateGrid(grid) {
+        this.cells = new Array();
+        for (var r = 0; r < grid.grid.length; r++) {
+            for (var c = 0; c < grid.grid[r].length; c++) {
+                if (grid.grid[r][c] > 0) {
+                    this.cells.push(new Cell(r, c, grid.grid[r][c]));
+                }
+            }
+        }
+    }
+
     containsCell(r, c) {
         for (var i = 0; i < this.cells.length; i++) {
             if (r == this.cells[i].row && c == this.cells[i].col) {
@@ -48,7 +63,13 @@ class Layer {
     }
 
     addCell(cell) {
-        this.cells.push(cell)
+        for (var i = 0; i < this.cells.length; i++) {
+            if (this.cells[i].row == cell.row && this.cells[i].col == cell.col) {
+                this.cells[i].val = cell.val;
+                return;
+            }
+        }
+        this.cells.push(cell);
     }
 
     removeCell(r, c) {

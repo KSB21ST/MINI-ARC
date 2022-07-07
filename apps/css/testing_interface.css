@@ -39,11 +39,11 @@ body {
 }
 
 #load_task_control_btns {
-    float: left;
+    margin-left: 10px;
+    margin-right: 10px;
     margin-top: 10px;
-    margin-bottom: 0;
+    margin-bottom: 5px;
     background: white;
-    width: 100%;
     padding-top: 5px;
     padding-bottom: 5px;
 }
