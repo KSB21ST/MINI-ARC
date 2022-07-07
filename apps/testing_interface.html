@@ -27,7 +27,17 @@
         <div id="workspace">
 
             <div id="demonstration_examples_view">
+                <div id="load_task_control_btns">
+                    <label for="load_task_file_input">Load task JSON: </label>
+                    <input type="file" id="load_task_file_input" class="load_task" style="display: none;"/>
+                    <input type="button" value="Browse..." onclick="document.getElementById('load_task_file_input').click();" />
+                    <button onclick="randomTask()" id="random_task_btn"> Random... </button>
+                    <p>
+                    <label id='task_name' for="random_task_btn"> Task name: </label>
+                </div>
+                
                 <div class="text" id="task_demo_header">Task demonstration</div>
+                
                 <div id="task_preview"></div>
             </div>
 
@@ -42,15 +52,6 @@
                 </div>
 
                 <div id="evaluation_output_editor">
-
-                    <div id="load_task_control_btns">
-                        <label for="load_task_file_input">Load task JSON: </label>
-                        <input type="file" id="load_task_file_input" class="load_task" style="display: none;"/>
-                        <input type="button" value="Browse..." onclick="document.getElementById('load_task_file_input').click();" />
-                        <button onclick="randomTask()" id="random_task_btn"> Random... </button>
-                        <p>
-                        <label id='task_name' for="random_task_btn"> Task name: </label>
-                    </div>
 
                     <div id="edition_view">
                         <div id="editor_grid_control_btns">
@@ -99,6 +100,10 @@
                                 <input type="radio" id="tool_floodfill"
                                  name="tool_switching" value="floodfill">
                                 <label for="tool_floodfill">Flood fill</label>
+
+                                <button id="tool_clear_selection"
+                                 name="tool_switching" value="floodfill">
+                                <label for="tool_clear_selection">Clear Selection</label>
                             </div>
                         </div>
 

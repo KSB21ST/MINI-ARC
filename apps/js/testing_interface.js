@@ -61,8 +61,10 @@ function setUpEditionGridListeners(jqGrid) {
         else if (mode == 'edit') {
             // Else: fill just this cell.
             setCellSymbol(cell, symbol);
+            console.log(cell.attr('x') + ' ' + cell.attr('y'));
+            LAYERS[currentLayerIndex].addCell(new Cell(cell.attr('x'), cell.attr('y'), cell.attr('symbol')))
         }
-        updateLayer();
+        updateLayer(currentLayerIndex);
     });
 }
 
@@ -77,7 +79,13 @@ function resizeOutputGrid() {
     dataGrid = JSON.parse(JSON.stringify(CURRENT_OUTPUT_GRID.grid));
     CURRENT_OUTPUT_GRID = new Grid(HEIGHT, WIDTH, dataGrid);
     refreshEditionGrid(jqGrid, CURRENT_OUTPUT_GRID);
-    updateLayer();
+    
+    for (var i = 0; i < LAYERS.length; i++) {
+        LAYERS[i].height = HEIGHT;
+        LAYERS[i].width = WIDTH;
+    }
+    updateAllLayers();
+    initLayerPreview();
 }
 
 function resetOutputGrid() {
@@ -93,7 +101,12 @@ function copyFromInput() {
     HEIGHT = CURRENT_OUTPUT_GRID.height;
     WIDTH = CURRENT_OUTPUT_GRID.width;
     syncFromDataGridToEditionGrid();
-    updateLayer();
+    currLayer = LAYERS[currentLayerIndex];
+    currLayer.updateGrid(CURRENT_OUTPUT_GRID);
+    for (var i = 0; i < LAYERS.length; i++) {
+        LAYERS[i].height = HEIGHT;
+        LAYERS[i].width = WIDTH;
+    }
     initLayerPreview();
     $('#output_grid_size').val(CURRENT_OUTPUT_GRID.height + 'x' + CURRENT_OUTPUT_GRID.width);
 }
@@ -125,9 +138,8 @@ function fillPairPreview(pairId, inputGrid, outputGrid) {
 function fillLayerPreview(layerId) {
     var layerSlot = $('#layer_' + layerId);
     if (!layerSlot.length) {
-        // Create HTML for pair.
-        console.log("layer added");
-        layerSlot = $('<input type="radio" name="layer" id="' + layerId + '" value="' + layerId + '"><div id ="layer_' + layerId + '" class="layer_preivew" value="' + layerId + '"></div>');
+        layerSlot = $('<input type="radio" name="layer" id="' + layerId + '" value="' + layerId + '" checked><div id ="layer_' + layerId + '" class="layer_preivew" value="' + layerId + '"></div>');
+        // currentLayerIndex = LAYERS.length;
         layerSlot.appendTo('#layer_panel');
         $('input[type=radio][name=layer]').change(function() {
             initializeLayerChange();
@@ -310,6 +322,7 @@ function initializeSelectable() {
 function initializeLayerChange() {
     infoMsg("layer selected");
     currentLayerIndex = $('input[name=layer]:checked').val();
+    console.log(currentLayerIndex)
     var currLayer = LAYERS.filter(layer => layer.id == currentLayerIndex);
     if (!currLayer.length) {
         return;
@@ -324,30 +337,18 @@ function initializeLayerChange() {
     }
 }
 
-function updateLayer() {
-    syncFromEditionGridToDataGrid();
-    var grid = CURRENT_OUTPUT_GRID.grid;
-    var nonEmptyCells = new Array();
-    for (var r = 0; r < grid.length; r++) {
-        for (var c = 0; c < grid[r].length; c++) {
-            if (grid[r][c] > 0) {
-                nonEmptyCells.push(new Cell(r, c, grid[r][c]));
-            }
-        }
-    }
-    LAYERS[currentLayerIndex] = new Layer(nonEmptyCells, LAYERS[currentLayerIndex].z_val, HEIGHT, WIDTH, currentLayerIndex)
-    var layerSlot = $('#layer_' + currentLayerIndex);
-    console.log(currentLayerIndex);
+function updateLayer(id) {
+    var layerSlot = $('#layer_' + id);
     var jqInputGrid = layerSlot.find('.grid_preview');
-    if (!jqInputGrid.length) {
-        jqInputGrid = $('<div class="grid_preview"></div>');
-        jqInputGrid.appendTo(layerSlot);
-    }
-
-    var layerGrid = LAYERS[currentLayerIndex].getGrid();
-    console.log(layerGrid);
+    var layerGrid = LAYERS[id].getGrid();
     fillJqGridWithData(jqInputGrid, layerGrid);
     fitCellsToContainer(jqInputGrid, layerGrid.height, layerGrid.width, 100, 100);
+}
+
+function updateAllLayers() {
+    for (var i = 0; i < LAYERS.length; i++) {
+        updateLayer(i);
+    }
 }
 
 // Initial event binding.
@@ -366,9 +367,12 @@ $(document).ready(function () {
             $('.edition_grid').find('.ui-selected').each(function(i, cell) {
                 symbol = getSelectedSymbol();
                 setCellSymbol($(cell), symbol);
+                console.log(cell);
+                console.log($(cell).attr('x') + ' ' + $(cell).attr('y') + ' ' + $(cell).attr('symbol'))
+                LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')))
             });
         }
-        updateLayer();
+        updateLayer(currentLayerIndex);
     });
 
     $('.edition_grid').each(function(i, jqGrid) {
@@ -386,6 +390,10 @@ $(document).ready(function () {
     $('input[type=radio][name=tool_switching]').change(function() {
         initializeSelectable();
     });
+
+    $('button[name=tool_switching][id=tool_clear_selection]').click(function() {
+        $('.ui-selected').selectable().removeClass('ui-selected');
+    });
     
     $('input[type=text][name=size]').on('keydown', function(event) {
         if (event.keyCode == 13) {
@@ -394,8 +402,9 @@ $(document).ready(function () {
     });
 
     $('.add_layer').on('click', function(event) {
-        LAYERS.push(new Layer(new Array(), currentLayerIndex+1, CURRENT_OUTPUT_GRID.HEIGHT, CURRENT_OUTPUT_GRID.WIDTH, currentLayerIndex+1));
-        updateLayer();
+        currentLayerIndex = LAYERS.length;
+        LAYERS.push(new Layer(new Array(), LAYERS.length, CURRENT_OUTPUT_GRID.height, CURRENT_OUTPUT_GRID.width, LAYERS.length));
+        updateAllLayers();
         initLayerPreview();
     });
 
@@ -459,6 +468,8 @@ $(document).ready(function () {
                     if (res.length == 1) {
                         cell = $(res[0]);
                         setCellSymbol(cell, symbol);
+                        LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
+                        updateAllLayers();
                     }
                 }
             } else {
@@ -511,6 +522,8 @@ $(document).ready(function () {
                     if (res.length == 1) {
                         cell = $(res[0]);
                         setCellSymbol(cell, symbol);
+                        LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
+                        updateAllLayers();
                     }
                 }
             } else {
@@ -563,6 +576,8 @@ $(document).ready(function () {
                     if (res.length == 1) {
                         cell = $(res[0]);
                         setCellSymbol(cell, symbol);
+                        LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
+                        updateAllLayers();
                     }
                 }
             } else {

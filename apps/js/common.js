@@ -38,6 +38,21 @@ class Layer {
         this.id = id;
     }
 
+    updateCell(cells) {
+        this.cells = cells;
+    }
+
+    updateGrid(grid) {
+        this.cells = new Array();
+        for (var r = 0; r < grid.grid.length; r++) {
+            for (var c = 0; c < grid.grid[r].length; c++) {
+                if (grid.grid[r][c] > 0) {
+                    this.cells.push(new Cell(r, c, grid.grid[r][c]));
+                }
+            }
+        }
+    }
+
     containsCell(r, c) {
         for (var i = 0; i < this.cells.length; i++) {
             if (r == this.cells[i].row && c == this.cells[i].col) {
@@ -48,7 +63,13 @@ class Layer {
     }
 
     addCell(cell) {
-        this.cells.push(cell)
+        for (var i = 0; i < this.cells.length; i++) {
+            if (this.cells[i].row == cell.row && this.cells[i].col == cell.col) {
+                this.cells[i].val = cell.val;
+                return;
+            }
+        }
+        this.cells.push(cell);
     }
 
     removeCell(r, c) {
@@ -68,18 +89,6 @@ class Layer {
         }
         var grid = new Array(this.height)
 
-        // Get min and max row and col index
-        // Determines size of grid (tightest bounding box over cells contained in layer)
-        // var minRow = Math.min(...this.cells.map(cell => cell.row));
-        // var maxRow = Math.max(...this.cells.map(cell => cell.row));
-        // var minCol = Math.min(...this.cells.map(cell => cell.col));
-        // var maxCol = Math.max(...this.cells.map(cell => cell.col));
-
-        // var width = maxCol - minCol + 1; 
-        // var height = maxRow - minRow + 1;
-
-        // console.log('width = ' + width + ', height = ' + height);
-
         for (var i = 0; i < this.height; i++){
             grid[i] = new Array(this.width);
             for (var j = 0; j < this.width; j++){
@@ -88,9 +97,6 @@ class Layer {
         }
         for (var i = 0; i < this.cells.length; i++) {
             var cell = this.cells[i]
-            // var offsetRow = cell.row - minRow
-            // var offsetCol = cell.col - minCol
-            // console.log('row: ' + offsetRow + ', col: ' + offsetCol + ', val: ' + cell.val)
             grid[cell.row][cell.col] = cell.val
         }
         return new Grid(this.height, this.width, grid);
