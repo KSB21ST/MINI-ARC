@@ -84,6 +84,7 @@ class Layer {
     }
 
     getGrid() {
+        console.log("this.cells: ", this.cells);
         if (!this.cells.length) {
             return new Grid(3, 3, undefined);
         }
@@ -97,7 +98,10 @@ class Layer {
         }
         for (var i = 0; i < this.cells.length; i++) {
             var cell = this.cells[i]
-            grid[cell.row][cell.col] = cell.val
+            if(cell.val != undefined && cell.row < this.height && cell.col < this.width){
+                grid[cell.row][cell.col] = cell.val;
+            }
+            
         }
         return new Grid(this.height, this.width, grid);
     }
