@@ -7,6 +7,8 @@ var CURRENT_TEST_PAIR_INDEX = 0;
 var COPY_PASTE_DATA = new Array();
 var SELECTED_DATA = new Array();
 var LAYERS = new Array();
+LAYERS.push(new Layer(new Array(), 0, 3, 3, 0));
+var currentLayerIndex = 0;
 
 // Cosmetic.
 var EDITION_GRID_HEIGHT = 500;
@@ -58,7 +60,6 @@ function setUpEditionGridListeners(jqGrid) {
         else if (mode == 'edit') {
             // Else: fill just this cell.
             setCellSymbol(cell, symbol);
-            console.log(cell.attr('x') + ' ' + cell.attr('y'));
             LAYERS[currentLayerIndex].addCell(new Cell(cell.attr('x'), cell.attr('y'), cell.attr('symbol')))
         }
         updateLayer(currentLayerIndex);
@@ -78,8 +79,8 @@ function resizeOutputGrid() {
     refreshEditionGrid(jqGrid, CURRENT_OUTPUT_GRID);
     
     for (var i = 0; i < LAYERS.length; i++) {
-        LAYERS[i].height = HEIGHT;
-        LAYERS[i].width = WIDTH;
+        LAYERS[i].height = CURRENT_OUTPUT_GRID.height;
+        LAYERS[i].width = CURRENT_OUTPUT_GRID.width;
     }
     updateAllLayers();
     initLayerPreview();
@@ -99,8 +100,8 @@ function copyFromInput() {
     currLayer = LAYERS[currentLayerIndex];
     currLayer.updateGrid(CURRENT_OUTPUT_GRID);
     for (var i = 0; i < LAYERS.length; i++) {
-        LAYERS[i].height = HEIGHT;
-        LAYERS[i].width = WIDTH;
+        LAYERS[i].height = CURRENT_OUTPUT_GRID.height;
+        LAYERS[i].width = CURRENT_OUTPUT_GRID.width;
     }
     initLayerPreview();
     $('#output_grid_size').val(CURRENT_OUTPUT_GRID.height + 'x' + CURRENT_OUTPUT_GRID.width);
@@ -133,9 +134,11 @@ function fillPairPreview(pairId, inputGrid, outputGrid) {
 function fillLayerPreview(layerId) {
     var layerSlot = $('#layer_' + layerId);
     if (!layerSlot.length) {
-        layerSlot = $('<input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><div id ="layer_' + layerId + '" class="layer_preivew" value="' + layerId + '"></div>');
+        layerSlot = $('<input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><div id ="layer_' + layerId + '" class="layer_preivew" value="' + layerId + '"></div></input>');
         layerSlot.appendTo('#layer_panel');
         $('input[type=radio][name=layer]').change(function() {
+            console.log("changed")
+            initializeSelectable();
             initializeLayerChange();
         })
     }
@@ -316,34 +319,40 @@ function initializeSelectable() {
 }
 
 function initializeLayerChange() {
-    infoMsg("layer selected");
     currentLayerIndex = $('input[name=layer]:checked').val();
-    console.log(currentLayerIndex)
+    infoMsg(`layer ${currentLayerIndex} selected`);
     var currLayer = LAYERS.filter(layer => layer.id == currentLayerIndex);
     if (!currLayer.length) {
         return;
     }
     currLayer = currLayer[0];
+    console.log(currLayer);
 
     // Highlight all cells included in selected layer
-    for (var i = 0; i < CURRENT_OUTPUT_GRID.height; i ++) {
-        for (var j = 0; j < CURRENT_OUTPUT_GRID.width; j ++) {
-            res = jqGrid.find('[x="' + i + '"][y="' + j + '"] ');
-            if (res.length == 1) {
-                cell = $(res[0]);
-                setCellSymbol(cell, 0);
-            }
-        }
+    // for (var i = 0; i < CURRENT_OUTPUT_GRID.height; i ++) {
+    //     for (var j = 0; j < CURRENT_OUTPUT_GRID.width; j ++) {
+    //         res = jqGrid.find('[x="' + i + '"][y="' + j + '"] ');
+    //         if (res.length == 1) {
+    //             cell = $(res[0]);
+    //             setCellSymbol(cell, 0);
+    //         }
+    //     }
         
-    }
+    // }
 
     $('.ui-selected').selectable().removeClass('ui-selected');
     for (var i = 0; i < currLayer.cells.length; i++) {
         var currCell = currLayer.cells[i];
         $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).selectable().addClass('ui-selected');
+        // $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).each(function(i, cell) {
+        //     console.log($(cell).attr('x') + ' ' + $(cell).attr('y'));
+        //     setCellSymbol($(cell), currCell.val);
+        // })
         $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).each(function(i, cell) {
-            setCellSymbol($(cell), currCell.val);
-        })
+            console.log($(cell).attr('x') + ' ' + $(cell).attr('y'));
+        });
+        setCellSymbol($('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`), currCell.val);
+        syncFromEditionGridToDataGrid();
     }
 }
 
@@ -363,7 +372,7 @@ function addLayer() {
     
 
     SELECTED_DATA = [];
-    for (var i = 0; i < selected.length - 1; i ++) {
+    for (var i = 0; i < selected.length; i++) {
         r = parseInt($(selected[i]).attr('x'));
         c = parseInt($(selected[i]).attr('y'));
         val = parseInt($(selected[i]).attr('symbol'));
@@ -421,6 +430,19 @@ function updateAllLayers() {
     }
 }
 
+function makeGridFromLayer() {
+    zSorted = LAYERS.sort(function(l1, l2) { l2.z - l1.z });
+    for (var i = 0; i < zSorted.length; i++) {
+        layer = zSorted[i];
+        for (var x = 0; x < CURRENT_OUTPUT_GRID.width; x++) {
+            for (var y = 0; y < CURRENT_OUTPUT_GRID.height; y++) {
+                CURRENT_OUTPUT_GRID[x][y] = layer.val;
+            }
+        }
+    }
+    syncFromDataGridToEditionGrid();
+}
+
 // Initial event binding.
 
 
@@ -437,8 +459,8 @@ $(document).ready(function () {
             $('.edition_grid').find('.ui-selected').each(function(i, cell) {
                 symbol = getSelectedSymbol();
                 setCellSymbol($(cell), symbol);
-                console.log(cell);
-                console.log($(cell).attr('x') + ' ' + $(cell).attr('y') + ' ' + $(cell).attr('symbol'))
+                // console.log(cell);
+                // console.log($(cell).attr('x') + ' ' + $(cell).attr('y') + ' ' + $(cell).attr('symbol'))
                 LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')))
             });
         }
@@ -462,7 +484,8 @@ $(document).ready(function () {
     });
 
     $('button[name=tool_switching][id=tool_clear_selection]').click(function() {
-        $('.ui-selected').selectable().removeClass('ui-selected');
+        // $('.ui-selected').selectable().removeClass('ui-selected');
+        initializeSelectable();
     });
     
     $('input[type=text][name=size]').on('keydown', function(event) {

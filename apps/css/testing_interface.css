@@ -94,6 +94,17 @@ button:focus {outline:0;}
 
 }
 
+#layer_button {
+    float: left;
+    padding: 5px;
+}
+
+#layer_panel {
+    float: left;
+    padding: 10px;
+    margin: 10px;
+}
+
 #toolbar {
     float: left;
     margin-left: 10px;
