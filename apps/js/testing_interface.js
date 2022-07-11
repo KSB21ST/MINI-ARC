@@ -9,10 +9,12 @@ var SELECTED_DATA = new Array();
 var LAYERS = new Array();
 LAYERS.push(new Layer(new Array(), 0, 3, 3, 0));
 var currentLayerIndex = 0;
+var EXAMPLES = new Array();
+var currentExample = 0;
 
 // Cosmetic.
-var EDITION_GRID_HEIGHT = 500;
-var EDITION_GRID_WIDTH = 500;
+var EDITION_GRID_HEIGHT = 300;
+var EDITION_GRID_WIDTH = 300;
 var MAX_CELL_SIZE = 100;
 
 
@@ -20,6 +22,7 @@ function resetTask() {
     CURRENT_INPUT_GRID = new Grid(3, 3);
     TEST_PAIRS = new Array();
     CURRENT_TEST_PAIR_INDEX = 0;
+    EXAMPLES = [];
     $('#task_preview').html('');
     resetOutputGrid();
 }
@@ -107,23 +110,26 @@ function copyFromInput() {
     $('#output_grid_size').val(CURRENT_OUTPUT_GRID.height + 'x' + CURRENT_OUTPUT_GRID.width);
 }
 
-function fillPairPreview(pairId, inputGrid, outputGrid) {
-    var pairSlot = $('#pair_preview_' + pairId);
+function fillPairPreview(inputGrid, outputGrid) {
+    var pairSlot = $('#pair_preview');
     if (!pairSlot.length) {
         // Create HTML for pair.
-        pairSlot = $('<div id="pair_preview_' + pairId + '" class="pair_preview" index="' + pairId + '"></div>');
+        pairSlot = $('<div id="pair_preview" class="pair_preview"></div>');
         pairSlot.appendTo('#task_preview');
     }
     var jqInputGrid = pairSlot.find('.input_preview');
-    if (!jqInputGrid.length) {
-        jqInputGrid = $('<div class="input_preview"></div>');
-        jqInputGrid.appendTo(pairSlot);
+    if (jqInputGrid.length) {
+        jqInputGrid.remove('.input_preview');
     }
+    jqInputGrid = $('<div class="input_preview"></div>');
+    jqInputGrid.appendTo(pairSlot);
+
     var jqOutputGrid = pairSlot.find('.output_preview');
-    if (!jqOutputGrid.length) {
-        jqOutputGrid = $('<div class="output_preview"></div>');
-        jqOutputGrid.appendTo(pairSlot);
+    if (jqOutputGrid.length) {
+        jqOutputGrid.remove('.output_preview');
     }
+    jqOutputGrid = $('<div class="output_preview"></div>');
+    jqOutputGrid.appendTo(pairSlot);
 
     fillJqGridWithData(jqInputGrid, inputGrid);
     fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 200, 200);
@@ -134,22 +140,22 @@ function fillPairPreview(pairId, inputGrid, outputGrid) {
 function fillLayerPreview(layerId) {
     var layerSlot = $('#layer_' + layerId);
     if (!layerSlot.length) {
-        layerSlot = $('<input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><div id ="layer_' + layerId + '" class="layer_preivew" value="' + layerId + '"></div></input>');
+        layerSlot = $('<div id ="layer_' + layerId + '" class="layer_preview" value="' + layerId + '"><input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><label for="' + layerId + '" class="layer_selector"></label><div class="grid_preview"></div></div>');
         layerSlot.appendTo('#layer_panel');
         $(`input[type=radio][id=${layerId}]`).click(function() {
-            console.log("change");
             initializeSelectable();
             initializeLayerChange();
         })
     }
 
     var jqInputGrid = layerSlot.find('.grid_preview');
-    if (!jqInputGrid.length) {
-        jqInputGrid = $('<div class="grid_preview"></div>');
-        jqInputGrid.appendTo(layerSlot);
-        qwhitspace = $('<p></p>');
-        qwhitspace.appendTo(layerSlot);
-    }
+    // if (!jqInputGrid.length) {
+    //     jqInputGrid = $('<div class="grid_preview"></div>');
+    //     jqInputGrid.appendTo(layerSlot);
+    //     // jqInputGrid.appendTo($('#layer_'+layerId));
+    //     qwhitspace = $('<p></p>');
+    //     qwhitspace.appendTo(layerSlot);
+    // }
 
     layerGrid = LAYERS[layerId].getGrid();
     fillJqGridWithData(jqInputGrid, layerGrid);
@@ -176,8 +182,12 @@ function loadJSONTask(train, test) {
         input_grid = convertSerializedGridToGridObject(values)
         values = pair['output'];
         output_grid = convertSerializedGridToGridObject(values)
-        fillPairPreview(i, input_grid, output_grid);
+        EXAMPLES.push([input_grid, output_grid]);
+        // fillPairPreview(i, input_grid, output_grid);
     }
+    fillPairPreview(EXAMPLES[0][0], EXAMPLES[0][1]);
+    $('#current_example_id').html('1');
+    $('#total_examples').html(EXAMPLES.length);
     for (var i=0; i < test.length; i++) {
         pair = test[i];
         TEST_PAIRS.push(pair);
@@ -193,10 +203,11 @@ function loadJSONTask(train, test) {
 function display_task_name(task_name, task_index, number_of_tasks) {
     big_space = '&nbsp;'.repeat(4); 
     document.getElementById('task_name').innerHTML = (
-        'Task name:' + big_space + task_name + big_space + (
-            task_index===null ? '' :
-            ( String(task_index) + ' out of ' + String(number_of_tasks) )
-        )
+        'Task name:' + big_space + task_name + big_space 
+        // + (
+        //     task_index===null ? '' :
+        //     ( String(task_index) + ' out of ' + String(number_of_tasks) )
+        // )
     );
 }
 
@@ -290,7 +301,7 @@ function submitSolution() {
 function fillTestInput(inputGrid) {
     jqInputGrid = $('#evaluation_input');
     fillJqGridWithData(jqInputGrid, inputGrid);
-    fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 400, 400);
+    fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 200, 200);
 }
 
 function copyToOutput() {
@@ -399,18 +410,18 @@ function addLayer() {
     }
 }
 
-function deleteLayer() {
-    currentLayerIndex = $('input[name=layer]:checked').val();
-    if (currentLayerIndex === undefined){
-        infoMsg("delete Layer " + currentLayerIndex);
-        return;
-    }
-    LAYERS = LAYERS.filter(layer => layer.id != currentLayerIndex);
-    $( 'div' ).remove( '.grid_preview' );
-    $( 'div' ).remove( '.layer_preivew' );
-    $( 'input' ).remove( '.layer_button' );
-    infoMsg("delete Layer " + currentLayerIndex);
-}
+// function deleteLayer() {
+//     currentLayerIndex = $('input[name=layer]:checked').val();
+//     if (currentLayerIndex === undefined){
+//         infoMsg("delete Layer " + currentLayerIndex);
+//         return;
+//     }
+//     LAYERS = LAYERS.filter(layer => layer.id != currentLayerIndex);
+//     $( 'div' ).remove( '.grid_preview' );
+//     $( 'div' ).remove( '.layer_preivew' );
+//     $( 'input' ).remove( '.layer_button' );
+//     infoMsg("delete Layer " + currentLayerIndex);
+// }
 
 function updateAllLayers() {
     for (var i = 0; i < LAYERS.length; i++) {
@@ -499,6 +510,18 @@ $(document).ready(function () {
 
     $('.load_task').on('click', function(event) {
       event.target.value = "";
+    });
+
+    $('button[id=prev_example]').click(function() {
+        currentExample = Math.max(0, currentExample-1);
+        $('#current_example_id').html(currentExample+1);
+        fillPairPreview(EXAMPLES[currentExample][0], EXAMPLES[currentExample][1]);
+    });
+
+    $('button[id=next_example]').click(function() {
+        currentExample = Math.min(EXAMPLES.length-1, currentExample+1);
+        $('#current_example_id').html(currentExample+1);
+        fillPairPreview(EXAMPLES[currentExample][0], EXAMPLES[currentExample][1]);
     });
 
     $('input[type=radio][name=tool_switching]').change(function() {
@@ -590,9 +613,10 @@ $(document).ready(function () {
             } else {
                 errorMsg('Can only paste at a specific location; only select *one* cell as paste destination.');
             }
+            $('.ui-selected').removeClass('ui-selected');
         }
 
-        if (event.which == 79) { //flip-flop on y-axis, axis on the middle
+        if (event.which == 89) { //reflection across y-axis, axis on the middle
             // Press O
             if (COPY_PASTE_DATA.length == 0) {
                 errorMsg('No data to paste.');
@@ -646,7 +670,7 @@ $(document).ready(function () {
             }
         }
 
-        if (event.which == 80) { //flip-flop on x-axis, axis on the middle
+        if (event.which == 88) { //reflection across x-axis, axis on the middle
             // Press P
             if (COPY_PASTE_DATA.length == 0) {
                 errorMsg('No data to paste.');

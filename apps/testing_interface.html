@@ -27,21 +27,12 @@
         <div id="workspace">
 
             <div id="demonstration_examples_view">
-                <div id="load_task_control_btns">
-                    <label for="load_task_file_input">Load task JSON: </label>
-                    <input type="file" id="load_task_file_input" class="load_task" style="display: none;"/>
-                    <input type="button" value="Browse..." onclick="document.getElementById('load_task_file_input').click();" />
-                    <button onclick="randomTask()" id="random_task_btn"> Random... </button>
-                    <p>
-                    <label id='task_name' for="random_task_btn"> Task name: </label>
-                </div>
-                
-                <div class="text" id="task_demo_header">Task demonstration</div>
+                <div class="text" id="task_demo_header">
+                    <button id="prev_example">Prev</button>
+                    Task demonstration <span id="current_example_id">0</span>/<span id="total_examples">0</span>
+                    <button id="next_example">Next</button></div>
                 
                 <div id="task_preview"></div>
-            </div>
-
-            <div id="evaluation_view">
 
                 <div id="evaluation-input-view">
                     <div class="text">Test input grid <span id="current_test_input_id_display">0</span>/<span id="total_test_input_count_display">0</span>
@@ -50,8 +41,24 @@
 
                     <div id="evaluation_input" class="selectable_grid"></div>
                 </div>
+            </div>
 
+            <div id="evaluation_view">
                 <div id="evaluation_output_editor">
+                    <div id="load_task_control_btns">
+                        <!-- <label for="load_task_file_input">Load task JSON: </label>
+                        <input type="file" id="load_task_file_input" class="load_task" style="display: none;"/>
+                        <input type="button" value="Browse..." onclick="document.getElementById('load_task_file_input').click();" />
+                        <button onclick="randomTask()" id="random_task_btn"> Random... </button>
+                        <p> -->
+                        <label id='task_name' for="random_task_btn"> 
+                            Task name:
+                            
+                        </label>
+                        <input type="file" id="load_task_file_input" class="load_task" style="display: none;"/>
+                            <input type="button" value="Browse..." onclick="document.getElementById('load_task_file_input').click();" />
+                            <button onclick="randomTask()" id="random_task_btn"> Random... </button>
+                    </div>
 
                     <div id="edition_view">
                         <div id="editor_grid_control_btns">
@@ -63,6 +70,9 @@
 
                             <button onclick="copyFromInput()">Copy from input</button>
                             <button onclick="resetOutputGrid()">Reset grid</button>
+                            <button id="tool_clear_selection"
+                                 name="tool_switching" value="floodfill">
+                                <label for="tool_clear_selection">Clear Selection</label>
                             <button onclick="submitSolution()" id="submit_solution_btn">Submit!</button>
                         </div>
 
@@ -100,10 +110,6 @@
                                 <input type="radio" id="tool_floodfill"
                                  name="tool_switching" value="floodfill">
                                 <label for="tool_floodfill">Flood fill</label>
-
-                                <button id="tool_clear_selection"
-                                 name="tool_switching" value="floodfill">
-                                <label for="tool_clear_selection">Clear Selection</label>
                             </div>
                         </div>
 
@@ -121,19 +127,21 @@
                         </div>
                     </div>
 
-                    <div id="layer_panel_view">
-
-                        <div class="text">LAYER PANEL<button class="add_layer">ADD LAYER</button></div>
-                        <div id="layer_panel">
-                            <input type="button" id="button1" onclick="addLayer()" value="create Layer" />
-                            <p> </p>
-                            <input type="button" id="button2" onclick="deleteLayer()" value="delete Layer" />
-                            <p> </p>
-                        </div>
-                    </div>
-
                     <div id="error_display"></div>
                     <div id="info_display"></div>
+                </div>
+            </div>
+
+            <div id="layers">
+                <div id="layer_panel_view">
+
+                    <div class="text">LAYER PANEL<button class="add_layer">ADD LAYER</button></div>
+                    <div id="layer_panel">
+                        <input type="button" id="button1" onclick="addLayer()" value="create Layer from Selection" />
+                        <p> </p>
+                        <!-- <input type="button" id="button2" onclick="deleteLayer()" value="delete Layer" />
+                        <p> </p> -->
+                    </div>
                 </div>
             </div>
         </div>
