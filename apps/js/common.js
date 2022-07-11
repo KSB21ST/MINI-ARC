@@ -23,6 +23,18 @@ class Cell {
         this.col = c;
         this.val = value;
     }
+
+    setRow(r) {
+        this.row = r;
+    }
+
+    setCol(c) {
+        this.col = c;
+    }
+
+    setVal(val) {
+        this.val = val;
+    }
 }
 
 class Layer {
@@ -84,7 +96,6 @@ class Layer {
     }
 
     getGrid() {
-        console.log("this.cells: ", this.cells);
         if (!this.cells.length) {
             return new Grid(3, 3, undefined);
         }

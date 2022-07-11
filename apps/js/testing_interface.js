@@ -136,8 +136,8 @@ function fillLayerPreview(layerId) {
     if (!layerSlot.length) {
         layerSlot = $('<input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><div id ="layer_' + layerId + '" class="layer_preivew" value="' + layerId + '"></div></input>');
         layerSlot.appendTo('#layer_panel');
-        $('input[type=radio][name=layer]').change(function() {
-            console.log("changed")
+        $(`input[type=radio][id=${layerId}]`).click(function() {
+            console.log("change");
             initializeSelectable();
             initializeLayerChange();
         })
@@ -303,6 +303,7 @@ function copyToOutput() {
 function initializeSelectable() {
     try {
         $('.selectable_grid').selectable('destroy');
+        $('.ui-selected').each((i, cell) => $(cell).removeClass('ui-selected'));
     }
     catch (e) {
     }
@@ -326,34 +327,21 @@ function initializeLayerChange() {
         return;
     }
     currLayer = currLayer[0];
-    console.log(currLayer);
 
-    // Highlight all cells included in selected layer
-    // for (var i = 0; i < CURRENT_OUTPUT_GRID.height; i ++) {
-    //     for (var j = 0; j < CURRENT_OUTPUT_GRID.width; j ++) {
-    //         res = jqGrid.find('[x="' + i + '"][y="' + j + '"] ');
-    //         if (res.length == 1) {
-    //             cell = $(res[0]);
-    //             setCellSymbol(cell, 0);
-    //         }
-    //     }
-        
-    // }
-
-    $('.ui-selected').selectable().removeClass('ui-selected');
+    $('.ui-selected').removeClass('ui-selected');
+    initializeSelectable();
+    console.log(`layer ${currentLayerIndex}`);
+    console.log(currLayer.cells);
     for (var i = 0; i < currLayer.cells.length; i++) {
         var currCell = currLayer.cells[i];
-        $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).selectable().addClass('ui-selected');
+        setCellSymbol($('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`), currCell.val);
+        $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).addClass('ui-selected');
         // $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).each(function(i, cell) {
         //     console.log($(cell).attr('x') + ' ' + $(cell).attr('y'));
-        //     setCellSymbol($(cell), currCell.val);
+        //     // setCellSymbol($(cell), currCell.val);
         // })
-        $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).each(function(i, cell) {
-            console.log($(cell).attr('x') + ' ' + $(cell).attr('y'));
-        });
-        setCellSymbol($('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`), currCell.val);
-        syncFromEditionGridToDataGrid();
     }
+    syncFromEditionGridToDataGrid();
 }
 
 function updateLayer(id) {
@@ -432,15 +420,49 @@ function updateAllLayers() {
 
 function makeGridFromLayer() {
     zSorted = LAYERS.sort(function(l1, l2) { l2.z - l1.z });
+    for (var x = 0; x < CURRENT_OUTPUT_GRID.width; x++) {
+        for (var y = 0; y < CURRENT_OUTPUT_GRID.height; y++) {
+            CURRENT_OUTPUT_GRID.grid[x][y] = 0;
+        }
+    }
     for (var i = 0; i < zSorted.length; i++) {
         layer = zSorted[i];
+        layerGrid = layer.getGrid().grid;
         for (var x = 0; x < CURRENT_OUTPUT_GRID.width; x++) {
             for (var y = 0; y < CURRENT_OUTPUT_GRID.height; y++) {
-                CURRENT_OUTPUT_GRID[x][y] = layer.val;
+                if (layerGrid[x][y] > 0) {
+                    CURRENT_OUTPUT_GRID.grid[x][y] = layerGrid[x][y];
+                }
             }
         }
     }
     syncFromDataGridToEditionGrid();
+}
+
+function translateCells(xChange, yChange) {
+    var currLayer = LAYERS[currentLayerIndex].cells;
+    var selectedCells = new Array();
+    $('.edition_grid').find('.ui-selected').each(function(i, cell) {
+        var row = $(cell).attr('x');
+        var col = $(cell).attr('y');
+        for (var j = 0; j < currLayer.length; j++) {
+            if (currLayer[j].row == row && currLayer[j].col == col) {
+                currLayer[j].setRow(parseInt(currLayer[j].row) + yChange);
+                currLayer[j].setCol(parseInt(currLayer[j].col) + xChange);
+                selectedCells.push(new Cell(currLayer[j].row, currLayer[j].col, 0))
+            }
+        }
+    });
+    LAYERS[currentLayerIndex].cells = LAYERS[currentLayerIndex].cells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
+    $('.ui-selected').removeClass('ui-selected');
+    var validCells = selectedCells.filter(cell => cell.row >= 0 && cell.col >= 0);
+    console.log(validCells);
+    updateAllLayers();
+    initLayerPreview();
+    makeGridFromLayer();
+    for (var i = 0; i < validCells.length; i++) {
+        $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
+    }
 }
 
 // Initial event binding.
@@ -484,8 +506,8 @@ $(document).ready(function () {
     });
 
     $('button[name=tool_switching][id=tool_clear_selection]').click(function() {
-        // $('.ui-selected').selectable().removeClass('ui-selected');
-        initializeSelectable();
+        $('.ui-selected').removeClass('ui-selected');
+        // initializeSelectable();
     });
     
     $('input[type=text][name=size]').on('keydown', function(event) {
@@ -676,6 +698,23 @@ $(document).ready(function () {
             } else {
                 errorMsg('Can only paste at a specific location; only select *one* cell as paste destination.');
             }
+        }
+
+        if (event.which == 65) {
+            // Left arrow
+            translateCells(-1, 0);
+        }
+        if (event.which == 87) {
+            // Up arrow
+            translateCells(0, -1);
+        }
+        if (event.which == 68) {
+            // Right arrow
+            translateCells(1, 0);
+        }
+        if (event.which == 83) {
+            // Down arrow
+            translateCells(0, 1);
         }
     });
 });
