@@ -102,7 +102,7 @@ button:focus {outline:0;}
     height: 100%;
     top: 2px;
     left: 2px;
-    border: 1px solid green;
+    border: 1px solid black;
     border-radius: 4px;
     transition: all ease .5s;
     transform: translate(-12.5px, -3px);

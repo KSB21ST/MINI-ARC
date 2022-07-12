@@ -22,9 +22,15 @@ function resetTask() {
     CURRENT_INPUT_GRID = new Grid(3, 3);
     TEST_PAIRS = new Array();
     CURRENT_TEST_PAIR_INDEX = 0;
-    EXAMPLES = [];
     $('#task_preview').html('');
     resetOutputGrid();
+    EXAMPLES = [];
+    LAYERS = new Array();
+    LAYERS.push(new Layer(new Array(), 0, 3, 3, 0));
+    currentLayerIndex = 0;
+    currentExample = 0;
+    updateAllLayers();
+    initLayerPreview();
 }
 
 function refreshEditionGrid(jqGrid, dataGrid) {
@@ -55,9 +61,18 @@ function setUpEditionGridListeners(jqGrid) {
         mode = $('input[name=tool_switching]:checked').val();
         if (mode == 'floodfill') {
             // If floodfill: fill all connected cells.
+            prevGrid = new Grid(CURRENT_OUTPUT_GRID.height, CURRENT_OUTPUT_GRID.width);
+            for (var i = 0; i < CURRENT_OUTPUT_GRID.height; i++) {
+                for (var j = 0; j < CURRENT_OUTPUT_GRID.width; j++) {
+                    prevGrid.grid[i][j] = CURRENT_OUTPUT_GRID.grid[i][j];
+                }
+            }
             syncFromEditionGridToDataGrid();
             grid = CURRENT_OUTPUT_GRID.grid;
-            floodfillFromLocation(grid, cell.attr('x'), cell.attr('y'), symbol);
+            affectedCells = floodfillFromLocation(grid, cell.attr('x'), cell.attr('y'), symbol);
+            for (var i = 0; i < affectedCells.length; i++) {
+                LAYERS[currentLayerIndex].addCell(affectedCells[i]);
+            }
             syncFromDataGridToEditionGrid();
         }
         else if (mode == 'edit') {
@@ -94,6 +109,11 @@ function resetOutputGrid() {
     CURRENT_OUTPUT_GRID = new Grid(3, 3);
     syncFromDataGridToEditionGrid();
     resizeOutputGrid();
+    LAYERS[currentLayerIndex].height = CURRENT_OUTPUT_GRID.height;
+    LAYERS[currentLayerIndex].width = CURRENT_OUTPUT_GRID.width;
+    LAYERS[currentLayerIndex].cells = [];
+    updateAllLayers();
+    initLayerPreview();
 }
 
 function copyFromInput() {
@@ -163,6 +183,7 @@ function fillLayerPreview(layerId) {
 }
 
 function initLayerPreview() {
+    $('.layer_preview').remove();
     for (var id = 0; id < LAYERS.length; id++) {
         fillLayerPreview(id);
     }
@@ -338,6 +359,7 @@ function initializeLayerChange() {
         return;
     }
     currLayer = currLayer[0];
+    currLayer.cells = currLayer.cells.filter(cell => cell.val > 0);
 
     $('.ui-selected').removeClass('ui-selected');
     initializeSelectable();
@@ -347,10 +369,6 @@ function initializeLayerChange() {
         var currCell = currLayer.cells[i];
         setCellSymbol($('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`), currCell.val);
         $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).addClass('ui-selected');
-        // $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).each(function(i, cell) {
-        //     console.log($(cell).attr('x') + ' ' + $(cell).attr('y'));
-        //     // setCellSymbol($(cell), currCell.val);
-        // })
     }
     syncFromEditionGridToDataGrid();
 }
@@ -358,7 +376,11 @@ function initializeLayerChange() {
 function updateLayer(id) {
     var layerSlot = $('#layer_' + id);
     var jqInputGrid = layerSlot.find('.grid_preview');
-    var layerGrid = LAYERS[id].getGrid();
+    var layer = LAYERS.find(layer => layer.id == id);
+    if (layer == undefined) {
+        return;
+    }
+    var layerGrid = layer.getGrid();
     fillJqGridWithData(jqInputGrid, layerGrid);
     fitCellsToContainer(jqInputGrid, layerGrid.height, layerGrid.width, 100, 100);
 }
@@ -406,22 +428,22 @@ function addLayer() {
         LAYERS.push(new Layer(SELECTED_DATA, z_val, CURRENT_OUTPUT_GRID.height, CURRENT_OUTPUT_GRID.width, z_val))
 
         infoMsg(`Data added to Layer ${LAYERS.length}`)
+        updateAllLayers();
         initLayerPreview();
     }
 }
 
-// function deleteLayer() {
-//     currentLayerIndex = $('input[name=layer]:checked').val();
-//     if (currentLayerIndex === undefined){
-//         infoMsg("delete Layer " + currentLayerIndex);
-//         return;
-//     }
-//     LAYERS = LAYERS.filter(layer => layer.id != currentLayerIndex);
-//     $( 'div' ).remove( '.grid_preview' );
-//     $( 'div' ).remove( '.layer_preivew' );
-//     $( 'input' ).remove( '.layer_button' );
-//     infoMsg("delete Layer " + currentLayerIndex);
-// }
+function deleteLayer() {
+    currentLayerIndex = $('input[name=layer]:checked').val();
+    if (currentLayerIndex === undefined){
+        return;
+    }
+    LAYERS = LAYERS.filter(layer => layer.id != currentLayerIndex);
+    $('#layer_'+currentLayerIndex).remove();
+    infoMsg("delete Layer " + currentLayerIndex);
+    updateAllLayers();
+    makeGridFromLayer();
+}
 
 function updateAllLayers() {
     for (var i = 0; i < LAYERS.length; i++) {
@@ -431,16 +453,16 @@ function updateAllLayers() {
 
 function makeGridFromLayer() {
     zSorted = LAYERS.sort(function(l1, l2) { l2.z - l1.z });
-    for (var x = 0; x < CURRENT_OUTPUT_GRID.width; x++) {
-        for (var y = 0; y < CURRENT_OUTPUT_GRID.height; y++) {
+    for (var x = 0; x < CURRENT_OUTPUT_GRID.height; x++) {
+        for (var y = 0; y < CURRENT_OUTPUT_GRID.width; y++) {
             CURRENT_OUTPUT_GRID.grid[x][y] = 0;
         }
     }
     for (var i = 0; i < zSorted.length; i++) {
         layer = zSorted[i];
         layerGrid = layer.getGrid().grid;
-        for (var x = 0; x < CURRENT_OUTPUT_GRID.width; x++) {
-            for (var y = 0; y < CURRENT_OUTPUT_GRID.height; y++) {
+        for (var x = 0; x < CURRENT_OUTPUT_GRID.height; x++) {
+            for (var y = 0; y < CURRENT_OUTPUT_GRID.width; y++) {
                 if (layerGrid[x][y] > 0) {
                     CURRENT_OUTPUT_GRID.grid[x][y] = layerGrid[x][y];
                 }
@@ -453,20 +475,25 @@ function makeGridFromLayer() {
 function translateCells(xChange, yChange) {
     var currLayer = LAYERS[currentLayerIndex].cells;
     var selectedCells = new Array();
+    var ind = new Array();
     $('.edition_grid').find('.ui-selected').each(function(i, cell) {
         var row = $(cell).attr('x');
         var col = $(cell).attr('y');
         for (var j = 0; j < currLayer.length; j++) {
             if (currLayer[j].row == row && currLayer[j].col == col) {
-                currLayer[j].setRow(parseInt(currLayer[j].row) + yChange);
-                currLayer[j].setCol(parseInt(currLayer[j].col) + xChange);
-                selectedCells.push(new Cell(currLayer[j].row, currLayer[j].col, 0))
+                ind.push(j);
             }
         }
     });
+    console.log(ind);
+    ind.forEach(function(idx) {
+        currLayer[idx].setRow(parseInt(currLayer[idx].row) + yChange);
+        currLayer[idx].setCol(parseInt(currLayer[idx].col) + xChange);
+        selectedCells.push(new Cell(currLayer[idx].row, currLayer[idx].col, currLayer[idx].val));
+    });
     LAYERS[currentLayerIndex].cells = LAYERS[currentLayerIndex].cells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
     $('.ui-selected').removeClass('ui-selected');
-    var validCells = selectedCells.filter(cell => cell.row >= 0 && cell.col >= 0);
+    var validCells = selectedCells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
     console.log(validCells);
     updateAllLayers();
     initLayerPreview();
@@ -492,11 +519,10 @@ $(document).ready(function () {
             $('.edition_grid').find('.ui-selected').each(function(i, cell) {
                 symbol = getSelectedSymbol();
                 setCellSymbol($(cell), symbol);
-                // console.log(cell);
-                // console.log($(cell).attr('x') + ' ' + $(cell).attr('y') + ' ' + $(cell).attr('symbol'))
                 LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')))
             });
         }
+        LAYERS[currentLayerIndex].cells = LAYERS[currentLayerIndex].cells.filter(cell => cell.val > 0);
         updateLayer(currentLayerIndex);
     });
 
@@ -530,7 +556,6 @@ $(document).ready(function () {
 
     $('button[name=tool_switching][id=tool_clear_selection]').click(function() {
         $('.ui-selected').removeClass('ui-selected');
-        // initializeSelectable();
     });
     
     $('input[type=text][name=size]').on('keydown', function(event) {
@@ -616,7 +641,7 @@ $(document).ready(function () {
             $('.ui-selected').removeClass('ui-selected');
         }
 
-        if (event.which == 89) { //reflection across y-axis, axis on the middle
+        if (event.which == 89) { // reflection across y-axis, axis on the middle
             // Press O
             if (COPY_PASTE_DATA.length == 0) {
                 errorMsg('No data to paste.');
@@ -670,7 +695,7 @@ $(document).ready(function () {
             }
         }
 
-        if (event.which == 88) { //reflection across x-axis, axis on the middle
+        if (event.which == 88) { // reflection across x-axis, axis on the middle
             // Press P
             if (COPY_PASTE_DATA.length == 0) {
                 errorMsg('No data to paste.');

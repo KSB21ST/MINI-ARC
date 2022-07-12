@@ -97,7 +97,7 @@ class Layer {
 
     getGrid() {
         if (!this.cells.length) {
-            return new Grid(3, 3, undefined);
+            return new Grid(this.height, this.width, undefined);
         }
         var grid = new Array(this.height)
 
@@ -129,18 +129,22 @@ function floodfillFromLocation(grid, i, j, symbol) {
         return;
     }
 
-    function flow(i, j, symbol, target) {
+    function flow(i, j, symbol, target, affectedCells) {
         if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length) {
             if (grid[i][j] == target) {
                 grid[i][j] = symbol;
-                flow(i - 1, j, symbol, target);
-                flow(i + 1, j, symbol, target);
-                flow(i, j - 1, symbol, target);
-                flow(i, j + 1, symbol, target);
+                affectedCells.push(new Cell(i, j, symbol));
+                affectedCells = affectedCells.concat(
+                    flow(i - 1, j, symbol, target, affectedCells), 
+                    flow(i + 1, j, symbol, target, affectedCells),
+                    flow(i, j - 1, symbol, target, affectedCells),
+                    flow(i, j + 1, symbol, target, affectedCells)
+                );
             }
         }
+        return affectedCells;
     }
-    flow(i, j, symbol, target);
+    return flow(i, j, symbol, target, new Array());
 }
 
 function parseSizeTuple(size) {
