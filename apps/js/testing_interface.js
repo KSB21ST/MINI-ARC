@@ -407,11 +407,14 @@ function addLayer() {
 
     selected = $('.edition_grid').find('.ui-selected');
     if (selected.length == 0) {
-        errorMsg('Select a target cell on the output grid.');
-        return;
+        // errorMsg('Select a target cell on the output grid.');
+        // return;
+        targetx = 0;
+        targety = 0;
     }else{
         targetx = parseInt(selected.attr('x'));
         targety = parseInt(selected.attr('y'));
+    }
 
         xs = SELECTED_DATA.map((cell) => {return cell[0]});
         ys = SELECTED_DATA.map((cell) => {return cell[1]});
@@ -430,7 +433,6 @@ function addLayer() {
         infoMsg(`Data added to Layer ${LAYERS.length}`)
         updateAllLayers();
         initLayerPreview();
-    }
 }
 
 function deleteLayer() {
@@ -480,7 +482,7 @@ function translateCells(xChange, yChange) {
         var row = $(cell).attr('x');
         var col = $(cell).attr('y');
         for (var j = 0; j < currLayer.length; j++) {
-            if (currLayer[j].row == row && currLayer[j].col == col) {
+            if (currLayer[j].row == row && currLayer[j].col == col && currLayer[j].val > 0) {
                 ind.push(j);
             }
         }
@@ -586,7 +588,9 @@ $(document).ready(function () {
                 x = parseInt($(selected[i]).attr('x'));
                 y = parseInt($(selected[i]).attr('y'));
                 symbol = parseInt($(selected[i]).attr('symbol'));
-                COPY_PASTE_DATA.push([x, y, symbol]);
+                if (symbol > 0) {
+                    COPY_PASTE_DATA.push([x, y, symbol]);
+                }
             }
             infoMsg('Cells copied! Select a target cell and press V to paste at location.');
 
