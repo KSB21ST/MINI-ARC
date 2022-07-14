@@ -1,12 +1,40 @@
-# The Abstraction and Reasoning Corpus (ARC)
+# PARC (PowerPoint ARC)
 
-This repository contains the ARC task data, as well as a browser-based interface for humans to try their hand at solving the tasks manually.
+A modified ARC task interface which includes new actions and primitives:
 
-*"ARC can be seen as a general artificial intelligence benchmark, as a program synthesis benchmark, or as a psychometric intelligence test. It is targeted at both humans and artificially intelligent systems that aim at emulating a human-like form of general fluid intelligence."*
+### Grid controls
 
-A complete description of the dataset, its goals, and its underlying logic, can be found in: [On the Measure of Intelligence](https://arxiv.org/abs/1911.01547).
+- Resize: input a grid size (e.g. "10x20" or "4x4") and click "Resize". This preserves existing grid content (in the top left corner).
+- Copy from input: copy the input grid to the output grid. This is useful for tasks where the output consists of some modification of the input.
+- Reset grid: fill the grid with 0s.
+- Clear Selection: unselect the selected areas
 
-As a reminder, a test-taker is said to solve a task when, upon seeing the task for the first time, they are able to produce the correct output grid for *all* test inputs in the task (this includes picking the dimensions of the output grid). For each test input, the test-taker is allowed 3 trials (this holds for all test-takers, either humans or AI).
+### Symbol controls
+
+- Edit: select a color (symbol) from the color picking bar, then click on a cell to set its color.
+- Select: click and drag on either the output grid or the input grid to select cells.
+    - After selecting cells on the output grid, you can select a color from the color picking to set the color of the selected cells. This is useful to draw solid rectangles or lines.
+    - After selecting cells on either the input grid or the output grid, you can press C to copy their content. After copying, you can select a cell on the output grid and press "V" to paste the copied content. You should select the cell in the top left corner of the zone you want to paste into.
+- Floodfill: click on a cell from the output grid to color all connected cells to the selected color. "Connected cells" are contiguous cells with the same color.
+
+### Layer Controls
+- Add Layer: add a new layer. The new layer is automatically selected
+- Create Layer from Selection: the selected cells is saved on a new layer
+- Delete Layer: To be implemented (Current version is buggy)
+- Selecting a layer will bring that layer to the "top"
+- Selecting a layer will also select all colored cells in that layer
+
+### Keyboard Controls
+- W,A,S,D: move the selected (colored) cells
+- X, Y: After copying, paste the reflection of the copied cells across the X/Y axis, with the starting cell being the selected cell in the edition grid.
+
+### Answer validation
+
+When your output grid is ready, click the green "Submit!" button to check your answer. We do not enforce the 3-trials rule.
+
+After you've obtained the correct answer for the current test input grid, you can switch to the next test input grid for the task using the "Next test input" button (if there is any available; most tasks only have one test input).
+
+When you're done with a task, use the "load task" button to open a new task.
 
 
 ## Task file format
@@ -40,27 +68,3 @@ After loading a task, you will enter the test space, which looks like this:
 ![test space](https://arc-benchmark.s3.amazonaws.com/figs/arc_test_space.png)
 
 On the left, you will see the input/output pairs demonstrating the nature of the task. In the middle, you will see the current test input grid. On the right, you will see the controls you can use to construct the corresponding output grid.
-
-You have access to the following tools:
-
-### Grid controls
-
-- Resize: input a grid size (e.g. "10x20" or "4x4") and click "Resize". This preserves existing grid content (in the top left corner).
-- Copy from input: copy the input grid to the output grid. This is useful for tasks where the output consists of some modification of the input.
-- Reset grid: fill the grid with 0s.
-
-### Symbol controls
-
-- Edit: select a color (symbol) from the color picking bar, then click on a cell to set its color.
-- Select: click and drag on either the output grid or the input grid to select cells.
-    - After selecting cells on the output grid, you can select a color from the color picking to set the color of the selected cells. This is useful to draw solid rectangles or lines.
-    - After selecting cells on either the input grid or the output grid, you can press C to copy their content. After copying, you can select a cell on the output grid and press "V" to paste the copied content. You should select the cell in the top left corner of the zone you want to paste into.
-- Floodfill: click on a cell from the output grid to color all connected cells to the selected color. "Connected cells" are contiguous cells with the same color.
-
-### Answer validation
-
-When your output grid is ready, click the green "Submit!" button to check your answer. We do not enforce the 3-trials rule.
-
-After you've obtained the correct answer for the current test input grid, you can switch to the next test input grid for the task using the "Next test input" button (if there is any available; most tasks only have one test input).
-
-When you're done with a task, use the "load task" button to open a new task.
