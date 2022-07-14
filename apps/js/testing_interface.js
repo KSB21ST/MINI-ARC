@@ -19,6 +19,7 @@ var MAX_CELL_SIZE = 100;
 
 // Logs
 var logs = new Log("", "");
+var redoStates = new Array();
 
 var keyState = {};
 onkeydown = onkeyup = (event) => {
@@ -26,13 +27,15 @@ onkeydown = onkeyup = (event) => {
 }
 
 function addLog(action) {
+    redoStates = [];
     var gridCopy = [];
     for (var i = 0; i < CURRENT_OUTPUT_GRID.grid.length; i++) {
         gridCopy[i] = CURRENT_OUTPUT_GRID.grid[i].slice();
     }
     var layerCopy = [];
     LAYERS.forEach(function(layer) {
-        layerCopy.push(new Layer(layer.cells, layer.z, layer.height, layer.width, layer.id));
+        var jsonLayer = JSON.parse(JSON.stringify(layer));
+        layerCopy.push(new Layer(jsonLayer.cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
     });
     logs.addAction(
         action,
@@ -542,17 +545,88 @@ function translateCells(xChange, yChange) {
     addLog({tool: 'translate', selected_cells: selectedCells, row_change: yChange, col_change: xChange});
 }
 
+function rotateCells() {
+    // rotate 90 degrees clockwise
+    var currCells = LAYERS[currentLayerIndex].cells;
+    var selectedCells = new Array();
+    var ind = new Array();
+    $('.edition_grid').find('.ui-selected').each(function(i, cell) {
+        var row = $(cell).attr('x');
+        var col = $(cell).attr('y');
+        for (var j = 0; j < currCells.length; j++) {
+            if (currCells[j].row == row && currCells[j].col == col && currCells[j].val > 0) {
+                ind.push(j);
+            }
+        }
+    });
+    var nonEmptyCells = [];
+    ind.forEach(function(idx) {
+        nonEmptyCells.push(currCells[idx]);
+    })
+    var currCellsRow = nonEmptyCells.map(cell => cell.row);
+    var currCellsCol = nonEmptyCells.map(cell => cell.col);
+    var minRow = Math.min(...currCellsRow);
+    var maxRow = Math.max(...currCellsRow);
+    var minCol = Math.min(...currCellsCol);
+    var maxCol = Math.max(...currCellsCol);
+    var height = maxRow - minRow + 1;
+    var width = maxCol - minCol + 1;
+    ind.forEach(function(idx) {
+        var cell = currCells[idx];
+        var newCol = -(parseInt(cell.row) - maxRow + Math.floor(height/2)) + maxCol - Math.floor(width/2) + ((height%2 == 0));
+        var newRow = (parseInt(cell.col) - maxCol + Math.floor(width/2)) + maxRow - Math.floor(height/2);
+        console.log(newCol + ' ' + newRow);
+        currCells[idx].setRow(newRow);
+        currCells[idx].setCol(newCol);
+        selectedCells.push(new Cell(currCells[idx].row, currCells[idx].col, currCells[idx].val));
+    });
+    // currCells = currCells.map(function(cell) {
+    //     var newCol = cell.row - minRow + Math.ceil(height) + minCol - Math.floor(width);
+    //     var newRow = -(cell.col - minCol + Math.floor(width)) + minRow - Math.ceil(height);
+    //     return new Cell(newRow, newCol, cell.val);
+    // });
+    var validCells = selectedCells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
+    updateAllLayers();
+    initLayerPreview();
+    makeGridFromLayer();
+    for (var i = 0; i < validCells.length; i++) {
+        $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
+    }
+}
+
 function undo() {
     if (logs.action_sequence.length <= 1) {
         return;
     }
-    logs.removeAction();
+    redoStates.push(logs.removeAction());
     var lastState = logs.action_sequence[logs.action_sequence.length-1];
     // CURRENT_OUTPUT_GRID = lastState.grid;
     $('#output_grid_size').val(`${lastState.grid.length}x${lastState.grid[0].length}`);
-    LAYERS = lastState.layer_list;
+    LAYERS = [];
+    lastState.layer_list.forEach(function(layer) {
+        var jsonLayer = JSON.parse(JSON.stringify(layer));
+        LAYERS.push(new Layer(jsonLayer.cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
+    });
     currentLayerIndex = lastState.currentLayer;
     // syncFromDataGridToEditionGrid();
+    updateAllLayers();
+    initLayerPreview();
+    makeGridFromLayer();
+}
+
+function redo() {
+    if (!redoStates.length) {
+        return;
+    }
+    logs.action_sequence.push(redoStates.pop());
+    var lastState = logs.action_sequence[logs.action_sequence.length-1];
+    $('#output_grid_size').val(`${lastState.grid.length}x${lastState.grid[0].length}`);
+    LAYERS = [];
+    lastState.layer_list.forEach(function(layer) {
+        var jsonLayer = JSON.parse(JSON.stringify(layer));
+        LAYERS.push(new Layer(jsonLayer.cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
+    });
+    currentLayerIndex = lastState.currentLayer;
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
@@ -827,8 +901,14 @@ $(document).ready(function () {
             translateCells(0, 1);
         }
 
-        // undo
-        if (keyState['Control'] && event.which == 90) {
+        if (event.which == 82) {
+            rotateCells();
+        }
+
+        // undo and redo
+        if (keyState['Control'] && keyState['Shift'] && event.which == 90) {
+            redo();
+        } else if (keyState['Control'] && event.which == 90) {
             undo();
         }
     });

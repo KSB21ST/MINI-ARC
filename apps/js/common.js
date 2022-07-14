@@ -138,7 +138,7 @@ class Log {
     }
 
     removeAction() {
-        this.action_sequence.pop();
+        return this.action_sequence.pop();
     }
 
     getJSONObject() {
