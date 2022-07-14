@@ -118,6 +118,54 @@ class Layer {
     }
 }
 
+class Log {
+    constructor(task, user_id) {
+        this.task = task;
+        this.user_id = user_id;
+        this.action_sequence = new Array();
+    }
+
+    setTask(taskName) {
+        this.task = taskName;
+    }
+
+    setUserID(user_id) {
+        this.user_id = user_id;
+    }
+
+    addAction(action, grid, currentLayer, layer_list, time) {
+        this.action_sequence.push({action: action, grid: grid, currentLayer: currentLayer, layer_list: layer_list, time: time});
+    }
+
+    removeAction() {
+        this.action_sequence.pop();
+    }
+
+    getJSONObject() {
+        var action_sequence_with_grids = new Array();
+        this.action_sequence.forEach(function(action) {
+            var layer_grid = new Array();
+            action.layer_list.forEach(function(layer) {
+                layer_grid.push(layer.getGrid().grid);
+            });
+            action_sequence_with_grids.push({action: action.action, grid: action.grid, currentLayer: action.currentLayer, layer_list: layer_grid, time: action.time});
+        });
+        var obj = 
+        {
+            'task'              : this.task,
+            'user_id'           : this.user_id,
+            'action_sequence'   : action_sequence_with_grids
+        }
+        return obj;
+    }
+
+    getString() {
+        var obj = this.getJSONObject();
+        return JSON.stringify(obj)
+    }
+
+}
+
 function floodfillFromLocation(grid, i, j, symbol) {
     i = parseInt(i);
     j = parseInt(j);

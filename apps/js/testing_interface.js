@@ -17,6 +17,31 @@ var EDITION_GRID_HEIGHT = 300;
 var EDITION_GRID_WIDTH = 300;
 var MAX_CELL_SIZE = 100;
 
+// Logs
+var logs = new Log("", "");
+
+var keyState = {};
+onkeydown = onkeyup = (event) => {
+    keyState[event.key] = (event.type == 'keydown');
+}
+
+function addLog(action) {
+    var gridCopy = [];
+    for (var i = 0; i < CURRENT_OUTPUT_GRID.grid.length; i++) {
+        gridCopy[i] = CURRENT_OUTPUT_GRID.grid[i].slice();
+    }
+    var layerCopy = [];
+    LAYERS.forEach(function(layer) {
+        layerCopy.push(new Layer(layer.cells, layer.z, layer.height, layer.width, layer.id));
+    });
+    logs.addAction(
+        action,
+        gridCopy,
+        currentLayerIndex,
+        layerCopy,
+        0.0
+    );
+}
 
 function resetTask() {
     CURRENT_INPUT_GRID = new Grid(3, 3);
@@ -31,6 +56,8 @@ function resetTask() {
     currentExample = 0;
     updateAllLayers();
     initLayerPreview();
+
+    // addLog({tool: 'start'});
 }
 
 function refreshEditionGrid(jqGrid, dataGrid) {
@@ -74,11 +101,14 @@ function setUpEditionGridListeners(jqGrid) {
                 LAYERS[currentLayerIndex].addCell(affectedCells[i]);
             }
             syncFromDataGridToEditionGrid();
+            addLog({tool: 'floodfill', symbol: symbol, row: cell.attr('x'), col: cell.attr('y'), cells: [...new Set(affectedCells)]});
         }
         else if (mode == 'edit') {
             // Else: fill just this cell.
             setCellSymbol(cell, symbol);
             LAYERS[currentLayerIndex].addCell(new Cell(cell.attr('x'), cell.attr('y'), cell.attr('symbol')))
+            syncFromEditionGridToDataGrid();
+            addLog({tool: 'edit', symbol: symbol, row: cell.attr('x'), col: cell.attr('y')});
         }
         updateLayer(currentLayerIndex);
     });
@@ -108,12 +138,14 @@ function resetOutputGrid() {
     syncFromEditionGridToDataGrid();
     CURRENT_OUTPUT_GRID = new Grid(3, 3);
     syncFromDataGridToEditionGrid();
+    $('#output_grid_size').val("3x3");
     resizeOutputGrid();
     LAYERS[currentLayerIndex].height = CURRENT_OUTPUT_GRID.height;
     LAYERS[currentLayerIndex].width = CURRENT_OUTPUT_GRID.width;
     LAYERS[currentLayerIndex].cells = [];
     updateAllLayers();
     initLayerPreview();
+    addLog({tool: 'resetOutputGrid'});
 }
 
 function copyFromInput() {
@@ -128,6 +160,7 @@ function copyFromInput() {
     }
     initLayerPreview();
     $('#output_grid_size').val(CURRENT_OUTPUT_GRID.height + 'x' + CURRENT_OUTPUT_GRID.width);
+    addLog({tool: 'copyFromInput'});
 }
 
 function fillPairPreview(inputGrid, outputGrid) {
@@ -254,6 +287,7 @@ function loadTaskFromFile(e) {
 
         $('#load_task_file_input')[0].value = "";
         display_task_name(file.name, null, null);
+        logs = new Log(file.name, "");
     };
     reader.readAsText(file);
 }
@@ -271,6 +305,7 @@ function randomTask() {
                 errorMsg('Bad file format');
                 return;
             }
+            logs = new Log(task['name'], "");
             loadJSONTask(train, test);
             //$('#load_task_file_input')[0].value = "";
             infoMsg("Loaded task training/" + task["name"]);
@@ -371,6 +406,7 @@ function initializeLayerChange() {
         $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).addClass('ui-selected');
     }
     syncFromEditionGridToDataGrid();
+    addLog({tool: 'layerChange', new_layer: currentLayerIndex})
 }
 
 function updateLayer(id) {
@@ -503,6 +539,23 @@ function translateCells(xChange, yChange) {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
+    addLog({tool: 'translate', selected_cells: selectedCells, row_change: yChange, col_change: xChange});
+}
+
+function undo() {
+    if (logs.action_sequence.length <= 1) {
+        return;
+    }
+    logs.removeAction();
+    var lastState = logs.action_sequence[logs.action_sequence.length-1];
+    // CURRENT_OUTPUT_GRID = lastState.grid;
+    $('#output_grid_size').val(`${lastState.grid.length}x${lastState.grid[0].length}`);
+    LAYERS = lastState.layer_list;
+    currentLayerIndex = lastState.currentLayer;
+    // syncFromDataGridToEditionGrid();
+    updateAllLayers();
+    initLayerPreview();
+    makeGridFromLayer();
 }
 
 // Initial event binding.
@@ -571,6 +624,7 @@ $(document).ready(function () {
         LAYERS.push(new Layer(new Array(), LAYERS.length, CURRENT_OUTPUT_GRID.height, CURRENT_OUTPUT_GRID.width, LAYERS.length));
         updateAllLayers();
         initLayerPreview();
+        addLog({tool: 'addLayer'});
     });
 
     $('body').keydown(function(event) {
@@ -593,7 +647,7 @@ $(document).ready(function () {
                 }
             }
             infoMsg('Cells copied! Select a target cell and press V to paste at location.');
-
+            addLog({tool: 'copy', copy_paste_data: COPY_PASTE_DATA});
         }
         if (event.which == 86) {
             // Press V
@@ -637,6 +691,7 @@ $(document).ready(function () {
                         setCellSymbol(cell, symbol);
                         LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
                         updateAllLayers();
+                        addLog({tool: 'paste', copy_paste_data: COPY_PASTE_DATA, row: $(cell).attr('x'), col: $(cell).attr('y')});
                     }
                 }
             } else {
@@ -646,7 +701,7 @@ $(document).ready(function () {
         }
 
         if (event.which == 89) { // reflection across y-axis, axis on the middle
-            // Press O
+            // Press Y
             if (COPY_PASTE_DATA.length == 0) {
                 errorMsg('No data to paste.');
                 return;
@@ -692,6 +747,7 @@ $(document).ready(function () {
                         setCellSymbol(cell, symbol);
                         LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
                         updateAllLayers();
+                        addLog({tool: 'reflectY', copy_paste_data: COPY_PASTE_DATA, row: $(cell).attr('x'), col: $(cell).attr('y')});
                     }
                 }
             } else {
@@ -700,7 +756,7 @@ $(document).ready(function () {
         }
 
         if (event.which == 88) { // reflection across x-axis, axis on the middle
-            // Press P
+            // Press X
             if (COPY_PASTE_DATA.length == 0) {
                 errorMsg('No data to paste.');
                 return;
@@ -746,6 +802,7 @@ $(document).ready(function () {
                         setCellSymbol(cell, symbol);
                         LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
                         updateAllLayers();
+                        addLog({tool: 'reflectX', copy_paste_data: COPY_PASTE_DATA, row: $(cell).attr('x'), col: $(cell).attr('y')});
                     }
                 }
             } else {
@@ -769,5 +826,12 @@ $(document).ready(function () {
             // Down arrow
             translateCells(0, 1);
         }
+
+        // undo
+        if (keyState['Control'] && event.which == 90) {
+            undo();
+        }
     });
+
+    
 });
