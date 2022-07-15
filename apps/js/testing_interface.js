@@ -135,6 +135,7 @@ function resizeOutputGrid() {
     }
     updateAllLayers();
     initLayerPreview();
+    addLog({tool: 'resizeOutputGrid', height: height, width: width});
 }
 
 function resetOutputGrid() {
@@ -494,6 +495,8 @@ function updateAllLayers() {
 
 function makeGridFromLayer() {
     zSorted = LAYERS.sort(function(l1, l2) { l2.z - l1.z });
+    CURRENT_OUTPUT_GRID.height = zSorted[0].height;
+    CURRENT_OUTPUT_GRID.width = zSorted[0].width;
     for (var x = 0; x < CURRENT_OUTPUT_GRID.height; x++) {
         for (var y = 0; y < CURRENT_OUTPUT_GRID.width; y++) {
             CURRENT_OUTPUT_GRID.grid[x][y] = 0;
@@ -596,7 +599,6 @@ function undo() {
     }
     redoStates.push(logs.removeAction());
     var lastState = logs.action_sequence[logs.action_sequence.length-1];
-    // CURRENT_OUTPUT_GRID = lastState.grid;
     $('#output_grid_size').val(`${lastState.grid.length}x${lastState.grid[0].length}`);
     LAYERS = [];
     lastState.layer_list.forEach(function(layer) {
@@ -639,12 +641,15 @@ $(document).ready(function () {
         symbol_preview.addClass('selected-symbol-preview');
 
         toolMode = $('input[name=tool_switching]:checked').val();
+        var selectedCells = [];
         if (toolMode == 'select') {
             $('.edition_grid').find('.ui-selected').each(function(i, cell) {
                 symbol = getSelectedSymbol();
                 setCellSymbol($(cell), symbol);
-                LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')))
+                LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
+                selectedCells.push(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
             });
+            addLog({tool: 'select_fill', selected_cells: selectedCells});
         }
         LAYERS[currentLayerIndex].cells = LAYERS[currentLayerIndex].cells.filter(cell => cell.val > 0);
         updateLayer(currentLayerIndex);
@@ -760,9 +765,9 @@ $(document).ready(function () {
                         setCellSymbol(cell, symbol);
                         LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
                         updateAllLayers();
-                        addLog({tool: 'paste', copy_paste_data: COPY_PASTE_DATA, row: $(cell).attr('x'), col: $(cell).attr('y')});
                     }
                 }
+                addLog({tool: 'paste', copy_paste_data: COPY_PASTE_DATA, row: $(cell).attr('x'), col: $(cell).attr('y')});
             } else {
                 errorMsg('Can only paste at a specific location; only select *one* cell as paste destination.');
             }
@@ -816,9 +821,9 @@ $(document).ready(function () {
                         setCellSymbol(cell, symbol);
                         LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
                         updateAllLayers();
-                        addLog({tool: 'reflectY', copy_paste_data: COPY_PASTE_DATA, row: $(cell).attr('x'), col: $(cell).attr('y')});
                     }
                 }
+                addLog({tool: 'reflectY', copy_paste_data: COPY_PASTE_DATA, row: $(cell).attr('x'), col: $(cell).attr('y')});
             } else {
                 errorMsg('Can only paste at a specific location; only select *one* cell as paste destination.');
             }
@@ -871,9 +876,9 @@ $(document).ready(function () {
                         setCellSymbol(cell, symbol);
                         LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
                         updateAllLayers();
-                        addLog({tool: 'reflectX', copy_paste_data: COPY_PASTE_DATA, row: $(cell).attr('x'), col: $(cell).attr('y')});
                     }
                 }
+                addLog({tool: 'reflectX', copy_paste_data: COPY_PASTE_DATA, row: $(cell).attr('x'), col: $(cell).attr('y')});
             } else {
                 errorMsg('Can only paste at a specific location; only select *one* cell as paste destination.');
             }
