@@ -528,8 +528,8 @@ function translateCells(xChange, yChange) {
     });
     console.log(ind);
     ind.forEach(function(idx) {
-        currLayer[idx].setRow(parseInt(currLayer[idx].row) + yChange);
-        currLayer[idx].setCol(parseInt(currLayer[idx].col) + xChange);
+        currLayer[idx].row = (parseInt(currLayer[idx].row) + yChange);
+        currLayer[idx].col = (parseInt(currLayer[idx].col) + xChange);
         selectedCells.push(new Cell(currLayer[idx].row, currLayer[idx].col, currLayer[idx].val));
     });
     LAYERS[currentLayerIndex].cells = LAYERS[currentLayerIndex].cells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
@@ -542,7 +542,7 @@ function translateCells(xChange, yChange) {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({tool: 'translate', selected_cells: selectedCells, row_change: yChange, col_change: xChange});
+    addLog({tool: 'translate', selected_cells: validCells, row_change: yChange, col_change: xChange});
 }
 
 function rotateCells() {
@@ -576,15 +576,10 @@ function rotateCells() {
         var newCol = -(parseInt(cell.row) - maxRow + Math.floor(height/2)) + maxCol - Math.floor(width/2) + ((height%2 == 0));
         var newRow = (parseInt(cell.col) - maxCol + Math.floor(width/2)) + maxRow - Math.floor(height/2);
         console.log(newCol + ' ' + newRow);
-        currCells[idx].setRow(newRow);
-        currCells[idx].setCol(newCol);
+        currCells[idx].row = (newRow);
+        currCells[idx].col = (newCol);
         selectedCells.push(new Cell(currCells[idx].row, currCells[idx].col, currCells[idx].val));
     });
-    // currCells = currCells.map(function(cell) {
-    //     var newCol = cell.row - minRow + Math.ceil(height) + minCol - Math.floor(width);
-    //     var newRow = -(cell.col - minCol + Math.floor(width)) + minRow - Math.ceil(height);
-    //     return new Cell(newRow, newCol, cell.val);
-    // });
     var validCells = selectedCells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
     updateAllLayers();
     initLayerPreview();
@@ -592,6 +587,7 @@ function rotateCells() {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
+    addLog({tool: 'rotate', selected_cells: validCells})
 }
 
 function undo() {
@@ -608,7 +604,6 @@ function undo() {
         LAYERS.push(new Layer(jsonLayer.cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
     });
     currentLayerIndex = lastState.currentLayer;
-    // syncFromDataGridToEditionGrid();
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
