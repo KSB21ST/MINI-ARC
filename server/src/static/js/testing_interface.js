@@ -11,6 +11,8 @@ LAYERS.push(new Layer(new Array(), 0, 3, 3, 0));
 var currentLayerIndex = 0;
 var EXAMPLES = new Array();
 var currentExample = 0;
+var tries = 0;
+var logSaved = false;
 
 // Cosmetic.
 var EDITION_GRID_HEIGHT = 300;
@@ -21,12 +23,23 @@ var MAX_CELL_SIZE = 100;
 var logs = new Log("", "");
 var redoStates = new Array();
 
+// user id
+const user_id = Date.now().toString(36) + Math.random().toString(36).substr(2);
+
+// time
+var prevTime = 0
+var currTime = 0
+
 var keyState = {};
 onkeydown = onkeyup = (event) => {
     keyState[event.key] = (event.type == 'keydown');
 }
 
 function addLog(action) {
+    currTime = new Date()
+    var time = currTime - prevTime
+    prevTime = currTime
+
     redoStates = [];
     var gridCopy = [];
     for (var i = 0; i < CURRENT_OUTPUT_GRID.grid.length; i++) {
@@ -42,11 +55,14 @@ function addLog(action) {
         gridCopy,
         currentLayerIndex,
         layerCopy,
-        0.0
+        time
     );
 }
 
 function resetTask() {
+    prevTime = new Date()
+    tries = 0;
+    logSaved = false;
     CURRENT_INPUT_GRID = new Grid(3, 3);
     TEST_PAIRS = new Array();
     CURRENT_TEST_PAIR_INDEX = 0;
@@ -256,6 +272,7 @@ function loadJSONTask(train, test) {
     CURRENT_TEST_PAIR_INDEX = 0;
     $('#current_test_input_id_display').html('1');
     $('#total_test_input_count_display').html(test.length);
+    initializeSelectable();
 }
 
 function display_task_name(task_name, task_index, number_of_tasks) {
@@ -291,7 +308,7 @@ function loadTaskFromFile(e) {
 
         $('#load_task_file_input')[0].value = "";
         display_task_name(file.name, null, null);
-        logs = new Log(file.name, "");
+        logs = new Log(file.name, user_id);
     };
     reader.readAsText(file);
 }
@@ -309,7 +326,7 @@ function randomTask() {
                 errorMsg('Bad file format');
                 return;
             }
-            logs = new Log(task['name'], "");
+            logs = new Log(task['name'].split('.')[0], user_id);
             loadJSONTask(train, test);
             //$('#load_task_file_input')[0].value = "";
             infoMsg("Loaded task training/" + task["name"]);
@@ -337,12 +354,33 @@ function nextTestInput() {
     $('#total_test_input_count_display').html(test.length);
 }
 
+function saveLogs() {
+    if (logSaved) {
+        return;
+    }
+    $.ajax({
+        type: 'POST',
+        url: window.location.href,
+        data: logs.getString(),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8'
+    }).done(function(msg) {
+        console.log("Data Saved: \n" + logs.getString());
+    });
+    logSaved = true;
+}
+
 function submitSolution() {
     syncFromEditionGridToDataGrid();
     reference_output = TEST_PAIRS[CURRENT_TEST_PAIR_INDEX]['output'];
     submitted_output = CURRENT_OUTPUT_GRID.grid;
     if (reference_output.length != submitted_output.length) {
         errorMsg('Wrong solution.');
+        addLog({tool: "check", correct: false});
+        tries += 1
+        if (tries >= 3) {
+            saveLogs();
+        }
         return
     }
     for (var i = 0; i < reference_output.length; i++){
@@ -350,11 +388,18 @@ function submitSolution() {
         for (var j = 0; j < ref_row.length; j++){
             if (ref_row[j] != submitted_output[i][j]) {
                 errorMsg('Wrong solution.');
+                addLog({tool: "check", correct: false});
+                tries += 1
+                if (tries >= 3) {
+                    saveLogs();
+                }
                 return
             }
         }
 
     }
+    addLog({tool: "check", correct: true});
+    saveLogs();
     infoMsg('Correct solution!');
 }
 
@@ -668,13 +713,21 @@ $(document).ready(function () {
     });
 
     $('button[id=prev_example]').click(function() {
-        currentExample = Math.max(0, currentExample-1);
+        if (currentExample != 0) {
+            currentExample = currentExample - 1;
+            addLog({ tool: "change_example", example: currentExample });
+        }
+        // currentExample = Math.max(0, currentExample-1);
         $('#current_example_id').html(currentExample+1);
         fillPairPreview(EXAMPLES[currentExample][0], EXAMPLES[currentExample][1]);
     });
 
     $('button[id=next_example]').click(function() {
-        currentExample = Math.min(EXAMPLES.length-1, currentExample+1);
+        if (currentExample != EXAMPLES.length-1) {
+            currentExample = currentExample + 1;
+            addLog({ tool: "change_example", example: currentExample });
+        }
+        // currentExample = Math.min(EXAMPLES.length-1, currentExample+1);
         $('#current_example_id').html(currentExample+1);
         fillPairPreview(EXAMPLES[currentExample][0], EXAMPLES[currentExample][1]);
     });
