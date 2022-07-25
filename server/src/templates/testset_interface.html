@@ -7,68 +7,31 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="{{ url_for('static', filename='js/common.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/testing_interface.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/testset_interface.js') }}"></script>
 
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/testing_interface.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/testset_interface.css') }}">
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 
     </head>
     <body>
-        <div id="modal_bg">
-            <div id="modal">
-                <div>Welcome to the ARC testing interface. <br /> Choose a task file to start, or click on "Random task" to load one from the ARC project on github.</div>
-                <br />
-                <input type="file" class="load_task"/>
-                <button onclick="randomTask()" id="random_task_btn">Random task</button>
-            </div>
-        </div>
         <div id="workspace">
-
-            <div id="demonstration_examples_view">
-                <div class="text" id="task_demo_header">
-                    <button id="prev_example">Prev</button>
-                    Task demonstration <span id="current_example_id">0</span>/<span id="total_examples">0</span>
-                    <button id="next_example">Next</button></div>
-                
-                <div id="task_preview"></div>
-
-                <div id="evaluation-input-view">
-                    <div class="text">Test input grid <span id="current_test_input_id_display">0</span>/<span id="total_test_input_count_display">0</span>
-                        <button onclick="nextTestInput()">Next test input</button>
-                    </div>
-
-                    <div id="evaluation_input" class="selectable_grid"></div>
-                </div>
-            </div>
-
             <div id="evaluation_view">
                 <div id="evaluation_output_editor">
-                    <div id="load_task_control_btns">
-                        <!-- <label for="load_task_file_input">Load task JSON: </label>
-                        <input type="file" id="load_task_file_input" class="load_task" style="display: none;"/>
-                        <input type="button" value="Browse..." onclick="document.getElementById('load_task_file_input').click();" />
-                        <button onclick="randomTask()" id="random_task_btn"> Random... </button>
-                        <p> -->
-                        <label id='task_name' for="random_task_btn"> 
-                            Task name:
-                            
-                        </label>
-                        <input type="file" id="load_task_file_input" class="load_task" style="display: none;"/>
-                            <input type="button" value="Browse..." onclick="document.getElementById('load_task_file_input').click();" />
-                            <button onclick="randomTask()" id="random_task_btn"> Random... </button>
-                    </div>
-
                     <div id="edition_view">
                         <div id="editor_grid_control_btns">
+                            <!-- <div id="resize_control_btns">
+                                <label for="output_grid_size">Grid size: </label>
+                                <a id="output_grid_size" class="grid_size_field" name="size" value="5x5">5x5</a>
+                            </div> -->
+
+                            <!-- <button onclick="copyFromInput()">Copy from input</button> -->
                             <div id="resize_control_btns">
                                 <label for="output_grid_size">Change grid size: </label>
-                                <input type="text" id="output_grid_size" class="grid_size_field" name="size" value="3x3">
+                                <input type="text" id="output_grid_size" class="grid_size_field" name="size" value="5x5">
                                 <button onclick="resizeOutputGrid()" id="resize_btn">Resize</button>
                             </div>
-
-                            <button onclick="copyFromInput()">Copy from input</button>
                             <button onclick="resetOutputGrid()">Reset grid</button>
                             <button id="tool_clear_selection"
                                  name="tool_switching" value="floodfill">
@@ -82,16 +45,36 @@
                                     <div class="cell" symbol="0" x="0" y="0"></div>
                                     <div class="cell" symbol="0" x="0" y="1"></div>
                                     <div class="cell" symbol="0" x="0" y="2"></div>
+                                    <div class="cell" symbol="0" x="0" y="3"></div>
+                                    <div class="cell" symbol="0" x="0" y="4"></div>
                                 </div>
                                 <div class="row">
                                     <div class="cell" symbol="0" x="1" y="0"></div>
                                     <div class="cell" symbol="0" x="1" y="1"></div>
                                     <div class="cell" symbol="0" x="1" y="2"></div>
+                                    <div class="cell" symbol="0" x="1" y="3"></div>
+                                    <div class="cell" symbol="0" x="1" y="4"></div>
                                 </div>
                                 <div class="row">
                                     <div class="cell" symbol="0" x="2" y="0"></div>
                                     <div class="cell" symbol="0" x="2" y="1"></div>
                                     <div class="cell" symbol="0" x="2" y="2"></div>
+                                    <div class="cell" symbol="0" x="2" y="3"></div>
+                                    <div class="cell" symbol="0" x="2" y="4"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="cell" symbol="0" x="3" y="0"></div>
+                                    <div class="cell" symbol="0" x="3" y="1"></div>
+                                    <div class="cell" symbol="0" x="3" y="2"></div>
+                                    <div class="cell" symbol="0" x="3" y="3"></div>
+                                    <div class="cell" symbol="0" x="3" y="4"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="cell" symbol="0" x="4" y="0"></div>
+                                    <div class="cell" symbol="0" x="4" y="1"></div>
+                                    <div class="cell" symbol="0" x="4" y="2"></div>
+                                    <div class="cell" symbol="0" x="4" y="3"></div>
+                                    <div class="cell" symbol="0" x="4" y="4"></div>
                                 </div>
                             </div>
                         </div>
@@ -132,7 +115,7 @@
                 </div>
             </div>
 
-            <div id="layers">
+            <!-- <div id="layers">
                 <div id="layer_panel_view">
 
                     <div class="text">LAYER PANEL<button class="add_layer">ADD LAYER</button></div>
@@ -142,7 +125,7 @@
                         <p></p>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </body>
 </html>
