@@ -144,7 +144,6 @@ input[class="layer_button"]:checked + .layer_selector {
 
 #finished_pairs {
     float: left;
-    /* width: 500px; */
     margin: 10px;
     margin-bottom: 20px;
 }
