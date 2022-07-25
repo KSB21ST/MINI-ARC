@@ -7,6 +7,7 @@ var CURRENT_TEST_PAIR_INDEX = 0;
 var COPY_PASTE_DATA = new Array();
 var SELECTED_DATA = new Array();
 var LAYERS = new Array();
+var TESTSETS = new Array();
 LAYERS.push(new Layer(new Array(), 0, 5, 5, 0));
 var currentLayerIndex = 0;
 var EXAMPLES = new Array();
@@ -139,8 +140,6 @@ function resizeOutputGrid() {
     height = size[0];
     width = size[1];
 
-    console.log(height, width)
-
     jqGrid = $('#output_grid .edition_grid');
     syncFromEditionGridToDataGrid();
     dataGrid = JSON.parse(JSON.stringify(CURRENT_OUTPUT_GRID.grid));
@@ -168,6 +167,33 @@ function resetOutputGrid() {
     updateAllLayers();
     initLayerPreview();
     addLog({tool: 'resetOutputGrid'});
+}
+
+function resetInputGrid() {
+    copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
+    CURRENT_INPUT_GRID = new Grid(5, 5);
+    refreshEditionGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
+    $('#input_grid_size').val("5x5");
+
+    jqGrid = $('#input .edition_grid');
+    copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
+    dataGrid = JSON.parse(JSON.stringify(CURRENT_INPUT_GRID.grid));
+    CURRENT_INPUT_GRID = new Grid(5, 5, dataGrid);
+    refreshEditionGrid(jqGrid, CURRENT_INPUT_GRID);
+    
+    for (var i = 0; i < LAYERS.length; i++) {
+        LAYERS[i].height = CURRENT_INPUT_GRID.height;
+        LAYERS[i].width = CURRENT_INPUT_GRID.width;
+    }
+    updateAllLayers();
+    initLayerPreview();
+
+    LAYERS[currentLayerIndex].height = CURRENT_INPUT_GRID.height;
+    LAYERS[currentLayerIndex].width = CURRENT_INPUT_GRID.width;
+    LAYERS[currentLayerIndex].cells = [];
+    updateAllLayers();
+    initLayerPreview();
+    addLog({tool: 'resetInputGrid'});
 }
 
 function copyFromInput() {
@@ -403,6 +429,18 @@ function submitSolution() {
     addLog({tool: "check", correct: true});
     saveLogs();
     infoMsg('Correct solution!');
+}
+
+function submitTestSet() {
+    copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
+    submitted_input = CURRENT_INPUT_GRID.grid;
+    copyJqGridToDataGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
+    submitted_output = CURRENT_OUTPUT_GRID.grid;
+    TESTSETS.push(new TESTSET(submitted_input, submitted_output));
+    console.log(TESTSETS);
+    infoMsg('Saved solution!');
+    resetInputGrid();
+    resetOutputGrid();
 }
 
 function fillTestInput(inputGrid) {

@@ -118,6 +118,22 @@ class Layer {
     }
 }
 
+class TESTSET {
+    constructor(input_cells, output_cells) {
+        if (typeof input_cells == undefined) {
+            this.input_cells = new Array();
+        } else {
+            this.input_cells = input_cells;
+        }
+
+        if (typeof output_cells == undefined) {
+            this.output_cells = new Array();
+        } else {
+            this.output_cells = output_cells;
+        }
+    }
+}
+
 class Log {
     constructor(task, user_id) {
         this.task = task;

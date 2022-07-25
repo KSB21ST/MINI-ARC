@@ -25,13 +25,13 @@
                             <div id="resize_control_btns">
                                 <label for="output_grid_size">Change grid size: </label>
                                 <input type="text" id="output_grid_size" class="grid_size_field" name="size" value="5x5">
-                                <button onclick="resizeOutputGrid()" id="resize_btn">Resize</button>
                             </div>
-                            <button onclick="resetOutputGrid()">Reset grid</button>
+                            <button onclick="resetInputGrid()">Reset Input grid</button>
+                            <button onclick="resetOutputGrid()">Reset Output grid</button>
                             <button id="tool_clear_selection"
                                  name="tool_switching" value="floodfill">
                                 <label for="tool_clear_selection">Clear Selection</label>
-                            <button onclick="submitSolution()" id="submit_solution_btn">Submit!</button>
+                            <button onclick="submitTestSet()" id="submit_solution_btn">Submit!</button>
                         </div>
 
                         <div id="input_grid">
