@@ -139,8 +139,6 @@ function resizeOutputGrid() {
     height = size[0];
     width = size[1];
 
-    console.log(height, width)
-
     jqGrid = $('#output_grid .edition_grid');
     syncFromEditionGridToDataGrid();
     dataGrid = JSON.parse(JSON.stringify(CURRENT_OUTPUT_GRID.grid));
@@ -168,6 +166,33 @@ function resetOutputGrid() {
     updateAllLayers();
     initLayerPreview();
     addLog({tool: 'resetOutputGrid'});
+}
+
+function resetInputGrid() {
+    copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_OUTPUT_GRID);
+    CURRENT_OUTPUT_GRID = new Grid(5, 5);
+    refreshEditionGrid($('#input_grid .edition_grid'), CURRENT_OUTPUT_GRID);
+    $('#input_grid_size').val("5x5");
+
+    jqGrid = $('#input .edition_grid');
+    copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_OUTPUT_GRID);
+    dataGrid = JSON.parse(JSON.stringify(CURRENT_OUTPUT_GRID.grid));
+    CURRENT_OUTPUT_GRID = new Grid(5, 5, dataGrid);
+    refreshEditionGrid(jqGrid, CURRENT_OUTPUT_GRID);
+    
+    for (var i = 0; i < LAYERS.length; i++) {
+        LAYERS[i].height = CURRENT_OUTPUT_GRID.height;
+        LAYERS[i].width = CURRENT_OUTPUT_GRID.width;
+    }
+    updateAllLayers();
+    initLayerPreview();
+
+    LAYERS[currentLayerIndex].height = CURRENT_OUTPUT_GRID.height;
+    LAYERS[currentLayerIndex].width = CURRENT_OUTPUT_GRID.width;
+    LAYERS[currentLayerIndex].cells = [];
+    updateAllLayers();
+    initLayerPreview();
+    addLog({tool: 'resetInputGrid'});
 }
 
 function copyFromInput() {
