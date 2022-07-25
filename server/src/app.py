@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request
+from flask import *
 import db
 import json
 import sqlite3 as sql

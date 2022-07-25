@@ -32,7 +32,7 @@ body {
 
 #evaluation_output_editor {
     float: left;
-    width: 600px;
+    width: 700px;
     margin: 10px;
     margin-bottom: 20px;
 }
@@ -51,6 +51,35 @@ body {
     width: 100%;
     padding-top: 5px;
     padding-bottom: 5px;
+}
+
+#input_grid {
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 2px;
+    width: 45%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 2px;
+}
+
+#arrow_grid {
+    float: left;
+    margin-right: 2px;
+    padding-right: 2px;
+    margin-top: 135px;
+}
+
+#output_grid {
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 4px;
+    width: 45%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 4px;
 }
 
 .layer_preview {
@@ -113,16 +142,12 @@ input[class="layer_button"]:checked + .layer_selector {
     box-shadow: 0px 0px 6px 2px #0055ff;
 }
 
-/* 
-#layer_button {
+#finished_pairs {
     float: left;
-    padding: 5px;
-} */
-
-/* #layer_panel {
-    float: left;
-    padding: 10px;
-} */
+    width: 600px;
+    margin: 10px;
+    margin-bottom: 20px;
+}
 
 
 
