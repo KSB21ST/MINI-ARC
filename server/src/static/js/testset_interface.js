@@ -14,6 +14,8 @@ var EXAMPLES = new Array();
 var currentExample = 0;
 var tries = 0;
 var logSaved = false;
+const NUM_ROWS = 5;
+const NUM_COLS = 5;
 
 // Cosmetic.
 var EDITION_GRID_HEIGHT = 300;
@@ -89,10 +91,12 @@ function refreshEditionGrid(jqGrid, dataGrid) {
 
 function syncFromEditionGridToDataGrid() {
     copyJqGridToDataGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
+    copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
 }
 
 function syncFromDataGridToEditionGrid() {
     refreshEditionGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
+    refreshEditionGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
 }
 
 function getSelectedSymbol() {
@@ -103,6 +107,8 @@ function getSelectedSymbol() {
 function setUpEditionGridListeners(jqGrid) {
     jqGrid.find('.cell').click(function(event) {
         cell = $(event.target);
+        var parentGrid = cell.parent().parent().parent().attr('id');
+        console.log(parentGrid)
         symbol = getSelectedSymbol();
 
         mode = $('input[name=tool_switching]:checked').val();
@@ -126,7 +132,15 @@ function setUpEditionGridListeners(jqGrid) {
         else if (mode == 'edit') {
             // Else: fill just this cell.
             setCellSymbol(cell, symbol);
-            LAYERS[currentLayerIndex].addCell(new Cell(cell.attr('x'), cell.attr('y'), cell.attr('symbol')))
+            var row = cell.attr('x');
+            var col = cell.attr('y');
+            if (TESTSETS.length != 0) {
+                if (parentGrid == 'input_grid') {
+                    TESTSETS[currentExample].input_cells[row][col] = symbol;
+                } else if (parentGrid == 'output_grid') {
+                    TESTSETS[currentExample].output_cells[row][col] = symbol;
+                }
+            }
             syncFromEditionGridToDataGrid();
             addLog({tool: 'edit', symbol: symbol, row: cell.attr('x'), col: cell.attr('y')});
         }
@@ -241,7 +255,7 @@ function fillPairPreview(inputGrid, outputGrid) {
 function fillLayerPreview(layerId) {
     var layerSlot = $('#layer_' + layerId);
     if (!layerSlot.length) {
-        layerSlot = $('<div id ="layer_' + layerId + '" class="layer_preview" value="' + layerId + '"><input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><label for="' + layerId + '" class="layer_selector"></label><div class="grid_preview"></div></div>');
+        layerSlot = $('<div id ="layer_' + layerId + '" class="layer_preview" value="' + layerId + '"><input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><label for="' + layerId + '" class="layer_selector"></label><div class="input_preview"></div><div class="output_preview"></div></div>');
         layerSlot.appendTo('#layer_panel');
         $(`input[type=radio][id=${layerId}]`).click(function() {
             initializeSelectable();
@@ -249,7 +263,8 @@ function fillLayerPreview(layerId) {
         })
     }
 
-    var jqInputGrid = layerSlot.find('.grid_preview');
+    var jqInputGrid = layerSlot.find('.input_preview');
+    var jqOutputGrid = layerSlot.find('.output_preview');
     // if (!jqInputGrid.length) {
     //     jqInputGrid = $('<div class="grid_preview"></div>');
     //     jqInputGrid.appendTo(layerSlot);
@@ -258,14 +273,17 @@ function fillLayerPreview(layerId) {
     //     qwhitspace.appendTo(layerSlot);
     // }
 
-    layerGrid = LAYERS[layerId].getGrid();
-    fillJqGridWithData(jqInputGrid, layerGrid);
-    fitCellsToContainer(jqInputGrid, layerGrid.height, layerGrid.width, 100, 100);
+    inputGrid = new Grid(5,5,TESTSETS[layerId].input_cells);
+    outputGrid = new Grid(5,5,TESTSETS[layerId].output_cells);
+    fillJqGridWithData(jqInputGrid, inputGrid);
+    fitCellsToContainer(jqInputGrid, 5, 5, 100, 100);
+    fillJqGridWithData(jqOutputGrid, outputGrid);
+    fitCellsToContainer(jqOutputGrid, 5, 5, 100, 100);
 }
 
 function initLayerPreview() {
     $('.layer_preview').remove();
-    for (var id = 0; id < LAYERS.length; id++) {
+    for (var id = 0; id < TESTSETS.length; id++) {
         fillLayerPreview(id);
     }
 }
@@ -382,54 +400,54 @@ function nextTestInput() {
     $('#total_test_input_count_display').html(test.length);
 }
 
-function saveLogs() {
-    if (logSaved) {
-        return;
-    }
-    $.ajax({
-        type: 'POST',
-        url: window.location.href,
-        data: logs.getString(),
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8'
-    }).done(function(msg) {
-        console.log("Data Saved: \n" + logs.getString());
-    });
-    logSaved = true;
-}
+// function saveLogs() {
+//     if (logSaved) {
+//         return;
+//     }
+//     $.ajax({
+//         type: 'POST',
+//         url: window.location.href,
+//         data: logs.getString(),
+//         dataType: 'json',
+//         contentType: 'application/json; charset=utf-8'
+//     }).done(function(msg) {
+//         console.log("Data Saved: \n" + logs.getString());
+//     });
+//     logSaved = true;
+// }
 
-function submitSolution() {
-    syncFromEditionGridToDataGrid();
-    reference_output = TEST_PAIRS[CURRENT_TEST_PAIR_INDEX]['output'];
-    submitted_output = CURRENT_OUTPUT_GRID.grid;
-    if (reference_output.length != submitted_output.length) {
-        errorMsg('Wrong solution.');
-        addLog({tool: "check", correct: false});
-        tries += 1
-        if (tries >= 3) {
-            saveLogs();
-        }
-        return
-    }
-    for (var i = 0; i < reference_output.length; i++){
-        ref_row = reference_output[i];
-        for (var j = 0; j < ref_row.length; j++){
-            if (ref_row[j] != submitted_output[i][j]) {
-                errorMsg('Wrong solution.');
-                addLog({tool: "check", correct: false});
-                tries += 1
-                if (tries >= 3) {
-                    saveLogs();
-                }
-                return
-            }
-        }
+// function submitSolution() {
+//     syncFromEditionGridToDataGrid();
+//     reference_output = TEST_PAIRS[CURRENT_TEST_PAIR_INDEX]['output'];
+//     submitted_output = CURRENT_OUTPUT_GRID.grid;
+//     if (reference_output.length != submitted_output.length) {
+//         errorMsg('Wrong solution.');
+//         addLog({tool: "check", correct: false});
+//         tries += 1
+//         if (tries >= 3) {
+//             saveLogs();
+//         }
+//         return
+//     }
+//     for (var i = 0; i < reference_output.length; i++){
+//         ref_row = reference_output[i];
+//         for (var j = 0; j < ref_row.length; j++){
+//             if (ref_row[j] != submitted_output[i][j]) {
+//                 errorMsg('Wrong solution.');
+//                 addLog({tool: "check", correct: false});
+//                 tries += 1
+//                 if (tries >= 3) {
+//                     saveLogs();
+//                 }
+//                 return
+//             }
+//         }
 
-    }
-    addLog({tool: "check", correct: true});
-    saveLogs();
-    infoMsg('Correct solution!');
-}
+//     }
+//     addLog({tool: "check", correct: true});
+//     saveLogs();
+//     infoMsg('Correct solution!');
+// }
 
 function submitTestSet() {
     copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
@@ -441,6 +459,7 @@ function submitTestSet() {
     infoMsg('Saved solution!');
     resetInputGrid();
     resetOutputGrid();
+    initLayerPreview();
 }
 
 function fillTestInput(inputGrid) {
@@ -476,23 +495,30 @@ function initializeSelectable() {
 }
 
 function initializeLayerChange() {
-    currentLayerIndex = $('input[name=layer]:checked').val();
-    infoMsg(`layer ${currentLayerIndex} selected`);
-    var currLayer = LAYERS.filter(layer => layer.id == currentLayerIndex);
-    if (!currLayer.length) {
-        return;
-    }
-    currLayer = currLayer[0];
-    currLayer.cells = currLayer.cells.filter(cell => cell.val > 0);
+    // currentLayerIndex = $('input[name=layer]:checked').val();
+    // infoMsg(`layer ${currentLayerIndex} selected`);
+    // var currLayer = LAYERS.filter(layer => layer.id == currentLayerIndex);
+    // if (!currLayer.length) {
+    //     return;
+    // }
+    // currLayer = currLayer[0];
+    // currLayer.cells = currLayer.cells.filter(cell => cell.val > 0);
 
-    $('.ui-selected').removeClass('ui-selected');
-    initializeSelectable();
-    console.log(`layer ${currentLayerIndex}`);
-    console.log(currLayer.cells);
-    for (var i = 0; i < currLayer.cells.length; i++) {
-        var currCell = currLayer.cells[i];
-        setCellSymbol($('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`), currCell.val);
-        $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).addClass('ui-selected');
+    // $('.ui-selected').removeClass('ui-selected');
+    // for (var i = 0; i < currLayer.cells.length; i++) {
+    //     var currCell = currLayer.cells[i];
+    //     setCellSymbol($('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`), currCell.val);
+    //     $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).addClass('ui-selected');
+    // }
+    currentExample = $('input[name=layer]:checked').val();
+    console.log(currExample);
+    var currExample = TESTSETS[currentExample];
+    console.log(currExample);
+    for (var r = 0; r < NUM_ROWS; r++) {
+        for (var c = 0; c < NUM_COLS; c++) {
+            setCellSymbol($('#input_grid').find(`[x=${r}][y=${c}]`), currExample.input_cells[r][c]);
+            setCellSymbol($('#output_grid').find(`[x=${r}][y=${c}]`), currExample.output_cells[r][c]);
+        }
     }
     syncFromEditionGridToDataGrid();
     addLog({tool: 'layerChange', new_layer: currentLayerIndex})
