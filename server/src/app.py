@@ -40,16 +40,15 @@ def store_final_set():
     json_obj = request.json
     try:
         print("error before");
-        # con = db.get_db()
-        with sql.connect('database.db') as c:
-            con = c.cursor()
-            print(sql.version)
-            con.execute("SELECT * from logs");
-            print("after execute")
-            con.execute(
-                "INSERT INTO testsets (user_id, testjson, ratings) VALUES (?, ?, ?)", (json_obj.get('user_id'), json.dumps(json_obj), 0)
-            )
-            con.commit()
+        con = db.get_db()
+        # with sql.connect('database.db') as c:
+            # con = c.cursor()
+            # print(sql.version)
+        con.execute("select * from logs")
+        con.execute(
+            "INSERT INTO testsets (user_id, testjson, ratings) VALUES (?, ?, ?)", (json_obj.get('user_id'), json.dumps(json_obj), 0)
+        )
+        con.commit()
         # print(json_obj)
         # # con = db.get_db()
         # con = sql.connect('database.db')
@@ -59,7 +58,8 @@ def store_final_set():
         # c.execute(
         #     "INSERT INTO testsets (user_id, testjson, ratings) VALUES (?, ?, ?)", (json_obj.get('user_id'), json.dumps(json_obj), 0)
         # )
-    except:
+    except Exception as e:
+        print(e)
         print("An error has occurred while inserting new data.");
     return render_template('testing_interface.html')
 
