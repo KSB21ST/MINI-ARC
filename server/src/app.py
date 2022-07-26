@@ -39,7 +39,6 @@ def show_testset():
 def store_final_set():
     json_obj = request.json
     try:
-        print("error before");
         con = db.get_db()
         con.execute(
             "INSERT INTO testsets (user_id, testjson, ratings) VALUES (?, ?, ?)", (json_obj.get('user_id'), json.dumps(json_obj), 0)
@@ -48,6 +47,22 @@ def store_final_set():
     except Exception as e:
         print(e)
     return render_template('testing_interface.html')
+
+@app.route('/testset/list')
+def show_test_list():
+    return render_template('testset_list.html')
+
+@app.route('/testset/getlist', methods=['POST', 'GET'])
+def get_test_list():
+    try:
+        cur = db.get_db().cursor()
+        cur.execute("SELECT * from testsets")
+        data = [dict((cur.description[i][0], value) \
+               for i, value in enumerate(row)) for row in cur.fetchall()]
+        print(data)
+    except Exception as e:
+        print(e)
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='80', debug=False)
