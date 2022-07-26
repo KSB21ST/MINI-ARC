@@ -8,6 +8,7 @@ var COPY_PASTE_DATA = new Array();
 var SELECTED_DATA = new Array();
 var LAYERS = new Array();
 var TESTSETS = new Array();
+TESTSETS.push(new TESTSET());
 LAYERS.push(new Layer(new Array(), 0, 5, 5, 0));
 var currentLayerIndex = 0;
 var EXAMPLES = new Array();
@@ -141,6 +142,7 @@ function setUpEditionGridListeners(jqGrid) {
                     TESTSETS[currentExample].output_cells[row][col] = symbol;
                 }
             }
+            initLayerPreview();
             syncFromEditionGridToDataGrid();
             addLog({tool: 'edit', symbol: symbol, row: cell.attr('x'), col: cell.attr('y')});
         }
@@ -449,18 +451,26 @@ function nextTestInput() {
 //     infoMsg('Correct solution!');
 // }
 
-function submitTestSet() {
-    copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
-    submitted_input = CURRENT_INPUT_GRID.grid;
-    copyJqGridToDataGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
-    submitted_output = CURRENT_OUTPUT_GRID.grid;
-    TESTSETS.push(new TESTSET(submitted_input, submitted_output));
-    console.log(TESTSETS);
-    infoMsg('Saved solution!');
+function newExample() {
+    TESTSETS.push(new TESTSET());
+    currentExample = TESTSETS.length - 1;
     resetInputGrid();
     resetOutputGrid();
     initLayerPreview();
 }
+
+// function submitTestSet() {
+//     copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
+//     submitted_input = CURRENT_INPUT_GRID.grid;
+//     copyJqGridToDataGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
+//     submitted_output = CURRENT_OUTPUT_GRID.grid;
+//     TESTSETS.push(new TESTSET(submitted_input, submitted_output));
+//     console.log(TESTSETS);
+//     infoMsg('Saved solution!');
+//     resetInputGrid();
+//     resetOutputGrid();
+//     initLayerPreview();
+// }
 
 function submitFinalTestSet() {
     if(TESTSETS.length != 5){
@@ -605,18 +615,6 @@ function addLayer() {
         infoMsg(`Data added to Layer ${LAYERS.length}`)
         updateAllLayers();
         initLayerPreview();
-}
-
-function deleteLayer() {
-    currentLayerIndex = $('input[name=layer]:checked').val();
-    if (currentLayerIndex === undefined){
-        return;
-    }
-    LAYERS = LAYERS.filter(layer => layer.id != currentLayerIndex);
-    $('#layer_'+currentLayerIndex).remove();
-    infoMsg("delete Layer " + currentLayerIndex);
-    updateAllLayers();
-    makeGridFromLayer();
 }
 
 function updateAllLayers() {
@@ -765,6 +763,7 @@ function redo() {
 
 
 $(document).ready(function () {
+    initLayerPreview();
     $('#symbol_picker').find('.symbol_preview').click(function(event) {
         symbol_preview = $(event.target);
         $('#symbol_picker').find('.symbol_preview').each(function(i, preview) {

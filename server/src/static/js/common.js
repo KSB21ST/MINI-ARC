@@ -120,15 +120,21 @@ class Layer {
 
 class TESTSET {
     constructor(input_cells, output_cells) {
-        if (typeof input_cells == undefined) {
-            this.input_cells = new Array();
-        } else {
+        const NUM_ROWS = 5;
+        const NUM_COLS = 5;
+        this.input_cells = new Array(NUM_ROWS);
+        for (var i = 0; i < NUM_ROWS; i++) {
+            this.input_cells[i] = (new Array(NUM_COLS));
+        }
+        if (input_cells != null) {
             this.input_cells = input_cells;
         }
+        this.output_cells = new Array(NUM_ROWS);
+        for (var i = 0; i < NUM_COLS; i++) {
+            this.output_cells[i] = (new Array(NUM_COLS));
+        }
 
-        if (typeof output_cells == undefined) {
-            this.output_cells = new Array();
-        } else {
+        if (output_cells != null) {
             this.output_cells = output_cells;
         }
     }
