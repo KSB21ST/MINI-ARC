@@ -23,8 +23,8 @@
                         <div class="text">Make Test Sets</div>
                         <div id="editor_grid_control_btns">
                             <div id="resize_control_btns">
-                                <label for="output_grid_size">Change grid size: </label>
-                                <input type="text" id="output_grid_size" class="grid_size_field" name="size" value="5x5">
+                                <label for="output_grid_size">Grid size: 5x5 </label>
+                                <!-- <input type="text" id="output_grid_size" class="grid_size_field" name="size" value="5x5"> -->
                             </div>
                             <button onclick="resetInputGrid()">Reset Input grid</button>
                             <button onclick="resetOutputGrid()">Reset Output grid</button>
@@ -152,6 +152,7 @@
 
                     <div id="error_display"></div>
                     <div id="info_display"></div>
+                    <button onclick="submitFinalTestSet()" id="submit_final_btn">Submit final</button>
                 </div>
             </div>
 

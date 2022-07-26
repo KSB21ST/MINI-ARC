@@ -35,6 +35,34 @@ def store_log():
 def show_testset():
     return render_template('testset_interface.html')
 
+@app.route('/testset/finalset', methods=['POST', 'GET'])
+def store_final_set():
+    json_obj = request.json
+    try:
+        print("error before");
+        # con = db.get_db()
+        with sql.connect('database.db') as c:
+            con = c.cursor()
+            print(sql.version)
+            con.execute("SELECT * from logs");
+            print("after execute")
+            con.execute(
+                "INSERT INTO testsets (user_id, testjson, ratings) VALUES (?, ?, ?)", (json_obj.get('user_id'), json.dumps(json_obj), 0)
+            )
+            con.commit()
+        # print(json_obj)
+        # # con = db.get_db()
+        # con = sql.connect('database.db')
+        # c = con.cursor()
+        # print("222223333")
+        # c.execute("select * from logs")
+        # c.execute(
+        #     "INSERT INTO testsets (user_id, testjson, ratings) VALUES (?, ?, ?)", (json_obj.get('user_id'), json.dumps(json_obj), 0)
+        # )
+    except:
+        print("An error has occurred while inserting new data.");
+    return render_template('testing_interface.html')
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='80', debug=False)
     

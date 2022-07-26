@@ -150,9 +150,9 @@ function setUpEditionGridListeners(jqGrid) {
 
 function resizeOutputGrid() {
     size = $('#output_grid_size').val();
-    size = parseSizeTuple(size);
-    height = size[0];
-    width = size[1];
+    // size = parseSizeTuple(size);
+    height = 5;
+    width = 5;
 
     jqGrid = $('#output_grid .edition_grid');
     syncFromEditionGridToDataGrid();
@@ -460,6 +460,27 @@ function submitTestSet() {
     resetInputGrid();
     resetOutputGrid();
     initLayerPreview();
+}
+
+function submitFinalTestSet() {
+    if(TESTSETS.length != 5){
+        infoMsg('Not enough test pairs!');
+        return;
+    }
+    var testData = 
+    {
+        'user_id': "0",
+        'testArray': JSON.stringify(TESTSETS)	
+    }
+    $.ajax({
+        type: 'POST',
+        url: '/testset/finalset',
+        data: JSON.stringify(testData),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8'
+    }).done(function(msg) {
+        console.log("Testset Saved: \n" + TESTSETS.getString());
+    });
 }
 
 function fillTestInput(inputGrid) {
