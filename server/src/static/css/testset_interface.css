@@ -115,7 +115,7 @@ body {
 
 button:focus {outline:0;}
 
-#layers {
+#finished_pairs {
     margin: 3px;
     margin-left: 3px;
     padding: 5px;
@@ -124,7 +124,7 @@ button:focus {outline:0;}
 
 .layer_preview {
     position: relative;
-    width: 100px;
+    width: 400px;
     height: 100px;
 }
 
@@ -150,10 +150,14 @@ input[class="layer_button"]:checked + .layer_selector {
 }
 
 #finished_pairs {
-    float: left;
-    /* width: 500px; */
+    margin: 3px;
+    margin-left: 3px;
+    padding: 5px;
+    background-color: #d5d5d5;
+    /* float: left;
+    width: 500px; 
     margin: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 20px; */
 }
 
 
@@ -199,13 +203,13 @@ input, button {
     border-bottom: solid 1px #a1a1a1;
 }
 .input_preview {
-    height: 200px;
-    width: 200px;
+    height: 80%;
+    width: 40%;
     float: left;
 }
 .output_preview {
-    height: 200px;
-    width: 200px;
+    height: 80%;
+    width: 40%;
     float: left;
     margin-left: 35px;
 }
