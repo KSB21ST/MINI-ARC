@@ -408,6 +408,7 @@ function submitFinalTestSet() {
         infoMsg('Not enough test pairs!');
         return;
     }
+    console.log(TESTSETS)
     var testData = 
     {
         'user_id': "0",
@@ -415,7 +416,7 @@ function submitFinalTestSet() {
     }
     $.ajax({
         type: 'POST',
-        url: '/testset/finalset',
+        url: '/testset/submit',
         data: JSON.stringify(testData),
         dataType: 'json',
         contentType: 'application/json; charset=utf-8'

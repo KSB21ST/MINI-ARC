@@ -301,7 +301,6 @@ function initLayerPreview() {
 }
 
 function hello(i) {
-    alert(i);
     $.getJSON( '/testset/queryone', {
         index: i,
         tags: "mount rainier",
