@@ -267,13 +267,6 @@ function fillLayerPreview(layerId) {
 
     var jqInputGrid = layerSlot.find('.input_preview');
     var jqOutputGrid = layerSlot.find('.output_preview');
-    // if (!jqInputGrid.length) {
-    //     jqInputGrid = $('<div class="grid_preview"></div>');
-    //     jqInputGrid.appendTo(layerSlot);
-    //     // jqInputGrid.appendTo($('#layer_'+layerId));
-    //     qwhitspace = $('<p></p>');
-    //     qwhitspace.appendTo(layerSlot);
-    // }
 
     inputGrid = new Grid(5,5,TESTSETS[layerId].input_cells);
     outputGrid = new Grid(5,5,TESTSETS[layerId].output_cells);
@@ -402,55 +395,6 @@ function nextTestInput() {
     $('#total_test_input_count_display').html(test.length);
 }
 
-// function saveLogs() {
-//     if (logSaved) {
-//         return;
-//     }
-//     $.ajax({
-//         type: 'POST',
-//         url: window.location.href,
-//         data: logs.getString(),
-//         dataType: 'json',
-//         contentType: 'application/json; charset=utf-8'
-//     }).done(function(msg) {
-//         console.log("Data Saved: \n" + logs.getString());
-//     });
-//     logSaved = true;
-// }
-
-// function submitSolution() {
-//     syncFromEditionGridToDataGrid();
-//     reference_output = TEST_PAIRS[CURRENT_TEST_PAIR_INDEX]['output'];
-//     submitted_output = CURRENT_OUTPUT_GRID.grid;
-//     if (reference_output.length != submitted_output.length) {
-//         errorMsg('Wrong solution.');
-//         addLog({tool: "check", correct: false});
-//         tries += 1
-//         if (tries >= 3) {
-//             saveLogs();
-//         }
-//         return
-//     }
-//     for (var i = 0; i < reference_output.length; i++){
-//         ref_row = reference_output[i];
-//         for (var j = 0; j < ref_row.length; j++){
-//             if (ref_row[j] != submitted_output[i][j]) {
-//                 errorMsg('Wrong solution.');
-//                 addLog({tool: "check", correct: false});
-//                 tries += 1
-//                 if (tries >= 3) {
-//                     saveLogs();
-//                 }
-//                 return
-//             }
-//         }
-
-//     }
-//     addLog({tool: "check", correct: true});
-//     saveLogs();
-//     infoMsg('Correct solution!');
-// }
-
 function newExample() {
     TESTSETS.push(new TESTSET());
     currentExample = TESTSETS.length - 1;
@@ -458,19 +402,6 @@ function newExample() {
     resetOutputGrid();
     initLayerPreview();
 }
-
-// function submitTestSet() {
-//     copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
-//     submitted_input = CURRENT_INPUT_GRID.grid;
-//     copyJqGridToDataGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
-//     submitted_output = CURRENT_OUTPUT_GRID.grid;
-//     TESTSETS.push(new TESTSET(submitted_input, submitted_output));
-//     console.log(TESTSETS);
-//     infoMsg('Saved solution!');
-//     resetInputGrid();
-//     resetOutputGrid();
-//     initLayerPreview();
-// }
 
 function submitFinalTestSet() {
     if(TESTSETS.length != 5){
@@ -526,21 +457,6 @@ function initializeSelectable() {
 }
 
 function initializeLayerChange() {
-    // currentLayerIndex = $('input[name=layer]:checked').val();
-    // infoMsg(`layer ${currentLayerIndex} selected`);
-    // var currLayer = LAYERS.filter(layer => layer.id == currentLayerIndex);
-    // if (!currLayer.length) {
-    //     return;
-    // }
-    // currLayer = currLayer[0];
-    // currLayer.cells = currLayer.cells.filter(cell => cell.val > 0);
-
-    // $('.ui-selected').removeClass('ui-selected');
-    // for (var i = 0; i < currLayer.cells.length; i++) {
-    //     var currCell = currLayer.cells[i];
-    //     setCellSymbol($('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`), currCell.val);
-    //     $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).addClass('ui-selected');
-    // }
     currentExample = $('input[name=layer]:checked').val();
     console.log(currExample);
     var currExample = TESTSETS[currentExample];

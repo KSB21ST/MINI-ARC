@@ -274,15 +274,12 @@ function fillLayerPreview(layerId) {
     fitCellsToContainer(jqOutputGrid, 5, 5, 100, 100);
 }
 
-function fillTestListPreview(TestSet, LayerID, dataID) {
-    var layerSlot = $('#layer_' + LayerID + '_data_' + dataID);
+function fillTestListPreview(TestSet, LayerID) {
+    var layerSlot = $('#layer_' + LayerID);
     if (!layerSlot.length) {
-        console.log("dataid: ", dataID, LayerID)
-        layerSlot = $('<div id ="layer_' + LayerID + '_data_' + dataID + '" class="layer_preview" value="' + LayerID + '"><div class="input_preview"></div><div class="output_preview"></div></div>');
-        layerSlot.appendTo('#data_'+dataID);
-        // var datapannel = '#data_' + dataID;
-        // layerSlot.appendTo(datapannel);
-        // layerSlot.appendTo('#data_panel')
+        console.log("dataid: ", LayerID)
+        layerSlot = $('<div id ="layer_' + LayerID + '" class="layer_preview" value="' + LayerID + '"><div class="input_preview"></div><div class="output_preview"></div></div>');
+        $('#layer_panel').append(layerSlot)
     }
 
     var jqInputGrid = layerSlot.find('.input_preview');
@@ -303,11 +300,24 @@ function initLayerPreview() {
     }
 }
 
-function initTestSetPreview(TestSet, i) {
-    $('.layer_preview').remove();
-    $('<div id="data_'+i+'"></div>').appendTo('#data_panel');
+function hello(i) {
+    alert(i);
+    $.getJSON( '/testset/queryone', {
+        index: i,
+        tags: "mount rainier",
+        tagmode: "any",
+        format: "json"
+      })
+        .done(function( data ) {
+            testSet = JSON.parse(JSON.parse(data[0].testjson)['testArray'])
+            console.log(testSet);
+            initTestSetPreview(testSet)
+        });
+}
+
+function initTestSetPreview(TestSet) {
     for (var id = 0; id < TestSet.length; id++) {
-        fillTestListPreview(TestSet[id], id, i);
+        fillTestListPreview(TestSet[id], id);
     }
 }
 
@@ -443,7 +453,7 @@ function submitFinalTestSet() {
     }
     $.ajax({
         type: 'POST',
-        url: '/testset/finalset',
+        url: '/testset/submit',
         data: JSON.stringify(testData),
         dataType: 'json',
         contentType: 'application/json; charset=utf-8'

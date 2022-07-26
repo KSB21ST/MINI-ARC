@@ -35,7 +35,7 @@ def store_log():
 def show_testset():
     return render_template('testset_interface.html')
 
-@app.route('/testset/finalset', methods=['POST', 'GET'])
+@app.route('/testset/submit', methods=['POST', 'GET'])
 def store_final_set():
     json_obj = request.json
     try:
@@ -59,7 +59,21 @@ def get_test_list():
         cur.execute("SELECT * from testsets")
         data = [dict((cur.description[i][0], value) \
                for i, value in enumerate(row)) for row in cur.fetchall()]
-        print(data)
+    except Exception as e:
+        print(e)
+    return jsonify(data)
+
+@app.route('/testset/queryone', methods=['POST', 'GET'])
+def get_test_one():
+    print("get_test_one")
+    json_idx = request.args.get('index')
+    print(json_idx)
+    query_ = "SELECT * from testsets limit 1 offset " + json_idx
+    try:
+        cur = db.get_db().cursor()
+        cur.execute(query_)
+        data = [dict((cur.description[i][0], value) \
+               for i, value in enumerate(row)) for row in cur.fetchall()]
     except Exception as e:
         print(e)
     return jsonify(data)
