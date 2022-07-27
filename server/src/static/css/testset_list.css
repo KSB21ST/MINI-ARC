@@ -1,0 +1,190 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    min-width: 1410px;
+}
+
+#workspace {
+    width: 1410px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#cardlist_view {
+    float: left;
+    width: 650px;
+    margin: 3px;
+    margin-right: 3px;
+}
+
+#cardone_view {
+    float: left;
+    width: 650px;
+    margin: 3px;
+    margin-left: 3px;
+}
+
+#load_task_control_btns {
+    background: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#editor_grid_control_btns {
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: white;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.input_preview {
+    float: left;
+}
+
+.output_preview {
+    float: right;
+}
+
+.layer_preview {
+    width: 400px;
+    height: 100px;
+    margin: 1px;
+    margin-left: 180px;
+    padding: 1px;
+}
+
+#data_panel {
+    justify-content : center;
+}
+#submit_solution_btn {
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    background: rgb(28, 184, 65);
+}
+
+#submit_final_btn {
+    color: black;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    background: rgb(253, 202, 134);
+}
+
+#submit_solution_btn:active {
+  background: blue;
+}
+
+button:focus {outline:0;}
+
+/* Float four columns side by side */
+.column {
+    float: left;
+    width: 25%;
+    padding: 0 10px;
+  }
+  
+  /* Remove extra left and right margins, due to padding */
+  .row {margin: 0 -5px;}
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  /* Responsive columns */
+  @media screen and (max-width: 600px) {
+    .column {
+      width: 100%;
+      display: block;
+      margin-bottom: 20px;
+    }
+  }
+  
+  /* Style the counter cards */
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    text-align: center;
+    background-color: #f1f1f1;
+    margin-bottom: 20px;
+    cursor : pointer;
+  }
+
+
+label {
+    margin-left: 10px;
+}
+
+input, button {
+    margin-left: 10px;
+}
+
+#resize_btn {
+    margin-left: 0;
+}
+
+/*Task demonstration*/
+
+.pair_preview {
+    height: 200px;
+    padding: 5px;
+    border-bottom: solid 1px #a1a1a1;
+}
+.input_preview {
+    height: 80%;
+    width: 40%;
+    float: left;
+}
+.output_preview {
+    height: 80%;
+    width: 40%;
+    float: left;
+    margin-left: 35px;
+}
+
+.text {
+    text-align: center;
+    background: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.cardLabel {
+    text-align: center;
+    background: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+#task_demo_header {
+    margin: 10px;
+}
+
+#modal_bg {
+    background-color: black;
+    width: 100%;
+    min-height: 10000px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+#modal {
+    margin: auto;
+    background-color: white;
+    text-align: center;
+    padding: 100px;
+    width: 500px;
+    margin-top: 100px;
+}
+
+#modal input {
+    margin-left: 70px;
+}
