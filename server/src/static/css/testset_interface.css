@@ -1,27 +1,18 @@
 body {
     font-family: 'Open Sans', sans-serif;
-    min-width: 1410px;
+    background-color: #fafafa;
 }
 
 #workspace {
-    width: 1410px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#demonstration_examples_view {
-    float: left;
-    width: 450px;
-    margin: 3px;
-    margin-right: 3px;
-    background-color: #d5d5d5;
+    height: 95vh;
+    width: 97vw;
+    padding: 5px 5px 5px 5px;
+    overflow: hidden;
 }
 
 #evaluation_view {
     float: left;
     margin: 3px;
-    margin-left: 3px;
-    background-color: #d5d5d5;
 }
 
 #evaluation-input-view {
@@ -31,23 +22,17 @@ body {
 }
 
 #evaluation_output_editor {
-    float: left;
-    width: 700px;
-    margin: 10px;
-    margin-bottom: 20px;
+    height: 94vh;
 }
 
-#load_task_control_btns {
-    background: white;
-    padding-top: 5px;
-    padding-bottom: 5px;
+#finished_pairs {
+    height: 94vh;
 }
 
 #editor_grid_control_btns {
     float: left;
     margin-top: 10px;
     margin-bottom: 10px;
-    background: white;
     width: 100%;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -82,13 +67,6 @@ body {
     padding-left: 4px;
 }
 
-.layer_preview {
-    float: left;
-    margin: 15px;
-    padding: 15px;
-    background: #d5d5d5;
-}
-
 #resize_control_btns {
     width: 100%;
     float:left;
@@ -102,31 +80,22 @@ body {
     background: rgb(28, 184, 65);
 }
 
-#submit_final_btn {
+/* #submit_final_btn {
     color: black;
     border-radius: 4px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     background: rgb(253, 202, 134);
-}
+} */
 
 #submit_solution_btn:active {
   background: blue;
 }
 
+.col_container {
+    background-color: #d2d3db;
+}
+
 button:focus {outline:0;}
-
-#finished_pairs {
-    margin: 3px;
-    margin-left: 3px;
-    padding: 5px;
-    background-color: #d5d5d5;
-}
-
-.layer_preview {
-    position: relative;
-    width: 400px;
-    height: 100px;
-}
 
 .layer_button {
     display: none;
@@ -149,15 +118,11 @@ input[class="layer_button"]:checked + .layer_selector {
     box-shadow: 0px 0px 6px 2px #0055ff;
 }
 
-#finished_pairs {
-    margin: 3px;
-    margin-left: 3px;
-    padding: 5px;
-    background-color: #d5d5d5;
-    /* float: left;
-    width: 500px; 
-    margin: 10px;
-    margin-bottom: 20px; */
+#layer_panel {
+    height: 68vh;
+    padding-top: 10px;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 
@@ -202,24 +167,34 @@ input, button {
     padding: 5px;
     border-bottom: solid 1px #a1a1a1;
 }
+.layer_preview {
+    position: relative;
+    width: 90%;
+    height: 100px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
 .input_preview {
-    height: 80%;
-    width: 40%;
-    float: left;
+    height: auto;
+    width: auto;
+    /* float: left; */
+    margin-left: 3px;
 }
 .output_preview {
-    height: 80%;
-    width: 40%;
-    float: left;
-    margin-left: 35px;
+    height: auto;
+    width: auto;
+    /* float: right; */
+    margin-right: 3px;
 }
 
 .text {
     text-align: center;
-    background: white;
+    /* background: #d2d3db; */
     padding-top: 5px;
     padding-bottom: 5px;
     margin-bottom: 10px;
+    border-color: lightslategray;
+    border-radius: 4px;
 }
 
 #task_demo_header {

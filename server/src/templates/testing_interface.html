@@ -24,26 +24,28 @@
                 <button onclick="randomTask()" id="random_task_btn">Random task</button>
             </div>
         </div>
-        <div id="workspace">
 
-            <div id="demonstration_examples_view">
-                <div class="text" id="task_demo_header">
+        <div id="workspace" class="container">
+            <div id="demonstration_examples_view" class="col-sm">
+                <div class="text" id="task_demo_header" class="row">
                     <button id="prev_example">Prev</button>
                     Task demonstration <span id="current_example_id">0</span>/<span id="total_examples">0</span>
                     <button id="next_example">Next</button></div>
                 
                 <div id="task_preview"></div>
 
-                <div id="evaluation-input-view">
-                    <div class="text">Test input grid <span id="current_test_input_id_display">0</span>/<span id="total_test_input_count_display">0</span>
-                        <button onclick="nextTestInput()">Next test input</button>
+                <div id="evaluation-input-view" class="row">
+                    <div class="text">
+                        <button onclick="prevTestInput()">Prev</button>
+                        Test input grid <span id="current_test_input_id_display">0</span>/<span id="total_test_input_count_display">0</span>
+                        <button onclick="nextTestInput()">Next</button>
                     </div>
 
                     <div id="evaluation_input" class="selectable_grid"></div>
                 </div>
             </div>
 
-            <div id="evaluation_view">
+            <div id="evaluation_view" class="col-sm">
                 <div id="evaluation_output_editor">
                     <div id="load_task_control_btns">
                         <!-- <label for="load_task_file_input">Load task JSON: </label>
@@ -132,7 +134,7 @@
                 </div>
             </div>
 
-            <div id="layers">
+            <div id="layers" class="col-sm">
                 <div id="layer_panel_view">
 
                     <div class="text">LAYER PANEL<button class="add_layer">ADD LAYER</button></div>

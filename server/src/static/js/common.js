@@ -109,7 +109,7 @@ class Layer {
         }
         for (var i = 0; i < this.cells.length; i++) {
             var cell = this.cells[i]
-            if(cell.val != undefined && cell.row < this.height && cell.col < this.width){
+            if(cell.val != undefined && cell.row < grid.length && cell.col < grid[0].length){
                 grid[cell.row][cell.col] = cell.val;
             }
             
