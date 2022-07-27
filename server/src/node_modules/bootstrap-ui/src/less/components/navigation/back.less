@@ -1,0 +1,39 @@
+/*
+Back Link
+
+Link back to previous page. Typically used together with `<h2>` headings.
+
+<div class="panel panel-info">
+    <div class="panel-heading"><h4 class="panel-title">Heads Up!</h4></div>
+    <div class="panel-body">
+        It may be a little bit confusing to distinguish between the Back Link and More Link components. They both
+        appear on the right side of the heading on big screens, but they are designed in a different way for mobiles.
+    </div>
+</div>
+
+Markup:
+<a href="#" class="back">Back</a>
+<h2>Upon He Was the Divided</h2>
+
+Styleguide 3.1
+*/
+
+
+.back {
+    display: block;
+    margin-bottom: @line-height-computed;
+
+    &:before {
+        content: @back-link-decoration;
+    }
+
+    @media screen and (min-width: @screen-sm-min) {
+        float: right;
+        margin-left: 1.5em; // safety margin
+        padding-top: unit(unit(@font-size-h2) * @headings-line-height - unit(@font-size-base) * @line-height-base, px); // align to baseline with H2
+
+        + form {
+            clear: right;
+        }
+    }
+}

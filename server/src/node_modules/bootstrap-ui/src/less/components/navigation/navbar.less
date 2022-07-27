@@ -1,0 +1,266 @@
+/*
+Navbar
+
+Implements default [Bootstrap navbar](http://getbootstrap.com/components/#navbar) component with minor enhancements
+(eg. `.navbar-primary` modification or `.navbar-icon` for icon items).
+
+<div class="panel panel-info">
+<div class="panel-heading"><h4 class="panel-title">Fixed navbar</h4></div>
+<div class="panel-body">
+    Add `.has-navbar-fixed-top` class to `<body>` when using `.navbar-fixed-top` modification to ensure the content
+    does not hide below navbar.
+</div>
+</div>
+
+Markup:
+<!-- Main navigation -->
+<nav class="navbar navbar-static-top navbar-primary">
+    <div class="container">
+        <!-- Brand and menu toggle -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#kssMenu">
+                <span class="sr-only">Menu</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="#" class="navbar-brand offset-right-large" title="Bootstrap UI">Bootstrap UI</a>
+        </div>
+        <!-- Collapsible menu -->
+        <div class="collapse navbar-collapse" id="kssMenu">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Dashboard</a></li>
+                <li><a href="#">Pages</a></li>
+                <li><a href="#">Media</a></li>
+                <li><a href="#">Users</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="navbar-icon">
+                    <a href="#" target="_blank" title="Open site in a new tab">
+                        <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                        <span class="visible-xs">Home</span>
+                    </a>
+                </li>
+                <li class="navbar-icon">
+                    <a href="#" title="Settings">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        <span class="visible-xs">Settings</span>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="My profile">
+                        <span class="glyphicon glyphicon-user offset-right" aria-hidden="true"></span>
+                        <span class="visible-xs-inline offset-right">My Profile</span>
+                        <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-header">James Brown</li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <span class="glyphicon glyphicon-user offset-right icon-shift-down" aria-hidden="true"></span>
+                                My Account
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="glyphicon glyphicon-off offset-right icon-shift-down" aria-hidden="true"></span>
+                                Sign out
+                            </a>
+                        </li>
+                    </ul>
+                </li><!-- .dropdown -->
+             </ul><!-- .nav -->
+        </div><!-- .collapsible -->
+    </div><!-- .container -->
+</nav>
+
+Styleguide 3.6
+*/
+
+
+.navbar {
+    &-static-top {
+        margin-bottom: 0;
+    }
+
+    &-toggle {
+        margin-right: @navbar-padding-horizontal - 10px;
+    }
+
+    @media screen and (max-width: @screen-xs-max) {
+        .dropdown-header {
+            color: #fff;
+        }
+
+        .visible-xs {
+            display: inline-block !important;
+        }
+
+        &-icon .glyphicon {
+            margin-right: .75ex;
+        }
+    }
+
+    @media screen and (min-width: @screen-sm-min) {
+        &-icon > a {
+            min-height: @navbar-height;
+        }
+    }
+}
+
+// Fixed navbar
+.navbar-fixed-top {
+    border-bottom: none;
+    box-shadow:
+        0 6px 10px 0 fade(#000, 20%),
+        0 1px 0 -2px fade(#000, 2%),
+        0 1px 5px 1px fade(#000, 30%);
+}
+
+// Make place for fixed navbar
+.has-navbar-fixed-top {
+    padding-top: @navbar-height;
+}
+
+// Primary navbar
+.navbar-primary {
+    background-color: @navbar-primary-bg;
+    border-color: @navbar-primary-border;
+
+    .navbar-brand {
+        color: @navbar-primary-brand-color;
+
+        &:hover,
+        &:focus {
+            color: @navbar-primary-brand-hover-color;
+            background-color: @navbar-primary-brand-hover-bg;
+        }
+    }
+
+    .navbar-text {
+        color: @navbar-primary-color;
+    }
+
+    .navbar-nav {
+        > li > a {
+            color: @navbar-primary-link-color;
+
+            &:hover,
+            &:focus {
+                color: @navbar-primary-link-hover-color;
+                background-color: @navbar-primary-link-hover-bg;
+            }
+        }
+
+        > .active > a {
+            &,
+            &:hover,
+            &:focus {
+                color: @navbar-primary-link-active-color;
+                background-color: @navbar-primary-link-active-bg;
+            }
+        }
+
+        > .disabled > a {
+            &,
+            &:hover,
+            &:focus {
+                color: @navbar-primary-link-disabled-color;
+                background-color: @navbar-primary-link-disabled-bg;
+            }
+        }
+    }
+
+    .navbar-toggle {
+        border-color: @navbar-primary-toggle-border-color;
+
+        &:hover,
+        &:focus {
+            background-color: @navbar-primary-toggle-hover-bg;
+        }
+
+        .icon-bar {
+            background-color: @navbar-primary-toggle-icon-bar-bg;
+        }
+    }
+
+    .navbar-collapse,
+    .navbar-form {
+        border-color: @navbar-primary-border;
+    }
+
+    // Dropdown menu items
+    .navbar-nav {
+        // Remove background color from open dropdown
+        > .open > a {
+            &,
+            &:hover,
+            &:focus {
+                background-color: @navbar-primary-link-active-bg;
+                color: @navbar-primary-link-active-color;
+            }
+        }
+
+        @media (max-width: @grid-float-breakpoint-max) {
+            // Dropdowns get custom display when collapsed
+            .open .dropdown-menu {
+                > li > a {
+                    color: @navbar-primary-link-color;
+
+                    &:hover,
+                    &:focus {
+                        color: @navbar-primary-link-hover-color;
+                        background-color: @navbar-primary-link-hover-bg;
+                    }
+                }
+
+                > .active > a {
+                    &,
+                    &:hover,
+                    &:focus {
+                        color: @navbar-primary-link-active-color;
+                        background-color: @navbar-primary-link-active-bg;
+                    }
+                }
+
+                > .disabled > a {
+                    &,
+                    &:hover,
+                    &:focus {
+                        color: @navbar-primary-link-disabled-color;
+                        background-color: @navbar-primary-link-disabled-bg;
+                    }
+                }
+            }
+        }
+    }
+
+    // Links in navbars
+    //
+    // Add a class to ensure links outside the navbar nav are colored correctly.
+    .navbar-link {
+        color: @navbar-primary-link-color;
+
+        &:hover {
+            color: @navbar-primary-link-hover-color;
+        }
+    }
+
+    .btn-link {
+        color: @navbar-primary-link-color;
+
+        &:hover,
+        &:focus {
+            color: @navbar-primary-link-hover-color;
+        }
+
+        &[disabled],
+        fieldset[disabled] & {
+            &:hover,
+            &:focus {
+                color: @navbar-primary-link-disabled-color;
+            }
+        }
+    }
+}

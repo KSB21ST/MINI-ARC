@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="48dc690b-4adb-484e-aa24-d3b68baea597" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/build/bs-config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/docs/usage.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/docs/usage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/tempus-dominus.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/tempus-dominus.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/a.html" />
+        <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/src/js/bootstrap-datetimepicker.js" />
+        <option value="$PROJECT_DIR$/src/less/_bootstrap-datetimepicker.less" />
+        <option value="$PROJECT_DIR$/tasks/bump_version.js" />
+        <option value="$PROJECT_DIR$/src/nuget/Bootstrap.v3.Datetimepicker.CSS.nuspec" />
+        <option value="$PROJECT_DIR$/src/nuget/Bootstrap.v3.Datetimepicker.nuspec" />
+        <option value="$PROJECT_DIR$/ISSUE_TEMPLATE" />
+        <option value="$PROJECT_DIR$/PULL_REQUEST_TEMPLATE" />
+        <option value="$PROJECT_DIR$/CONTRIBUTING.md" />
+        <option value="$PROJECT_DIR$/old_docs/4/index.html" />
+        <option value="$PROJECT_DIR$/src/docs/theme/base.html" />
+        <option value="$PROJECT_DIR$/src/docs/theme/nav.html" />
+        <option value="$PROJECT_DIR$/mkdocs.yml" />
+        <option value="$PROJECT_DIR$/src/CNAME" />
+        <option value="$PROJECT_DIR$/src/docs/index.md" />
+        <option value="$PROJECT_DIR$/Gruntfile.js" />
+        <option value="$PROJECT_DIR$/src/docs/4/ChangeLog/index.html" />
+        <option value="$PROJECT_DIR$/src/docs/usage.html" />
+        <option value="$PROJECT_DIR$/src/js/tempus-dominus.js" />
+        <option value="$PROJECT_DIR$/build/bs-config.js" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1i9nUaSmIaWE3HwWmq31IcZU0p2" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="48dc690b-4adb-484e-aa24-d3b68baea597" name="Default Changelist" comment="" />
+      <created>1601328694957</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1601328694957</updated>
+      <workItem from="1601328701422" duration="3659000" />
+      <workItem from="1601383704272" duration="156000" />
+      <workItem from="1601770559935" duration="1440000" />
+      <workItem from="1605129909050" duration="3997000" />
+      <workItem from="1605234205072" duration="2101000" />
+      <workItem from="1605287858052" duration="6133000" />
+      <workItem from="1605308270216" duration="257000" />
+      <workItem from="1605308894536" duration="351000" />
+      <workItem from="1605908423395" duration="75000" />
+      <workItem from="1605967408866" duration="11850000" />
+    </task>
+    <task id="LOCAL-00001" summary="update docs">
+      <created>1601383453984</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1601383453984</updated>
+    </task>
+    <task id="LOCAL-00002" summary="update docs">
+      <created>1601383619897</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1601383619897</updated>
+    </task>
+    <task id="LOCAL-00003" summary="stupid mkdocs">
+      <created>1601383736739</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1601383736739</updated>
+    </task>
+    <task id="LOCAL-00004" summary="stupid mkdocs">
+      <created>1601383853998</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1601383853998</updated>
+    </task>
+    <task id="LOCAL-00005" summary="blog post notice">
+      <created>1601771745605</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1601771745605</updated>
+    </task>
+    <task id="LOCAL-00006" summary="blog post notice">
+      <created>1601771785860</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1601771785860</updated>
+    </task>
+    <task id="LOCAL-00007" summary="update prep">
+      <created>1605196155491</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1605196155491</updated>
+    </task>
+    <task id="LOCAL-00008" summary="death to v4. getting ready for v6">
+      <created>1605235732054</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1605235732054</updated>
+    </task>
+    <task id="LOCAL-00009" summary="new docs temp">
+      <created>1605306340944</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1605306340944</updated>
+    </task>
+    <task id="LOCAL-00010" summary="new docs temp">
+      <created>1605307971575</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1605307971575</updated>
+    </task>
+    <task id="LOCAL-00011" summary="docs again">
+      <created>1605308435614</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1605308435614</updated>
+    </task>
+    <task id="LOCAL-00012" summary="fix links">
+      <created>1605309161332</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1605309161332</updated>
+    </task>
+    <task id="LOCAL-00013" summary="v6 wip">
+      <created>1605978273896</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1605978273896</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="update docs" />
+    <MESSAGE value="stupid mkdocs" />
+    <MESSAGE value="blog post notice" />
+    <MESSAGE value="update prep" />
+    <MESSAGE value="death to v4. getting ready for v6" />
+    <MESSAGE value="new docs temp" />
+    <MESSAGE value="docs again" />
+    <MESSAGE value="fix links" />
+    <MESSAGE value="v6 wip" />
+    <option name="LAST_COMMIT_MESSAGE" value="v6 wip" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2252" y="505" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1605308302625">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state x="2252" y="505" key="#com.intellij.fileTypes.FileTypeChooser/0.0.3440.1400@0.0.3440.1400" timestamp="1605308302625" />
+    <state width="1674" height="392" key="GridCell.Tab.0.bottom" timestamp="1601383634252">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state width="1674" height="392" key="GridCell.Tab.0.bottom/0.0.3440.1400@0.0.3440.1400" timestamp="1601383634252" />
+    <state width="1674" height="392" key="GridCell.Tab.0.center" timestamp="1601383634251">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state width="1674" height="392" key="GridCell.Tab.0.center/0.0.3440.1400@0.0.3440.1400" timestamp="1601383634251" />
+    <state width="1674" height="392" key="GridCell.Tab.0.left" timestamp="1601383634251">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state width="1674" height="392" key="GridCell.Tab.0.left/0.0.3440.1400@0.0.3440.1400" timestamp="1601383634251" />
+    <state width="1674" height="392" key="GridCell.Tab.0.right" timestamp="1601383634251">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state width="1674" height="392" key="GridCell.Tab.0.right/0.0.3440.1400@0.0.3440.1400" timestamp="1601383634251" />
+    <state x="2172" y="435" key="Rider.ProjectTemplateDialog.Size" timestamp="1605196497953">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state x="2172" y="435" key="Rider.ProjectTemplateDialog.Size/0.0.3440.1400@0.0.3440.1400" timestamp="1605196497953" />
+    <state x="2172" y="436" key="Vcs.Push.Dialog.v2" timestamp="1605309163753">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state x="2172" y="436" key="Vcs.Push.Dialog.v2/0.0.3440.1400@0.0.3440.1400" timestamp="1605309163753" />
+    <state x="669" y="495" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1605277266460">
+      <screen x="0" y="0" width="1704" height="1162" />
+    </state>
+    <state x="669" y="495" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1704.1162@0.0.1704.1162" timestamp="1605277266460" />
+    <state x="124" y="236" width="1058" height="734" key="find.popup" timestamp="1605309053194">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state x="124" y="236" width="1058" height="734" key="find.popup/0.0.3440.1400@0.0.3440.1400" timestamp="1605309053194" />
+    <state x="2243" y="320" width="672" height="678" key="search.everywhere.popup" timestamp="1606058872645">
+      <screen x="0" y="0" width="3440" height="1400" />
+    </state>
+    <state x="2243" y="320" width="672" height="678" key="search.everywhere.popup/0.0.3440.1400@0.0.3440.1400" timestamp="1606058872645" />
+  </component>
+</project>

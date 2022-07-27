@@ -1,0 +1,71 @@
+/*
+Alerts
+
+Extends [Bootstrap alerts](http://getbootstrap.com/components/#alerts).
+
+Styleguide 5.1
+*/
+
+
+/*
+Full Size Alert
+
+For use on the same level as page sections, eg. right after `.navbar`. It features a `.container` so the message is
+aligned with the rest of the page.
+
+Markup:
+<div role="alert" class="alert alert-success alert-dismissible alert-full fade in">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <div class="container">
+        <span class="glyphicon glyphicon-ok-sign offset-right" aria-hidden="true"></span>
+        Your order has been placed. Thank you!
+    </div>
+</div>
+
+Styleguide 5.1.1
+*/
+
+.alert-full {
+    margin-bottom: 1px;
+    padding-left: 0;
+    border-radius: 0;
+    border-left-style: none;
+    border-right-style: none;
+
+    &.alert-dismissible {
+        position: relative;
+        padding-right: 0;
+
+        > .container {
+            padding-right: 1.5 * @grid-gutter-width;
+        }
+
+        > .close {
+            position: absolute;
+            top: 50%;
+            right: @grid-gutter-width / 2;
+            margin-top: -15px;
+        }
+    }
+}
+
+
+/*
+Error Alert
+
+Some frameworks generate error flash messages with `error` modifier. This makes them look just like original
+Bootstrap’s `.alert-danger`.
+
+Markup:
+<div class="alert alert-error alert-dismissible fade in">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <span class="glyphicon glyphicon-warning-sign offset-right" aria-hidden="true"></span>
+    What a mistake!
+</div>
+
+Styleguide 5.1.2
+*/
+
+.alert-error {
+    &:extend(.alert-danger all);
+}

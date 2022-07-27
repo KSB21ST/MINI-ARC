@@ -1,0 +1,20 @@
+/*
+Input Group
+
+Always keep button above the input to prevent input border from disappearing.
+
+Markup:
+<div class="input-group">
+    <input type="search" placeholder="Hledat" class="form-control" title="Zadejte hledaný termín" />
+    <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary btn-raised">Hledat</button>
+    </span>
+</div>
+
+Styleguide 4.4
+*/
+
+
+.input-group-btn > .btn {
+    z-index: 2;
+}

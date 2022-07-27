@@ -1,0 +1,69 @@
+/*
+Footer
+
+Page footer with links and logo.
+
+Markup:
+<footer role="contentinfo" class="footer">
+    <div class="container">
+       <div class="row">
+           <div class="col-md-6">
+               © VisionApps, s.r.o. 2016
+               <span class="footer-divider">|</span>
+               <a href="#" target="_blank">Contact</a>
+           </div>
+           <div class="col-md-6">
+               <a href="http://www.visionapps.cz" target="_blank" class="footer-author" title="Created by VisionApps">
+                   <img src="assets/images/visionapps.svg" width="90" height="16" alt="VisionApps" />
+               </a>
+           </div>
+       </div><!-- .row -->
+    </div><!-- .container -->
+</footer>
+
+Styleguide 2.2
+*/
+
+
+.footer {
+    padding-top: @line-height-computed;
+    padding-bottom: @line-height-computed;
+    text-align: center;
+    color: @footer-text;
+    background-color: @footer-bg;
+
+    a {
+        color: @footer-link-color;
+
+        &:hover,
+        &:focus {
+            color: @footer-link-hover-color;
+        }
+    }
+
+    &-divider {
+        margin-left: .75ex;
+        margin-right: .75ex;
+        color: @footer-divider-border;
+    }
+
+    &-author {
+        margin-top: @line-height-computed;
+        display: inline-block;
+        opacity: .5;
+
+        &:hover,
+        &:focus {
+            opacity: .85;
+        }
+    }
+
+    @media (min-width: @screen-md-min) {
+        text-align: left;
+
+        &-author {
+            float: right;
+            margin-top: 0;
+        }
+    }
+}

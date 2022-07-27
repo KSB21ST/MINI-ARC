@@ -1,0 +1,192 @@
+code {
+    word-wrap: break-word;
+}
+
+.kss__secondary-nav {
+    &__list {
+        list-style-type: square;
+        color: #888;
+    }
+
+    &__item--depth-3 {
+        display: none;
+    }
+
+    @media screen and (min-width: @screen-md-min) {
+        position: fixed;
+    }
+}
+
+.kss__top-link {
+    margin-left: 2.7em;
+}
+
+.kss__title {
+    &--2 {
+        padding-bottom: .25em;
+        border-bottom: 1px solid #ddd;
+    }
+
+    &--3 {
+        margin-top: 2em;
+        margin-bottom: 1em;
+    }
+
+    .kss__section:not(:first-of-type) & {
+        margin-top: 1.5em;
+    }
+}
+
+.kss__example {
+    position: relative;
+    min-height: 5em;
+    margin: .15em 0 3em;
+    padding: 1.5em 1.5em 0;
+    border-top: 1px dashed #bbb;
+
+    &-title {
+        margin-top: 3em;
+        margin-bottom: 0;
+        font-weight: bold;
+        font-size: 85%;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #888;
+    }
+
+    &-box {
+        padding: 1em;
+        border: 1px solid #ccc;
+        background-color: #eee;
+
+        &--xs {
+            @media (max-width: (@screen-sm-min - 1)) {
+                background-color: #dff0d8;
+            }
+        }
+
+        &--sm {
+            @media (min-width: @screen-sm-min) and (max-width: (@screen-md-min - 1)) {
+                background-color: #dff0d8;
+            }
+        }
+
+        &--md {
+            @media (min-width: @screen-md-min) and (max-width: (@screen-lg-min - 1)) {
+                background-color: #dff0d8;
+            }
+        }
+
+        &--lg {
+            @media (min-width: @screen-lg-min) {
+                background-color: #dff0d8;
+            }
+        }
+    }
+
+    // Make `.container` fit its container (y).
+    @media screen and (min-width: @screen-sm-min) {
+        .container {
+            width: auto;
+        }
+    }
+}
+
+.kss__overview,
+.kss__markup {
+    pre {
+        display: none;
+    }
+
+    @media screen and (min-width: @screen-sm-min) {
+        pre {
+            max-height: 300px;
+            display: block;
+            font-size: 13px;
+            word-break: normal;
+            word-wrap: normal;
+            border-color: #ddd;
+            border-radius: 0;
+            background-color: #fafafa;
+        }
+    }
+}
+
+.kss__markup {
+    margin: 1.5em 0;
+}
+
+.kss__color-swatch {
+    display: inline-block;
+    width: 100px;
+    margin: 5px 5px (@line-height-computed / 2);
+    vertical-align: top;
+    text-align: center;
+
+    &__color {
+        display: block;
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 5px;
+        border-radius: @border-radius-base;
+    }
+
+    // Grays
+    &--gray-base {
+        background-color: @gray-base;
+    }
+
+    &--gray-darker {
+        background-color: @gray-darker;
+    }
+
+    &--gray-dark {
+        background-color: @gray-dark;
+    }
+
+    &--gray {
+        background-color: @gray;
+    }
+
+    &--gray-light {
+        background-color: @gray-light;
+    }
+
+    &--gray-lighter {
+        background-color: @gray-lighter;
+    }
+
+    // Brand colors
+    &--brand-primary {
+        background-color: @brand-primary;
+    }
+
+    &--brand-accent {
+        background-color: @brand-accent;
+    }
+
+    &--brand-success {
+        background-color: @brand-success;
+    }
+
+    &--brand-info {
+        background-color: @brand-info;
+    }
+
+    &--brand-warning {
+        background-color: @brand-warning;
+    }
+
+    &--brand-danger {
+        background-color: @brand-danger;
+    }
+
+    @media screen and (min-width: @screen-sm-min) {
+        width: 120px;
+
+        &__color {
+            width: 100px;
+            height: 100px;
+        }
+    }
+}

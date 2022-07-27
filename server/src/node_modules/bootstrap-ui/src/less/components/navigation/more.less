@@ -1,0 +1,46 @@
+/*
+More Link
+
+Responsive link to a complete listing. Works best with H2.
+
+By default, more link is aligned to baseline with the element that has space of one line between itself and the following
+content. The value corresponds to default bottom margin of H2 (which is one line) and can be adjusted via LESS variable
+`@more-link-top-offset`.
+
+<div class="panel panel-info">
+    <div class="panel-heading"><h4 class="panel-title">Heads Up!</h4></div>
+    <div class="panel-body">
+        It may be a little bit confusing to distinguish between the Back Link and More Link components. They both
+        appear on the right side of the heading on big screens, but they are designed in a different way for mobiles.
+    </div>
+</div>
+
+Markup:
+<h2>News</h2>
+<div class="has-more">
+    <p>This is the news.</p>
+    <div class="more">
+        <a href="#">All News</a>
+    </div>
+</div>
+
+Styleguide 3.5
+*/
+
+
+.more > a:after {
+    content: @more-link-decoration;
+}
+
+// Move link to upper right corner on big screens
+@media (min-width: @grid-float-breakpoint) {
+    .more {
+        position: absolute;
+        top: @more-link-top-offset; // align to baseline with H2
+        right: 0;
+    }
+
+    .has-more {
+        position: relative;
+    }
+}

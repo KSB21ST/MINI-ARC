@@ -222,13 +222,6 @@ function fillLayerPreview(layerId) {
     }
 
     var jqInputGrid = layerSlot.find('.grid_preview');
-    // if (!jqInputGrid.length) {
-    //     jqInputGrid = $('<div class="grid_preview"></div>');
-    //     jqInputGrid.appendTo(layerSlot);
-    //     // jqInputGrid.appendTo($('#layer_'+layerId));
-    //     qwhitspace = $('<p></p>');
-    //     qwhitspace.appendTo(layerSlot);
-    // }
 
     layerGrid = LAYERS[layerId].getGrid();
     fillJqGridWithData(jqInputGrid, layerGrid);
@@ -341,9 +334,20 @@ function randomTask() {
     });
 }
 
+function prevTestInput() {
+    if (CURRENT_TEST_PAIR_INDEX <= 0) {
+        return
+    }
+    CURRENT_TEST_PAIR_INDEX -= 1;
+    values = TEST_PAIRS[CURRENT_TEST_PAIR_INDEX]['input'];
+    CURRENT_INPUT_GRID = convertSerializedGridToGridObject(values)
+    fillTestInput(CURRENT_INPUT_GRID);
+    $('#current_test_input_id_display').html(CURRENT_TEST_PAIR_INDEX + 1);
+    $('#total_test_input_count_display').html(test.length);
+}
+
 function nextTestInput() {
     if (TEST_PAIRS.length <= CURRENT_TEST_PAIR_INDEX + 1) {
-        errorMsg('No next test input. Pick another file?')
         return
     }
     CURRENT_TEST_PAIR_INDEX += 1;

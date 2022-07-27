@@ -22,6 +22,7 @@ const NUM_COLS = 5;
 var EDITION_GRID_HEIGHT = 300;
 var EDITION_GRID_WIDTH = 300;
 var MAX_CELL_SIZE = 100;
+var PREVIEW_GRID_SIZE = 75;
 
 // Logs
 var logs = new Log("", "");
@@ -257,7 +258,7 @@ function fillPairPreview(inputGrid, outputGrid) {
 function fillLayerPreview(layerId) {
     var layerSlot = $('#layer_' + layerId);
     if (!layerSlot.length) {
-        layerSlot = $('<div id ="layer_' + layerId + '" class="layer_preview" value="' + layerId + '"><input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><label for="' + layerId + '" class="layer_selector"></label><div class="input_preview"></div><div class="output_preview"></div></div>');
+        layerSlot = $('<div id ="layer_' + layerId + '" class="layer_preview container-fluid" value="' + layerId + '"><div class="row justify-content-center gx-3"><input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><label for="' + layerId + '" class="layer_selector"></label><div class="input_preview col-sm-auto"></div><div class="col-1"><p>&#8594;</p></div><div class="output_preview col-sm-auto"></div></div>');
         layerSlot.appendTo('#layer_panel');
         $(`input[type=radio][id=${layerId}]`).click(function() {
             initializeSelectable();
@@ -267,20 +268,13 @@ function fillLayerPreview(layerId) {
 
     var jqInputGrid = layerSlot.find('.input_preview');
     var jqOutputGrid = layerSlot.find('.output_preview');
-    // if (!jqInputGrid.length) {
-    //     jqInputGrid = $('<div class="grid_preview"></div>');
-    //     jqInputGrid.appendTo(layerSlot);
-    //     // jqInputGrid.appendTo($('#layer_'+layerId));
-    //     qwhitspace = $('<p></p>');
-    //     qwhitspace.appendTo(layerSlot);
-    // }
 
     inputGrid = new Grid(5,5,TESTSETS[layerId].input_cells);
     outputGrid = new Grid(5,5,TESTSETS[layerId].output_cells);
     fillJqGridWithData(jqInputGrid, inputGrid);
-    fitCellsToContainer(jqInputGrid, 5, 5, 100, 100);
+    fitCellsToContainer(jqInputGrid, 5, 5, PREVIEW_GRID_SIZE, PREVIEW_GRID_SIZE);
     fillJqGridWithData(jqOutputGrid, outputGrid);
-    fitCellsToContainer(jqOutputGrid, 5, 5, 100, 100);
+    fitCellsToContainer(jqOutputGrid, 5, 5, PREVIEW_GRID_SIZE, PREVIEW_GRID_SIZE);
 }
 
 function initLayerPreview() {
@@ -822,7 +816,7 @@ $(document).ready(function () {
         initializeSelectable();
     });
 
-    $('button[name=tool_switching][id=tool_clear_selection]').click(function() {
+    $('button[id=tool_clear_selection]').click(function() {
         $('.ui-selected').removeClass('ui-selected');
     });
     

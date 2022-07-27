@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f35cac8e-deb9-49f5-bfba-47db02cede2c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/js/conts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/actions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/dates.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/dates.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/datetime.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/datetime.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/display/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/display/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/tempus-dominus.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/tempus-dominus.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1kegQKY8i5qzQO1h3BBBjI50qzy" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
+    <property name="ts.external.directory.path" value="C:\Users\dev\AppData\Local\JetBrains\Toolbox\apps\Rider\ch-0\202.7660.16\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+  </component>
+  <component name="RunManager">
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.start" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f35cac8e-deb9-49f5-bfba-47db02cede2c" name="Default Changelist" comment="" />
+      <created>1606066457376</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1606066457376</updated>
+      <workItem from="1606066462705" duration="3095000" />
+      <workItem from="1606080319760" duration="14071000" />
+      <workItem from="1606229647310" duration="11993000" />
+      <workItem from="1606338015183" duration="16167000" />
+      <workItem from="1606827670982" duration="6942000" />
+      <workItem from="1606850534029" duration="481000" />
+      <workItem from="1606853131248" duration="2561000" />
+      <workItem from="1606915271630" duration="11984000" />
+      <workItem from="1607016307684" duration="1596000" />
+      <workItem from="1607022468246" duration="10736000" />
+      <workItem from="1607347271417" duration="3156000" />
+      <workItem from="1607372262693" duration="596000" />
+      <workItem from="1607433254316" duration="7120000" />
+      <workItem from="1607519501020" duration="6290000" />
+      <workItem from="1607606271053" duration="5162000" />
+      <workItem from="1607620979828" duration="2206000" />
+      <workItem from="1607692746397" duration="14501000" />
+      <workItem from="1608038278872" duration="1354000" />
+      <workItem from="1608054161792" duration="643000" />
+    </task>
+    <task id="LOCAL-00001" summary="resolves #2331">
+      <created>1606068610007</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1606068610007</updated>
+    </task>
+    <task id="LOCAL-00002" summary="module wip">
+      <created>1606422686862</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1606422686862</updated>
+    </task>
+    <task id="LOCAL-00003" summary="modular date rendering works">
+      <created>1606916058576</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1606916058576</updated>
+    </task>
+    <task id="LOCAL-00004" summary="display wip">
+      <created>1607101345942</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1607101345942</updated>
+    </task>
+    <task id="LOCAL-00005" summary="widget wip">
+      <created>1607526631840</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1607526631840</updated>
+    </task>
+    <task id="LOCAL-00006" summary="working on actions">
+      <created>1607723576182</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1607723576182</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="resolves #2331" />
+    <MESSAGE value="module wip" />
+    <MESSAGE value="modular date rendering works" />
+    <MESSAGE value="display wip" />
+    <MESSAGE value="widget wip" />
+    <MESSAGE value="working on actions" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on actions" />
+  </component>
+</project>

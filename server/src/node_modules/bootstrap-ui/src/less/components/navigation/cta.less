@@ -1,0 +1,88 @@
+/*
+Call to Action
+
+A simple helper for responsive call to action. Made for use in header.
+
+Markup:
+<div class="row">
+    <div class="col-sm-8">
+        <h1 class="section-header-title">Pages</h1>
+    </div>
+    <div class="col-sm-4">
+        <a href="#" class="btn btn-primary btn-raised cta">
+            <span class="glyphicon glyphicon-plus-sign offset-right" aria-hidden="true"></span>
+            New Page
+        </a>
+    </div>
+</div><!-- .row -->
+
+Styleguide 3.2
+*/
+
+
+.cta {
+    margin-top: @line-height-computed;
+
+    @media screen and (min-width: @screen-sm-min) {
+        float: right;
+        margin-top: 0;
+        text-align: right;
+
+        &.btn {
+            float: right;
+        }
+    }
+}
+
+
+/*
+CTA Dropdown
+
+Call to action combined with dropdown.
+
+Markup:
+<div class="row">
+    <div class="col-sm-8">
+        <h1 class="section-header-title">Pages</h1>
+    </div>
+    <div class="col-sm-4">
+        <div class="dropdown cta">
+            <button class="btn btn-primary btn-raised" type="button" id="ctaDropdownLabel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Actions
+                <span class="glyphicon glyphicon-menu-down offset-left" aria-hidden="true"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="ctaDropdownLabel">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+            </ul>
+        </div>
+    </div>
+</div><!-- .row -->
+
+Styleguide 3.2.1
+*/
+
+.cta.dropdown > .dropdown-menu {
+    @media screen and (min-width: @grid-float-breakpoint) {
+        .dropdown-menu-right();
+    }
+}
+
+
+/*
+CTA for Content Headings
+
+For CTA buttons alongside headings in content area simply apply `pull-right` on a regular button, `cta` is not needed.
+
+Markup:
+<a href="#" class="btn btn-primary btn-raised pull-right">
+    <span class="glyphicon glyphicon-plus-sign offset-right" aria-hidden="true"></span>
+    New Page
+</a>
+<h2>Pages</h2>
+
+Styleguide 3.2.2
+*/

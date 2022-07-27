@@ -1,0 +1,92 @@
+/*
+Sections
+
+Sections are used to structure the page content.
+
+Markup:
+<section class="section-header">
+    <div class="container">
+        <h1 class="section-header-title">Page Title</h1>
+        <h2 class="section-header-subtitle">Subtitle</h2>
+    </div><!-- .container -->
+</section>
+<section class="section-header section-header-condensed">
+    <div class="container">
+        <h1 class="section-header-title">Condensed Header Section</h1>
+    </div><!-- .container -->
+</section>
+<section class="section-content">
+    <div class="container">
+        <p>This is the content of the page.</p>
+    </div><!-- .container -->
+</section>
+<section class="section-primary">
+    <div class="container">
+        <h1>Primary Section</h1>
+        <p>This will recolor section to primary color. Works both with header and content sections.</p>
+    </div><!-- .container -->
+</section>
+
+Styleguide 2.5
+*/
+
+
+.section {
+    &-header {
+        padding-top: 1.5 * @line-height-computed;
+        padding-bottom: 1.5 * @line-height-computed;
+        color: @section-header-color;
+        border-bottom: 1px solid @section-header-border-color;
+        background-color: @section-header-bg;
+
+        &-title {
+            margin: 0;
+            color: @section-header-title-color;
+        }
+
+        &-subtitle {
+            &:extend(.h3 all);
+            margin-top: .3em;
+            margin-bottom: 0;
+            color: @section-header-subtitle-color;
+        }
+
+        @media (min-width: @screen-sm-min) {
+            padding-top: 3 * @line-height-computed;
+            padding-bottom: 3 * @line-height-computed;
+
+            &-condensed {
+                padding-top: 1.5 * @line-height-computed;
+                padding-bottom: 1.5 * @line-height-computed;
+            }
+        }
+    }
+
+    &-content {
+        padding-top: 1.5 * @line-height-computed;
+        padding-bottom: 1.5 * @line-height-computed;
+
+        @media (min-width: @screen-sm-min) {
+            padding-top: 2 * @line-height-computed;
+            padding-bottom: 2 * @line-height-computed;
+        }
+    }
+
+    &-primary {
+        background-color: @section-primary-bg;
+
+        &,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: @section-primary-color;
+        }
+
+        &.section-header {
+            border-bottom: none;
+        }
+    }
+}

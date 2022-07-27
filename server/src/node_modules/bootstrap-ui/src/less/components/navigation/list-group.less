@@ -1,0 +1,56 @@
+/*
+List Group
+
+Extends [Bootstrap list group](http://getbootstrap.com/components/#list-group) with nesting and quick add link. Works
+best as sidebar navigation.
+
+Markup:
+<div class="list-group list-group-nested">
+    <a href="#" class="list-group-item active"><h4 class="list-group-item-heading">Pages</h4></a>
+    <a href="#" class="list-group-add" title="Create new item"><span class="glyphicon glyphicon-plus-sign offset-right" aria-hidden="true"></span></a>
+    <a href="#" class="list-group-item list-group-item-nested">Home</a>
+    <a href="#" class="list-group-item list-group-item-nested">Products</a>
+    <a href="#" class="list-group-item list-group-item-nested">About</a>
+    <a href="#" class="list-group-item"><h4 class="list-group-item-heading">Articles</h4></a>
+    <a href="#" class="list-group-add" title="Create new item"><span class="glyphicon glyphicon-plus-sign offset-right" aria-hidden="true"></span></a>
+    <a href="#" class="list-group-item"><h4 class="list-group-item-heading">Settings</h4></a>
+</div>
+
+Styleguide 3.4
+*/
+
+
+.list-group-nested {
+    .list-group-item {
+        &-heading {
+            margin-bottom: 0;
+            font-weight: 700;
+            font-size: 1em;
+        }
+
+        &-nested {
+            padding-left: 2 * @padding-large-horizontal;
+        }
+    }
+}
+
+// Shortcut for quick adding new item
+.list-group-add {
+    position: relative;
+    top: -(2 * 10 + 15px);
+    right: 0;
+    z-index: 2;
+    float: right;
+    padding: 10px 15px;
+    line-height: 17px;
+    color: @brand-primary;
+
+    &:hover,
+    &:focus {
+        color: @text-color;
+    }
+
+    .active + & {
+        color: #fff;
+    }
+}

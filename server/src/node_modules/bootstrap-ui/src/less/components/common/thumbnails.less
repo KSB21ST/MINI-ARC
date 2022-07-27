@@ -1,0 +1,105 @@
+/*
+Thumbnails
+
+Extends [Bootstrap thumbnails](http://getbootstrap.com/components/#thumbnails) with fixed-image-height modification
+which is perfect for media grid listing.
+
+Markup:
+<div class="row">
+    <div class="col-xs-6 col-sm-4">
+        <div class="thumbnail thumbnail-fixed">
+            <a href="#">
+                <div class="thumbnail-image">
+                    <img src="http://satyr.io/400x300" alt="" />
+                </div>
+                <div class="caption">
+                    <h4 class="thumbnail-title">my-darling.jpg</h4>
+                    <small class="text-muted">6378&nbsp;kB</small>
+                </div>
+            </a>
+            <div class="thumbnail-actions">
+                <button type="button" class="item-action item-action-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 col-sm-4">
+        <div class="thumbnail thumbnail-fixed">
+            <a href="#">
+                <div class="thumbnail-image">
+                    <img src="http://satyr.io/400x300" alt="" />
+                </div>
+                <div class="caption">
+                    <h4 class="thumbnail-title">my-lovely-darling-with-a-long-name.jpg</h4>
+                    <small class="text-muted">6378&nbsp;kB</small>
+                </div>
+            </a>
+            <div class="thumbnail-actions">
+                <button type="button" class="item-action item-action-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 col-sm-4">
+        <div class="thumbnail thumbnail-fixed">
+            <a href="#">
+                <div class="thumbnail-image">
+                    <img src="http://satyr.io/400x300" alt="" />
+                </div>
+                <div class="caption">
+                    <h4 class="thumbnail-title">my-darling.jpg</h4>
+                    <small class="text-muted">6378&nbsp;kB</small>
+                </div>
+            </a>
+            <div class="thumbnail-actions">
+                <button type="button" class="item-action item-action-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+            </div>
+        </div>
+    </div>
+</div><!-- .row -->
+
+Styleguide 5.9
+*/
+
+
+.thumbnail-fixed {
+    position: relative;
+
+    a {
+        text-decoration: none;
+    }
+
+    .thumbnail-image {
+        height: 150px;
+        overflow: hidden;
+        text-align: center;
+        background-color: @gray-lighter;
+        // Add support for thumbnails as background images.
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+
+        img {
+            &:extend(.img-responsive all);
+            display: inline-block;
+        }
+
+        &-icon {
+            margin-top: @line-height-computed / 2;
+        }
+    }
+
+    .thumbnail-title {
+        .text-overflow();
+        font-size: @font-size-base;
+        line-height: 1.5;
+    }
+
+    .thumbnail-actions {
+        position: absolute;
+        right: @thumbnail-padding;
+        bottom: @thumbnail-padding;
+
+        form {
+            display: inline;
+        }
+    }
+}

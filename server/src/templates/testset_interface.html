@@ -6,6 +6,9 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>        
         <script src="{{ url_for('static', filename='js/common.js') }}"></script>
         <script src="{{ url_for('static', filename='js/testset_interface.js') }}"></script>
 
@@ -16,105 +19,105 @@
 
     </head>
     <body>
-        <div id="workspace">
-            <div id="evaluation_view">
-                <div id="evaluation_output_editor">
-                    <div id="edition_view">
-                        <div class="text">Make Test Sets</div>
+        <div id="workspace" class="container-fluid">
+            <div id="editor" class="row justify-content-center gx-3">
+                <div id="evaluation_output_editor" class="col col-sm-8 container border bg-light">
+                    <div id="edition_view" class="col_container bg-light">
+                        <div class="text"><h3 class="h4">Make Test Sets</h3></div>
                         <div id="editor_grid_control_btns">
-                            <div id="resize_control_btns">
-                                <label for="output_grid_size">Grid size: 5x5 </label>
-                                <!-- <input type="text" id="output_grid_size" class="grid_size_field" name="size" value="5x5"> -->
+                            <!-- <label for="output_grid_size">Grid size: 5x5 </label> -->
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-secondary" onclick="resetInputGrid()">Reset Input grid</button>
+                                <button type="button" class="btn btn-secondary" onclick="resetOutputGrid()">Reset Output grid</button>
+                                <button type="button" class="btn btn-secondary" id="tool_clear_selection">Clear Selection</button>
                             </div>
-                            <button onclick="resetInputGrid()">Reset Input grid</button>
-                            <button onclick="resetOutputGrid()">Reset Output grid</button>
-                            <button id="tool_clear_selection"
-                                 name="tool_switching" value="floodfill">
-                                <label for="tool_clear_selection">Clear Selection</label>
-                            <button onclick="submitTestSet()" id="submit_solution_btn">Save</button>
+                            <button type="button" class="btn btn-outline-success" onclick="submitFinalTestSet()" id="submit_final_btn">Submit final</button>
                         </div>
 
-                        <div id="input_grid">
-                            <div class="edition_grid selectable_grid">
-                                <div class="row">
-                                    <div class="cell" symbol="0" x="0" y="0"></div>
-                                    <div class="cell" symbol="0" x="0" y="1"></div>
-                                    <div class="cell" symbol="0" x="0" y="2"></div>
-                                    <div class="cell" symbol="0" x="0" y="3"></div>
-                                    <div class="cell" symbol="0" x="0" y="4"></div>
+                        <div class="row justify-content-center">
+
+                            <div id="input_grid" class="col-auto">
+                                <div class="edition_grid selectable_grid">
+                                    <div class="row">
+                                        <div class="cell" symbol="0" x="0" y="0"></div>
+                                        <div class="cell" symbol="0" x="0" y="1"></div>
+                                        <div class="cell" symbol="0" x="0" y="2"></div>
+                                        <div class="cell" symbol="0" x="0" y="3"></div>
+                                        <div class="cell" symbol="0" x="0" y="4"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="cell" symbol="0" x="1" y="0"></div>
+                                        <div class="cell" symbol="0" x="1" y="1"></div>
+                                        <div class="cell" symbol="0" x="1" y="2"></div>
+                                        <div class="cell" symbol="0" x="1" y="3"></div>
+                                        <div class="cell" symbol="0" x="1" y="4"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="cell" symbol="0" x="2" y="0"></div>
+                                        <div class="cell" symbol="0" x="2" y="1"></div>
+                                        <div class="cell" symbol="0" x="2" y="2"></div>
+                                        <div class="cell" symbol="0" x="2" y="3"></div>
+                                        <div class="cell" symbol="0" x="2" y="4"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="cell" symbol="0" x="3" y="0"></div>
+                                        <div class="cell" symbol="0" x="3" y="1"></div>
+                                        <div class="cell" symbol="0" x="3" y="2"></div>
+                                        <div class="cell" symbol="0" x="3" y="3"></div>
+                                        <div class="cell" symbol="0" x="3" y="4"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="cell" symbol="0" x="4" y="0"></div>
+                                        <div class="cell" symbol="0" x="4" y="1"></div>
+                                        <div class="cell" symbol="0" x="4" y="2"></div>
+                                        <div class="cell" symbol="0" x="4" y="3"></div>
+                                        <div class="cell" symbol="0" x="4" y="4"></div>
+                                    </div>
                                 </div>
-                                <div class="row">
-                                    <div class="cell" symbol="0" x="1" y="0"></div>
-                                    <div class="cell" symbol="0" x="1" y="1"></div>
-                                    <div class="cell" symbol="0" x="1" y="2"></div>
-                                    <div class="cell" symbol="0" x="1" y="3"></div>
-                                    <div class="cell" symbol="0" x="1" y="4"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="cell" symbol="0" x="2" y="0"></div>
-                                    <div class="cell" symbol="0" x="2" y="1"></div>
-                                    <div class="cell" symbol="0" x="2" y="2"></div>
-                                    <div class="cell" symbol="0" x="2" y="3"></div>
-                                    <div class="cell" symbol="0" x="2" y="4"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="cell" symbol="0" x="3" y="0"></div>
-                                    <div class="cell" symbol="0" x="3" y="1"></div>
-                                    <div class="cell" symbol="0" x="3" y="2"></div>
-                                    <div class="cell" symbol="0" x="3" y="3"></div>
-                                    <div class="cell" symbol="0" x="3" y="4"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="cell" symbol="0" x="4" y="0"></div>
-                                    <div class="cell" symbol="0" x="4" y="1"></div>
-                                    <div class="cell" symbol="0" x="4" y="2"></div>
-                                    <div class="cell" symbol="0" x="4" y="3"></div>
-                                    <div class="cell" symbol="0" x="4" y="4"></div>
-                                </div>
+                                
                             </div>
-                            
-                        </div>
 
-                        <div id="arrow_grid">
-                            <p>&#8594;</p>
-                        </div>
+                            <div id="arrow_grid" class="col-1">
+                                <h1>&#8594;</h1>
+                            </div>
 
-                        <div id="output_grid">
-                            <div class="edition_grid selectable_grid">
-                                <div class="row">
-                                    <div class="cell" symbol="0" x="0" y="0"></div>
-                                    <div class="cell" symbol="0" x="0" y="1"></div>
-                                    <div class="cell" symbol="0" x="0" y="2"></div>
-                                    <div class="cell" symbol="0" x="0" y="3"></div>
-                                    <div class="cell" symbol="0" x="0" y="4"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="cell" symbol="0" x="1" y="0"></div>
-                                    <div class="cell" symbol="0" x="1" y="1"></div>
-                                    <div class="cell" symbol="0" x="1" y="2"></div>
-                                    <div class="cell" symbol="0" x="1" y="3"></div>
-                                    <div class="cell" symbol="0" x="1" y="4"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="cell" symbol="0" x="2" y="0"></div>
-                                    <div class="cell" symbol="0" x="2" y="1"></div>
-                                    <div class="cell" symbol="0" x="2" y="2"></div>
-                                    <div class="cell" symbol="0" x="2" y="3"></div>
-                                    <div class="cell" symbol="0" x="2" y="4"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="cell" symbol="0" x="3" y="0"></div>
-                                    <div class="cell" symbol="0" x="3" y="1"></div>
-                                    <div class="cell" symbol="0" x="3" y="2"></div>
-                                    <div class="cell" symbol="0" x="3" y="3"></div>
-                                    <div class="cell" symbol="0" x="3" y="4"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="cell" symbol="0" x="4" y="0"></div>
-                                    <div class="cell" symbol="0" x="4" y="1"></div>
-                                    <div class="cell" symbol="0" x="4" y="2"></div>
-                                    <div class="cell" symbol="0" x="4" y="3"></div>
-                                    <div class="cell" symbol="0" x="4" y="4"></div>
+                            <div id="output_grid" class="col-auto">
+                                <div class="edition_grid selectable_grid">
+                                    <div class="row">
+                                        <div class="cell" symbol="0" x="0" y="0"></div>
+                                        <div class="cell" symbol="0" x="0" y="1"></div>
+                                        <div class="cell" symbol="0" x="0" y="2"></div>
+                                        <div class="cell" symbol="0" x="0" y="3"></div>
+                                        <div class="cell" symbol="0" x="0" y="4"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="cell" symbol="0" x="1" y="0"></div>
+                                        <div class="cell" symbol="0" x="1" y="1"></div>
+                                        <div class="cell" symbol="0" x="1" y="2"></div>
+                                        <div class="cell" symbol="0" x="1" y="3"></div>
+                                        <div class="cell" symbol="0" x="1" y="4"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="cell" symbol="0" x="2" y="0"></div>
+                                        <div class="cell" symbol="0" x="2" y="1"></div>
+                                        <div class="cell" symbol="0" x="2" y="2"></div>
+                                        <div class="cell" symbol="0" x="2" y="3"></div>
+                                        <div class="cell" symbol="0" x="2" y="4"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="cell" symbol="0" x="3" y="0"></div>
+                                        <div class="cell" symbol="0" x="3" y="1"></div>
+                                        <div class="cell" symbol="0" x="3" y="2"></div>
+                                        <div class="cell" symbol="0" x="3" y="3"></div>
+                                        <div class="cell" symbol="0" x="3" y="4"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="cell" symbol="0" x="4" y="0"></div>
+                                        <div class="cell" symbol="0" x="4" y="1"></div>
+                                        <div class="cell" symbol="0" x="4" y="2"></div>
+                                        <div class="cell" symbol="0" x="4" y="3"></div>
+                                        <div class="cell" symbol="0" x="4" y="4"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -152,17 +155,16 @@
 
                     <div id="error_display"></div>
                     <div id="info_display"></div>
-                    <button onclick="submitFinalTestSet()" id="submit_final_btn">Submit final</button>
                 </div>
-            </div>
 
-            <div id="finished_pairs">
-                <div id="layer_panel_view">
-
-                    <div class="text">Finished Pairs</div>
-                    <div id="layer_panel">
-                        <button onclick="newExample()" id="new_example_btn">New Example</button>
+                <div id="finished_pairs" class="col-sm-4">
+                    <div id="layer_panel_view" class="col_container p-3 border bg-light">
+                        <div class="text"><h3 class="h4">Finished Pairs</h3></div>
+                        <button type="button" class="btn btn-outline-dark" onclick="newExample()" id="new_example_btn"><i class="bi bi-plus-circle"></i> New Example</button>
                         <p></p>
+                        <div id="layer_panel">
+                            
+                        </div>
                     </div>
                 </div>
             </div>
