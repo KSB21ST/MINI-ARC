@@ -77,6 +77,17 @@ def get_test_list():
         print(e)
     return jsonify(data)
 
+@app.route('/testset/get_approved_list', methods=['POST', 'GET'])
+def get_approved_test_list():
+    try:
+        cur = db.get_db().cursor()
+        cur.execute("SELECT * from testsets WHERE approve=1")
+        data = [dict((cur.description[i][0], value) \
+               for i, value in enumerate(row)) for row in cur.fetchall()]
+    except Exception as e:
+        print(e)
+    return jsonify(data)
+
 @app.route('/testset/queryone', methods=['POST', 'GET'])
 def get_test_one():
     json_idx = request.args.get('index')
