@@ -21,7 +21,6 @@ var currTime = 0
 function fillTestListPreview(TestSet, LayerID) {
     var layerSlot = $('#layer_' + LayerID);
     if (!layerSlot.length) {
-        console.log("dataid: ", LayerID)
         layerSlot = $('<div id ="layer_' + LayerID + '" class="layer_preview" value="' + LayerID + '"><div class="input_preview"></div><div class="output_preview"></div></div>');
         $('#layer_panel').append(layerSlot)
     }
@@ -43,9 +42,9 @@ function initTestSetPreview(TestSet) {
     }
 }
 
-function showTestSet(i) {
+function showApproveTestSet(id) {
     $.getJSON( '/testset/queryone', {
-        index: i,
+        index: id,
         tags: "mount rainier",
         tagmode: "any",
         format: "json"
@@ -55,9 +54,53 @@ function showTestSet(i) {
             console.log(testSet);
             initTestSetPreview(testSet)
             $('.cardLabel').remove();
-            var layerlabel = $('<div class="cardLabel">Set' + i + '</div>')
+            var layerlabel = $('<div class="cardLabel">' + id + '</div>')
             layerlabel.appendTo('#layer_panel')
         });
+}
+
+function showAllTestSet(id) {
+    $.getJSON( '/testset/queryone', {
+        index: id,
+        tags: "mount rainier",
+        tagmode: "any",
+        format: "json"
+      })
+        .done(function( data ) {
+            testSet = JSON.parse(JSON.parse(data[0].testjson)['testArray'])
+            initTestSetPreview(testSet)
+            $('.cardLabel').remove();
+            var layerlabel = $('<div class="cardLabel">' + id + '</div>')
+            layerlabel.appendTo('#layer_panel')
+            $('.admin_btn').remove();
+            var approve_btn = $('<div class="admin_btn"><button onclick="approveSet(\'' + id + ',1\')" id="approve_solution_btn">Approve</button></div>')
+            var disapprove_btn = $('<div class="admin_btn"><button onclick="approveSet(\'' + id + ',0\')" id="disapprove_solution_btn">Disapprove</button></div>')
+            approve_btn.appendTo('#layer_panel')
+            disapprove_btn.appendTo('#layer_panel')
+        });
+}
+
+function approveSet(id) {
+    test_id = id.split(',')[0]
+    approval = id.split(',')[1]
+    var apr = false;
+    if(approval==='1') {
+        apr = true;
+    }
+    var testData = 
+    {
+        'test_id': test_id,
+        'approve': apr,	
+    }
+    $.ajax({
+        type: 'POST',
+        url: '/testset/submit_approval',
+        data: JSON.stringify(testData),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8'
+    }).done(function(msg) {
+        console.log("Testset Saved: \n" + TESTSETS.getString());
+    });
 }
 
 function fillTestInput(inputGrid) {

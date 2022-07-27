@@ -405,12 +405,12 @@ function newExample() {
 }
 
 function submitFinalTestSet() {
-    console.log(TESTSETS)
     var testData = 
     {
         'user_id': "0",
         'test_id': Date.now().toString(36) + Math.random().toString(36).substr(2),
-        'testArray': JSON.stringify(TESTSETS)	
+        'testArray': JSON.stringify(TESTSETS),
+        'Description': ''	
     }
     $.ajax({
         type: 'POST',

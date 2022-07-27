@@ -41,12 +41,26 @@ def store_final_set():
     try:
         con = db.get_db()
         con.execute(
-            "INSERT INTO testsets (user_id, test_id, testjson, approve, ratings) VALUES (?, ?, ?, ?, ?)", (json_obj.get('user_id'), json_obj.get('test_id'), json.dumps(json_obj), False, 0)
+            "INSERT INTO testsets (user_id, test_id, testjson, approve, ratings, Description) VALUES (?, ?, ?, ?, ?, ?)", (json_obj.get('user_id'), json_obj.get('test_id'), json.dumps(json_obj), False, 0, json_obj.get('Description'))
         )
         con.commit()
     except Exception as e:
         print(e)
     return render_template('testing_interface.html')
+
+@app.route('/testset/submit_approval', methods=['POST', 'GET'])
+def update_approval():
+    print("submit_approval")
+    json_obj = request.json
+    try:
+        con = db.get_db()
+        _query = "UPDATE testsets SET approve=" + str(json_obj.get('approve')) + " WHERE test_id='" + json_obj.get('test_id') + "'"
+        print(_query)
+        con.execute(_query)
+        con.commit()
+    except Exception as e:
+        print(e)
+    return render_template('testset_list_admin.html')
 
 @app.route('/testset/list')
 def show_test_list():
