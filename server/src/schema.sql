@@ -15,5 +15,5 @@ CREATE TABLE testsets (
     testjson        TEXT            NOT NULL                        ,
     approve         BOOLEAN         NOT NULL                        ,
     ratings         INTEGER         NOT NULL                        ,
-    Description     TEXT            NOT NULL                        ,
+    Description     TEXT            NOT NULL                        
 );
