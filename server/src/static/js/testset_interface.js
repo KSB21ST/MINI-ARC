@@ -173,44 +173,23 @@ function resizeOutputGrid() {
 }
 
 function resetOutputGrid() {
-    syncFromEditionGridToDataGrid();
+    copyJqGridToDataGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
     CURRENT_OUTPUT_GRID = new Grid(5, 5);
-    syncFromDataGridToEditionGrid();
-    $('#output_grid_size').val("5x5");
-    resizeOutputGrid();
-    LAYERS[currentLayerIndex].height = CURRENT_OUTPUT_GRID.height;
-    LAYERS[currentLayerIndex].width = CURRENT_OUTPUT_GRID.width;
-    LAYERS[currentLayerIndex].cells = [];
+    var blank = new Grid(5,5);
+    TESTSETS[currentExample].output_cells = blank.grid;
+    refreshEditionGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
     updateAllLayers();
     initLayerPreview();
-    addLog({tool: 'resetOutputGrid'});
 }
 
 function resetInputGrid() {
     copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
     CURRENT_INPUT_GRID = new Grid(5, 5);
+    var blank = new Grid(5,5);
+    TESTSETS[currentExample].input_cells = blank.grid;
     refreshEditionGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
-    $('#input_grid_size').val("5x5");
-
-    jqGrid = $('#input .edition_grid');
-    copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
-    dataGrid = JSON.parse(JSON.stringify(CURRENT_INPUT_GRID.grid));
-    CURRENT_INPUT_GRID = new Grid(5, 5, dataGrid);
-    refreshEditionGrid(jqGrid, CURRENT_INPUT_GRID);
-    
-    for (var i = 0; i < LAYERS.length; i++) {
-        LAYERS[i].height = CURRENT_INPUT_GRID.height;
-        LAYERS[i].width = CURRENT_INPUT_GRID.width;
-    }
     updateAllLayers();
     initLayerPreview();
-
-    LAYERS[currentLayerIndex].height = CURRENT_INPUT_GRID.height;
-    LAYERS[currentLayerIndex].width = CURRENT_INPUT_GRID.width;
-    LAYERS[currentLayerIndex].cells = [];
-    updateAllLayers();
-    initLayerPreview();
-    addLog({tool: 'resetInputGrid'});
 }
 
 function copyFromInput() {
@@ -405,14 +384,17 @@ function newExample() {
 }
 
 function submitFinalTestSet() {
-    if(TESTSETS.length != 5){
+    if(TESTSETS.length < 5){
         infoMsg('Not enough test pairs!');
         return;
     }
     console.log(TESTSETS)
+    var user_id = $('#user_id').value();
+    var description = $('task_description').value();
     var testData = 
     {
-        'user_id': "0",
+        'user_id': user_id,
+        'description': description,
         'testArray': JSON.stringify(TESTSETS)	
     }
     $.ajax({
@@ -424,6 +406,12 @@ function submitFinalTestSet() {
     }).done(function(msg) {
         console.log("Testset Saved: \n" + TESTSETS.getString());
     });
+    resetInputGrid();
+        resetOutputGrid();
+        TESTSETS = new Array();
+        TESTSETS.push(new TESTSET());
+        currentExample = 0;
+        initLayerPreview();
 }
 
 function fillTestInput(inputGrid) {

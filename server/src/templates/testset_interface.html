@@ -18,6 +18,29 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 
     </head>
+
+    <div id="submission_modal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Submit Testset?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label>Name</label>
+                    <input id="user_id">
+                    <p></p>
+                    <label>Description</label>
+                    <input id="task_description">
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick="submitFinalTestSet()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <body>
         <div id="workspace" class="container-fluid">
             <div id="editor" class="row justify-content-center gx-3">
@@ -31,7 +54,7 @@
                                 <button type="button" class="btn btn-secondary" onclick="resetOutputGrid()">Reset Output grid</button>
                                 <button type="button" class="btn btn-secondary" id="tool_clear_selection">Clear Selection</button>
                             </div>
-                            <button type="button" class="btn btn-outline-success" onclick="submitFinalTestSet()" id="submit_final_btn">Submit final</button>
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#submission_modal" id="submit_final_btn">Submit final</button>
                         </div>
 
                         <div class="row justify-content-center">

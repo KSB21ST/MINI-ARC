@@ -46,7 +46,7 @@ def store_final_set():
         con.commit()
     except Exception as e:
         print(e)
-    return render_template('testing_interface.html')
+    return render_template('testset_interface.html')
 
 @app.route('/testset/list')
 def show_test_list():
