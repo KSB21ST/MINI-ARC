@@ -11,6 +11,9 @@ CREATE TABLE logs (
 CREATE TABLE testsets (
     id              INTEGER         PRIMARY KEY     AUTOINCREMENT   ,
     user_id         TEXT            NOT NULL                        ,
+    test_id         TEXT            NOT NULL                        ,
     testjson        TEXT            NOT NULL                        ,
-    ratings         INTEGER         NOT NULL
+    approve         BOOLEAN         NOT NULL                        ,
+    ratings         INTEGER         NOT NULL                        ,
+    Description     TEXT            NOT NULL                        ,
 );

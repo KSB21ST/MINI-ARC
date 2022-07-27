@@ -405,14 +405,11 @@ function newExample() {
 }
 
 function submitFinalTestSet() {
-    if(TESTSETS.length != 5){
-        infoMsg('Not enough test pairs!');
-        return;
-    }
     console.log(TESTSETS)
     var testData = 
     {
         'user_id': "0",
+        'test_id': Date.now().toString(36) + Math.random().toString(36).substr(2),
         'testArray': JSON.stringify(TESTSETS)	
     }
     $.ajax({
