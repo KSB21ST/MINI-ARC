@@ -9,32 +9,18 @@ body {
     margin-right: auto;
 }
 
-#demonstration_examples_view {
+#cardlist_view {
     float: left;
-    width: 450px;
+    width: 650px;
     margin: 3px;
     margin-right: 3px;
-    background-color: #d5d5d5;
 }
 
-#evaluation_view {
+#cardone_view {
     float: left;
+    width: 650px;
     margin: 3px;
     margin-left: 3px;
-    background-color: #d5d5d5;
-}
-
-#evaluation-input-view {
-    float: left;
-    width: 400px;
-    margin: 10px;
-}
-
-#evaluation_output_editor {
-    float: left;
-    width: 700px;
-    margin: 10px;
-    margin-bottom: 20px;
 }
 
 #load_task_control_btns {
@@ -53,55 +39,25 @@ body {
     padding-bottom: 5px;
 }
 
-#input_grid {
+.input_preview {
     float: left;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-right: 2px;
-    width: 45%;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-right: 2px;
 }
 
-#arrow_grid {
-    float: left;
-    margin-right: 2px;
-    padding-right: 2px;
-    margin-top: 135px;
-}
-
-#output_grid {
-    float: left;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 4px;
-    width: 45%;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 4px;
+.output_preview {
+    float: right;
 }
 
 .layer_preview {
-    float: left;
+    width: 400px;
+    height: 100px;
     margin: 1px;
+    margin-left: 180px;
     padding: 1px;
-    background: #d5d5d5;
 }
 
-.testset_preview {
-    float: left;
-    margin: 1px;
-    padding: 1px;
-    background: #dac2c2;
+#data_panel {
+    justify-content : center;
 }
-
-#resize_control_btns {
-    width: 100%;
-    float:left;
-    margin-bottom: 10px;
-}
-
 #submit_solution_btn {
     color: white;
     border-radius: 4px;
@@ -121,26 +77,6 @@ body {
 }
 
 button:focus {outline:0;}
-
-#finished_pairs {
-    margin: 3px;
-    margin-left: 3px;
-    padding: 5px;
-    background-color: #d5d5d5;
-}
-
-.layer_preview {
-    position: relative;
-    width: 400px;
-    height: 100px;
-}
-
-#finished_pairs {
-    margin: 3px;
-    margin-left: 3px;
-    padding: 5px;
-    background-color: #d5d5d5;
-}
 
 /* Float four columns side by side */
 .column {
@@ -175,6 +111,7 @@ button:focus {outline:0;}
     text-align: center;
     background-color: #f1f1f1;
     margin-bottom: 20px;
+    cursor : pointer;
   }
 
 
@@ -210,6 +147,14 @@ input, button {
 }
 
 .text {
+    text-align: center;
+    background: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.cardLabel {
     text-align: center;
     background: white;
     padding-top: 5px;

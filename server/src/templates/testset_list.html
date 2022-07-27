@@ -17,8 +17,7 @@
     </head>
     <body>
         <div id="workspace">
-            <div id="evaluation_view">
-                <div id="evaluation_output_editor">
+                <div id="cardlist_view">
                     <div id="edition_view">
                         <div class="text">Complete Test Sets</div>
                         <div id="data_panel">
@@ -37,7 +36,7 @@
                                 .done(function( data ) {
                                   $.each( data, function( i, item ) {
                                     testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
-                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" onClick="hello(\'' + i + '\')"><h3>Card' + i + '</h3></div></div>')
+                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" onClick="showTestSet(\'' + i + '\')"><h3>Card' + i + '</h3></div></div>')
                                     cardList.appendTo('#data_panel')
                                   });
                                 });
@@ -49,17 +48,12 @@
                     <div id="info_display"></div>
                     <!-- <button onclick="submitFinalTestSet()" id="submit_final_btn">Submit final</button> -->
                 </div>
-            </div>
-
-            <div id="finished_pairs">
-                <div id="layer_panel_view">
-
+                <div id="cardone_view">
                     <div class="text">Chosen Testset</div>
                     <div id="layer_panel">
                         <p></p>
                     </div>
                 </div>
-            </div>
         </div>
     </body>
 </html>

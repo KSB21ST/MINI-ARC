@@ -300,7 +300,7 @@ function initLayerPreview() {
     }
 }
 
-function hello(i) {
+function showTestSet(i) {
     $.getJSON( '/testset/queryone', {
         index: i,
         tags: "mount rainier",
@@ -311,6 +311,9 @@ function hello(i) {
             testSet = JSON.parse(JSON.parse(data[0].testjson)['testArray'])
             console.log(testSet);
             initTestSetPreview(testSet)
+            $('.cardLabel').remove();
+            var layerlabel = $('<div class="cardLabel">Card' + i + '</div>')
+            layerlabel.appendTo('#layer_panel')
         });
 }
 
