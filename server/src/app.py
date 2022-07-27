@@ -41,7 +41,7 @@ def store_final_set():
     try:
         con = db.get_db()
         con.execute(
-            "INSERT INTO testsets (user_id, testjson, ratings) VALUES (?, ?, ?)", (json_obj.get('user_id'), json.dumps(json_obj), 0)
+            "INSERT INTO testsets (user_id, test_id, testjson, approve, ratings) VALUES (?, ?, ?, ?, ?)", (json_obj.get('user_id'), json_obj.get('test_id'), json.dumps(json_obj), False, 0)
         )
         con.commit()
     except Exception as e:
@@ -65,10 +65,9 @@ def get_test_list():
 
 @app.route('/testset/queryone', methods=['POST', 'GET'])
 def get_test_one():
-    print("get_test_one")
     json_idx = request.args.get('index')
-    print(json_idx)
-    query_ = "SELECT * from testsets limit 1 offset " + json_idx
+    # query_ = "SELECT * from testsets limit 1 offset " + json_idx
+    query_ = "SELECT * from testsets WHERE test_id='" + json_idx + "'"
     try:
         cur = db.get_db().cursor()
         cur.execute(query_)
@@ -77,6 +76,10 @@ def get_test_one():
     except Exception as e:
         print(e)
     return jsonify(data)
+
+@app.route('/testset/list/admin')
+def show_test_list_admin():
+    return render_template('testset_list_admin.html')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='80', debug=False)

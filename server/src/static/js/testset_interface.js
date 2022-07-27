@@ -384,10 +384,10 @@ function newExample() {
 }
 
 function submitFinalTestSet() {
-    if(TESTSETS.length < 5){
-        infoMsg('Not enough test pairs!');
-        return;
-    }
+    // if(TESTSETS.length < 5){
+    //     infoMsg('Not enough test pairs!');
+    //     return;
+    // }
     console.log(TESTSETS)
     var user_id = $('#user_id').value();
     var description = $('task_description').value();
@@ -395,6 +395,7 @@ function submitFinalTestSet() {
     {
         'user_id': user_id,
         'description': description,
+        'test_id': Date.now().toString(36) + Math.random().toString(36).substr(2),
         'testArray': JSON.stringify(TESTSETS)	
     }
     $.ajax({

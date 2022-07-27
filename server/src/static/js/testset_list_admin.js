@@ -43,9 +43,10 @@ function initTestSetPreview(TestSet) {
     }
 }
 
-function showTestSet(i) {
+function showTestSet(id) {
+    console.log(id)
     $.getJSON( '/testset/queryone', {
-        index: i,
+        index: id,
         tags: "mount rainier",
         tagmode: "any",
         format: "json"
@@ -55,8 +56,13 @@ function showTestSet(i) {
             console.log(testSet);
             initTestSetPreview(testSet)
             $('.cardLabel').remove();
-            var layerlabel = $('<div class="cardLabel">Set' + i + '</div>')
+            var layerlabel = $('<div class="cardLabel">' + testName + '</div>')
             layerlabel.appendTo('#layer_panel')
+            $('.admin_btn').remove();
+            var approve_btn = $('<div class="admin_btn"><button onclick="approveSet()" id="approve_solution_btn">Approve</button></div>')
+            var disapprove_btn = $('<div class="admin_btn"><button onclick="approveSet()" id="disapprove_solution_btn">Disapprove</button></div>')
+            approve_btn.appendTo('#layer_panel')
+            disapprove_btn.appendTo('#layer_panel')
         });
 }
 

@@ -58,11 +58,25 @@ body {
 #data_panel {
     justify-content : center;
 }
-#submit_solution_btn {
+
+.admin_btn {
+    flex: left;
+}
+
+#approve_solution_btn {
+    width: 85px;
     color: white;
     border-radius: 4px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     background: rgb(28, 184, 65);
+}
+
+#disapprove_solution_btn {
+    width: 85px;
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    background: blue;
 }
 
 #submit_final_btn {
@@ -72,8 +86,12 @@ body {
     background: rgb(253, 202, 134);
 }
 
-#submit_solution_btn:active {
-  background: blue;
+#approve_solution_btn:active {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+#disapprove_solution_btn:active {
+    background: rgba(0, 0, 0, 0.2);
 }
 
 button:focus {outline:0;}
