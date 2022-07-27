@@ -42,6 +42,11 @@ function initTestSetPreview(TestSet) {
     }
 }
 
+function editTestSet(id){
+    alert(id)
+    history.pushState(null, null, id)
+}
+
 function showApproveTestSet(id) {
     $.getJSON( '/testset/queryone', {
         index: id,
@@ -51,11 +56,13 @@ function showApproveTestSet(id) {
       })
         .done(function( data ) {
             testSet = JSON.parse(JSON.parse(data[0].testjson)['testArray'])
-            console.log(testSet);
             initTestSetPreview(testSet)
             $('.cardLabel').remove();
             var layerlabel = $('<div class="cardLabel">' + id + '</div>')
             layerlabel.appendTo('#layer_panel')
+            $('.edit_btn').remove();
+            var edit_btn = $('<div class="edit_btn"><button onclick="editTestSet(\'' + id + '\')" id="approve_solution_btn">Edit</button></div>')
+            edit_btn.appendTo('#layer_panel')
         });
 }
 

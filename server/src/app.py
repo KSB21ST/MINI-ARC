@@ -35,6 +35,11 @@ def store_log():
 def show_testset():
     return render_template('testset_interface.html')
 
+@app.route('/testset/<state>')
+def show_url_param(state):
+    print(state)
+    return render_template('testset_interface.html')
+
 @app.route('/testset/submit', methods=['POST', 'GET'])
 def store_final_set():
     json_obj = request.json
