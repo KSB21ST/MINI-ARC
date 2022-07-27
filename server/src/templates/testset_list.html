@@ -36,7 +36,7 @@
                                 .done(function( data ) {
                                   $.each( data, function( i, item ) {
                                     testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
-                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" onClick="showTestSet(\'' + i + '\')"><h3>Card' + i + '</h3></div></div>')
+                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" onClick="showTestSet(\'' + i + '\')"><h3>Set' + i + '</h3></div></div>')
                                     cardList.appendTo('#data_panel')
                                   });
                                 });

@@ -312,7 +312,7 @@ function showTestSet(i) {
             console.log(testSet);
             initTestSetPreview(testSet)
             $('.cardLabel').remove();
-            var layerlabel = $('<div class="cardLabel">Card' + i + '</div>')
+            var layerlabel = $('<div class="cardLabel">Set' + i + '</div>')
             layerlabel.appendTo('#layer_panel')
         });
 }
