@@ -237,9 +237,12 @@ function fillPairPreview(inputGrid, outputGrid) {
 
 function fillLayerPreview(layerId) {
     var layerSlot = $('#layer_' + layerId);
+    var exampleSlot = $('#example_' + layerId);
     if (!layerSlot.length) {
         layerSlot = $('<div id ="layer_' + layerId + '" class="layer_preview container-fluid" value="' + layerId + '"><div class="row justify-content-center gx-3"><input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><label for="' + layerId + '" class="layer_selector"></label><div class="input_preview col-sm-auto"></div><div class="col-1"><p>&#8594;</p></div><div class="output_preview col-sm-auto"></div></div>');
-        layerSlot.appendTo('#layer_panel');
+        layerSlot.appendTo(`#layer_panel`);
+        exampleSlot = $('<div id ="example_' + layerId + '" class="example_preview container-fluid" value="' + layerId + '"><div class="row justify-content-center gx-3"><div class="input_preview col-sm-auto"></div><div class="col-1"><p>&#8594;</p></div><div class="output_preview col-sm-auto"></div></div><p></p>');
+        exampleSlot.appendTo(`#example_panel`);
         $(`input[type=radio][id=${layerId}]`).click(function() {
             initializeSelectable();
             initializeLayerChange();
@@ -248,6 +251,16 @@ function fillLayerPreview(layerId) {
 
     var jqInputGrid = layerSlot.find('.input_preview');
     var jqOutputGrid = layerSlot.find('.output_preview');
+
+    inputGrid = new Grid(5,5,TESTSETS[layerId].input_cells);
+    outputGrid = new Grid(5,5,TESTSETS[layerId].output_cells);
+    fillJqGridWithData(jqInputGrid, inputGrid);
+    fitCellsToContainer(jqInputGrid, 5, 5, PREVIEW_GRID_SIZE, PREVIEW_GRID_SIZE);
+    fillJqGridWithData(jqOutputGrid, outputGrid);
+    fitCellsToContainer(jqOutputGrid, 5, 5, PREVIEW_GRID_SIZE, PREVIEW_GRID_SIZE);
+
+    jqInputGrid = exampleSlot.find('.input_preview');
+    jqOutputGrid = exampleSlot.find('.output_preview');
 
     inputGrid = new Grid(5,5,TESTSETS[layerId].input_cells);
     outputGrid = new Grid(5,5,TESTSETS[layerId].output_cells);
@@ -384,9 +397,19 @@ function newExample() {
     initLayerPreview();
 }
 
-function sendTestSet() {
+function submitFinalTestSet() {
+    // if(TESTSETS.length < 5){
+    //     infoMsg('Not enough test pairs!');
+    //     return;
+    // }
+    console.log(TESTSETS)
     var user_id = $('#user_id').val();
     var description = $('#task_description').val();
+    if (user_id.length == 0 || description.length == 0) {
+        const unsuccessful_toast = new bootstrap.Toast($('#unsuccessful_submit'))
+        unsuccessful_toast.show();
+        return;
+    }
     var testData = 
     {
         'user_id': user_id,
@@ -395,7 +418,7 @@ function sendTestSet() {
         'testArray': JSON.stringify(TESTSETS),
         'Description': description	
     }
-    return $.ajax({
+    $.ajax({
         type: 'POST',
         url: '/testset/submit',
         data: JSON.stringify(testData),
@@ -404,21 +427,13 @@ function sendTestSet() {
     }).done(function(msg) {
         console.log("Testset Saved: \n" + TESTSETS.getString());
     });
-}
-
-function submitFinalTestSet() {
-    // if(TESTSETS.length < 5){
-    //     infoMsg('Not enough test pairs!');
-    //     return;
-    // }
-    console.log(TESTSETS)
-    var promise = sendTestSet();
     resetInputGrid();
     resetOutputGrid();
     TESTSETS = new Array();
     TESTSETS.push(new TESTSET());
     currentExample = 0;
     $('.layer_preview').remove();
+    $('.example_preview').remove();
     initLayerPreview();
     const toast = new bootstrap.Toast($('#successful_submit'))
     toast.show();
