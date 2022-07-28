@@ -41,7 +41,7 @@ def store_final_set():
     try:
         con = db.get_db()
         con.execute(
-            "INSERT INTO testsets (user_id, test_id, testjson, approve, ratings) VALUES (?, ?, ?, ?, ?)", (json_obj.get('user_id'), json_obj.get('test_id'), json.dumps(json_obj), False, 0)
+            "INSERT INTO testsets (user_id, test_id, testjson, approve, ratings, Description) VALUES (?, ?, ?, ?, ?, ?)", (json_obj.get('user_id'), json_obj.get('test_id'), json.dumps(json_obj), False, 0, json_obj.get('description'))
         )
         con.commit()
     except Exception as e:

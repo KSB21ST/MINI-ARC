@@ -169,7 +169,8 @@ function resizeOutputGrid() {
     }
     updateAllLayers();
     initLayerPreview();
-    addLog({tool: 'resizeOutputGrid', height: height, width: width});
+    // addLog({tool: 'resizeOutputGrid', height: height, width: width});
+    
 }
 
 function resetOutputGrid() {
@@ -178,8 +179,9 @@ function resetOutputGrid() {
     var blank = new Grid(5,5);
     TESTSETS[currentExample].output_cells = blank.grid;
     refreshEditionGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
-    updateAllLayers();
     initLayerPreview();
+    var layerSlot = $('#layer_' + currentExample);
+    layerSlot.val('checked', true);
 }
 
 function resetInputGrid() {
@@ -188,7 +190,6 @@ function resetInputGrid() {
     var blank = new Grid(5,5);
     TESTSETS[currentExample].input_cells = blank.grid;
     refreshEditionGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
-    updateAllLayers();
     initLayerPreview();
 }
 
@@ -257,7 +258,7 @@ function fillLayerPreview(layerId) {
 }
 
 function initLayerPreview() {
-    $('.layer_preview').remove();
+    // $('.layer_preview').remove();
     for (var id = 0; id < TESTSETS.length; id++) {
         fillLayerPreview(id);
     }
@@ -383,14 +384,9 @@ function newExample() {
     initLayerPreview();
 }
 
-function submitFinalTestSet() {
-    // if(TESTSETS.length < 5){
-    //     infoMsg('Not enough test pairs!');
-    //     return;
-    // }
-    console.log(TESTSETS)
-    var user_id = $('#user_id').value();
-    var description = $('task_description').value();
+function sendTestSet() {
+    var user_id = $('#user_id').val();
+    var description = $('#task_description').val();
     var testData = 
     {
         'user_id': user_id,
@@ -398,7 +394,7 @@ function submitFinalTestSet() {
         'test_id': Date.now().toString(36) + Math.random().toString(36).substr(2),
         'testArray': JSON.stringify(TESTSETS)	
     }
-    $.ajax({
+    return $.ajax({
         type: 'POST',
         url: '/testset/submit',
         data: JSON.stringify(testData),
@@ -407,12 +403,24 @@ function submitFinalTestSet() {
     }).done(function(msg) {
         console.log("Testset Saved: \n" + TESTSETS.getString());
     });
+}
+
+function submitFinalTestSet() {
+    // if(TESTSETS.length < 5){
+    //     infoMsg('Not enough test pairs!');
+    //     return;
+    // }
+    console.log(TESTSETS)
+    var promise = sendTestSet();
     resetInputGrid();
-        resetOutputGrid();
-        TESTSETS = new Array();
-        TESTSETS.push(new TESTSET());
-        currentExample = 0;
-        initLayerPreview();
+    resetOutputGrid();
+    TESTSETS = new Array();
+    TESTSETS.push(new TESTSET());
+    currentExample = 0;
+    $('.layer_preview').remove();
+    initLayerPreview();
+    const toast = new bootstrap.Toast($('#successful_submit'))
+    toast.show();
 }
 
 function fillTestInput(inputGrid) {
