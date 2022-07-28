@@ -37,6 +37,7 @@ function fillTestListPreview(TestSet, LayerID) {
 }
 
 function initTestSetPreview(TestSet) {
+    $('.layer_preview').remove();
     for (var id = 0; id < TestSet.length; id++) {
         fillTestListPreview(TestSet[id], id);
     }
