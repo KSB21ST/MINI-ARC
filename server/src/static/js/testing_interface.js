@@ -680,9 +680,9 @@ function redo() {
 
 // Initial event binding.
 
-$(window).load(function() {
-    $('#start_page').modal('show');
-})
+// $(window).load(function() {
+//     $('#start_page').modal('show');
+// })
 
 $(document).ready(function () {
     $('#symbol_picker').find('.symbol_preview').click(function(event) {
