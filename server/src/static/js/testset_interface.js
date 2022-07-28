@@ -392,7 +392,8 @@ function sendTestSet() {
         'user_id': user_id,
         'description': description,
         'test_id': Date.now().toString(36) + Math.random().toString(36).substr(2),
-        'testArray': JSON.stringify(TESTSETS)	
+        'testArray': JSON.stringify(TESTSETS),
+        'Description': description	
     }
     return $.ajax({
         type: 'POST',
