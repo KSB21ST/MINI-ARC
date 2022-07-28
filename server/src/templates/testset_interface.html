@@ -228,7 +228,14 @@
                             class="bi bi-plus-circle"></i> New Example</button>
                     <p></p>
                     <div id="layer_panel">
-
+                        {% if id %}
+                        <p>edit {{id}}</p>
+                        <script>
+                            (function() {
+                                reloadExample();
+                            })();
+                            </script>
+                        {% endif %}
                     </div>
                 </div>
             </div>

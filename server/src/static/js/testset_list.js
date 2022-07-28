@@ -44,8 +44,8 @@ function initTestSetPreview(TestSet) {
 }
 
 function editTestSet(id){
-    alert(id)
     history.pushState(null, null, id)
+    window.location.reload();
 }
 
 function showApproveTestSet(id) {

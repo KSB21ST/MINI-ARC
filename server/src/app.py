@@ -38,7 +38,7 @@ def show_testset():
 @app.route('/testset/<state>')
 def show_url_param(state):
     print(state)
-    return render_template('testset_interface.html')
+    return render_template('testset_interface.html', id=state)
 
 @app.route('/testset/submit', methods=['POST', 'GET'])
 def store_final_set():
@@ -96,6 +96,7 @@ def get_approved_test_list():
 @app.route('/testset/queryone', methods=['POST', 'GET'])
 def get_test_one():
     json_idx = request.args.get('index')
+    print("queryone ", json_idx)
     # query_ = "SELECT * from testsets limit 1 offset " + json_idx
     query_ = "SELECT * from testsets WHERE test_id='" + json_idx + "'"
     try:

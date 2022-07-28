@@ -397,6 +397,29 @@ function newExample() {
     initLayerPreview();
 }
 
+function reloadExample() {
+    const queryString = window.location.href;
+    const params = queryString.split('/')
+    $.getJSON( '/testset/queryone', {
+    index: params[4],
+    tags: "mount rainier",
+    tagmode: "any",
+    format: "json"
+    })
+    .done(function( data ) {
+        $.each( data, function( i, item ) {
+            testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
+            testSet.forEach((p) => {
+                TESTSETS.push(new TESTSET(p.input_cells, p.output_cells));
+            })
+        });
+    });
+    currentExample = TESTSETS.length - 1;
+    resetInputGrid();
+    resetOutputGrid();
+    initLayerPreview();
+}
+
 function submitFinalTestSet() {
     // if(TESTSETS.length < 5){
     //     infoMsg('Not enough test pairs!');
