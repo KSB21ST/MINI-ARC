@@ -37,7 +37,6 @@ def show_testset():
 
 @app.route('/testset/<state>')
 def show_url_param(state):
-    print(state)
     return render_template('testset_interface.html', id=state)
 
 @app.route('/testset/submit', methods=['POST', 'GET'])

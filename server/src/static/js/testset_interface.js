@@ -714,8 +714,20 @@ function redo() {
 }
 
 function viewpage(){
-    history.pushState(null, null, 'list')
-    window.location.reload();
+    console.log("viewpage")
+    var urlString = location.href;
+    console.log(urlString.split('/'))
+    var oldURL = '/testset'
+    var changeURL = '/testset/list'
+    var newURL=""
+    if (urlString.split('/').length === 5) {
+        var urlsplit = urlString.split('/')
+        var newURL = oldURL + '/' + urlsplit[4]
+        window.location.replace(urlString.replace(newURL, changeURL));
+    }
+    else if (urlString.match(oldURL)){
+        window.location.replace(urlString.replace(oldURL, changeURL));
+    }
 }
 
 // Initial event binding.
