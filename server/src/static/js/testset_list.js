@@ -133,7 +133,6 @@ function searchTestSet() {
         dataType: 'json',
         contentType: 'application/json; charset=utf-8'
     }).done(function(data) {
-        console.log(data)
         $('.column').remove();
         $.each( data, function( i, item ) {
             testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
@@ -145,3 +144,40 @@ function searchTestSet() {
     });
 }
 
+function searchAdminTestSet() {
+    var user_id = $('#user_id').val();
+    var description = $('#task_description').val();
+    var approval = $('#approved').val();
+    var disapproval = $('#disapproved').val();
+    var testData = 
+    {
+        'user_id': user_id,
+        'description': description,
+    }
+    if(document.getElementById("approved").checked){
+        testData['approval'] = approval
+    }else{
+        testData['approval'] = disapproval
+    }
+    $('.cardLabel').remove();
+    $('.admin_btn').remove();
+    $('.layer_preview').remove();
+    $.ajax({
+        type: 'GET',
+        url: '/testset/search',
+        data: testData,
+        dataType: 'json',
+        asyn:false,
+        contentType: 'application/json; charset=utf-8'
+    }).done(function(data) {
+        $('.column').remove();
+        $.each( data, function( i, item ) {
+            testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
+            const json_obj = JSON.parse(item.testjson)
+            const testApprove = item.approve
+            const testName = JSON.parse(item.testjson)['test_id']
+            var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showAllTestSet(\'' + testName + '\')"><h6>testID: ' + testName.slice(0,9) + '</h6><h6>madeBy: '+json_obj['user_id']+'</h6><h6>'+json_obj['description']+'</h6><h6>approved: ' + String(testApprove) + '</h6></div></div>')
+            cardList.appendTo('#data_panel')
+          });
+    });
+}

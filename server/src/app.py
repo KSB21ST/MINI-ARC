@@ -127,6 +127,7 @@ def show_test_list_admin():
 def search_test():
     _user_id = request.args['user_id']
     _description = request.args['description']
+    _approval = request.args['approval']
     query_ = ""
     if(_user_id):
         if(_description):
@@ -138,6 +139,11 @@ def search_test():
             query_ = "SELECT * from testsets WHERE description='"+_description+"'"
         else:
             query_ = "SELECT * from testsets"
+    if(_approval):
+        if(_user_id or _description):
+            query_ = query_ + " AND approve=" + _approval
+        else:
+            query_ = query_ + " WHERE approve=" + _approval
     try:
         cur = db.get_db().cursor()
         cur.execute(query_)
