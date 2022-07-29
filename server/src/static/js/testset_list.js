@@ -57,9 +57,10 @@ function showApproveTestSet(id) {
       })
         .done(function( data ) {
             testSet = JSON.parse(JSON.parse(data[0].testjson)['testArray'])
+            test_obj = JSON.parse(data[0].testjson)
             initTestSetPreview(testSet)
             $('.cardLabel').remove();
-            var layerlabel = $('<div class="cardLabel">' + id + '</div>')
+            var layerlabel = $('<div class="cardLabel"><h6>' + id + '</h6><h6>madeBy: '+test_obj['user_id']+'</h6><h6>'+test_obj['description']+'</h6></div>')
             layerlabel.appendTo('#layer_panel')
             $('.edit_btn').remove();
             var edit_btn = $('<div class="edit_btn"><button onclick="editTestSet(\'' + id + '\')" id="approve_solution_btn">Edit</button></div>')
@@ -115,5 +116,32 @@ function fillTestInput(inputGrid) {
     jqInputGrid = $('#evaluation_input');
     fillJqGridWithData(jqInputGrid, inputGrid);
     fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 200, 200);
+}
+
+function searchTestSet() {
+    var user_id = $('#user_id').val();
+    var description = $('#task_description').val();
+    var testData = 
+    {
+        'user_id': user_id,
+        'description': description,
+    }
+    $.ajax({
+        type: 'GET',
+        url: '/testset/search',
+        data: testData,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8'
+    }).done(function(data) {
+        console.log(data)
+        $('.column').remove();
+        $.each( data, function( i, item ) {
+            testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
+            const json_obj = JSON.parse(item.testjson)
+            const testName = JSON.parse(item.testjson)['test_id']
+            var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showApproveTestSet(\'' + testName + '\')"><h6>testID: ' + testName.slice(0,9) + '</h6><h6>madeBy: '+json_obj['user_id']+'</h6><h6>'+json_obj['description']+'</h6></div></div>')
+            cardList.appendTo('#data_panel')
+          });
+    });
 }
 

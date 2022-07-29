@@ -6,6 +6,12 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+            crossorigin="anonymous"></script>
         <script src="{{ url_for('static', filename='js/common.js') }}"></script>
         <script src="{{ url_for('static', filename='js/testset_list.js') }}"></script>
 
@@ -15,11 +21,63 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 
     </head>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <!-- <div id="successful_submit" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto"><i class="bi bi-check-lg"></i>Submitted Successfully</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Your Test set has been successfully saved.
+            </div>
+        </div> -->
+
+        <div id="unsuccessful_submit" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto text-danger"><i class="bi bi-exclamation-lg"></i>Error</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Please check if you filled out your name and task description.
+            </div>
+        </div>
+    </div>
+
+    <div id="submission_modal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Search testSet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label>userID</label>
+                <br>
+                <input id="user_id">
+                <p></p>
+                <label>Description</label>
+                <br>
+                <input id="task_description">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                    onclick="searchTestSet()">Search</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
     <body>
         <div id="workspace">
                 <div id="cardlist_view">
                     <div id="edition_view">
                         <div class="text">Disapproved Test Sets</div>
+                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+                            data-bs-target="#submission_modal" id="submit_final_btn">Search</button>
                         <div id="data_panel">
                             <p></p>
                             <div class="row">
@@ -38,7 +96,7 @@
                                     testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
                                     const json_obj = JSON.parse(item.testjson)
                                     const testName = JSON.parse(item.testjson)['test_id']
-                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showApproveTestSet(\'' + testName + '\')"><h3>testID: ' + testName.slice(0,9) + '</h3><h3>madeBy: '+json_obj['user_id']+'</h3><h3>'+json_obj['description']+'</h3></div></div>')
+                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showApproveTestSet(\'' + testName + '\')"><h6>testID: ' + testName.slice(0,9) + '</h6><h6>madeBy: '+json_obj['user_id']+'</h6><h6>'+json_obj['description']+'</h6></div></div>')
                                     cardList.appendTo('#data_panel')
                                   });
                                 });

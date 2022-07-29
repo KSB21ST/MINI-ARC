@@ -123,6 +123,30 @@ def get_test_one():
 def show_test_list_admin():
     return render_template('testset_list_admin.html')
 
+@app.route('/testset/search', methods=['POST', 'GET'])
+def search_test():
+    _user_id = request.args['user_id']
+    _description = request.args['description']
+    query_ = ""
+    if(_user_id):
+        if(_description):
+            query_ = "SELECT * from testsets WHERE user_id='" + _user_id + "' AND description='"+_description+"'"
+        else:
+            query_ = "SELECT * from testsets WHERE user_id='" + _user_id + "'"
+    else:
+        if(_description):
+            query_ = "SELECT * from testsets WHERE description='"+_description+"'"
+        else:
+            query_ = "SELECT * from testsets"
+    try:
+        cur = db.get_db().cursor()
+        cur.execute(query_)
+        data = [dict((cur.description[i][0], value) \
+               for i, value in enumerate(row)) for row in cur.fetchall()]
+    except Exception as e:
+        print(e)
+    return jsonify(data)
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='80', debug=False)
     
