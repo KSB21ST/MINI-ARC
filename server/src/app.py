@@ -93,6 +93,17 @@ def get_approved_test_list():
         print(e)
     return jsonify(data)
 
+@app.route('/testset/get_disapproved_list', methods=['POST', 'GET'])
+def get_disapproved_test_list():
+    try:
+        cur = db.get_db().cursor()
+        cur.execute("SELECT * from testsets WHERE approve=0")
+        data = [dict((cur.description[i][0], value) \
+               for i, value in enumerate(row)) for row in cur.fetchall()]
+    except Exception as e:
+        print(e)
+    return jsonify(data)
+
 @app.route('/testset/queryone', methods=['POST', 'GET'])
 def get_test_one():
     json_idx = request.args.get('index')
@@ -108,7 +119,7 @@ def get_test_one():
         print(e)
     return jsonify(data)
 
-@app.route('/testset/list/admin')
+@app.route('/testset/admin')
 def show_test_list_admin():
     return render_template('testset_list_admin.html')
 

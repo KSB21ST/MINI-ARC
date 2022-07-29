@@ -719,6 +719,11 @@ function redo() {
     makeGridFromLayer();
 }
 
+function viewpage(){
+    history.pushState(null, null, 'testset/list')
+    window.location.reload();
+}
+
 // Initial event binding.
 
 

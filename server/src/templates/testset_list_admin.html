@@ -19,7 +19,7 @@
         <div id="workspace">
                 <div id="cardlist_view">
                     <div id="edition_view">
-                        <div class="text">Waiting Test Sets</div>
+                        <div class="text">All Test Sets</div>
                         <div id="data_panel">
                             <p></p>
                             <div class="row">
@@ -38,7 +38,8 @@
                                     testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
                                     const testName = JSON.parse(item.testjson)['test_id']
                                     const testApprove = item.approve
-                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" onClick="showAllTestSet(\'' + testName + '\')"><h3>' + testName.slice(0,9) + '</h3><p>approved: ' + testApprove + '</p></div></div>')
+                                    const json_obj = JSON.parse(item.testjson)
+                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showAllTestSet(\'' + testName + '\')"><h3>testID: ' + testName.slice(0,9) + '</h3><h3>madeBy: '+json_obj['user_id']+'</h3><h3>'+json_obj['description']+'</h3><h3>approved: ' + testApprove + '</h3></div></div>')
                                     cardList.appendTo('#data_panel')
                                   });
                                 });

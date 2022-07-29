@@ -19,7 +19,7 @@
         <div id="workspace">
                 <div id="cardlist_view">
                     <div id="edition_view">
-                        <div class="text">Approved Test Sets</div>
+                        <div class="text">Disapproved Test Sets</div>
                         <div id="data_panel">
                             <p></p>
                             <div class="row">
@@ -28,7 +28,7 @@
 
                         <script>
                             (function() {
-                              $.getJSON( '/testset/get_approved_list', {
+                              $.getJSON( '/testset/get_disapproved_list', {
                                 tags: "mount rainier",
                                 tagmode: "any",
                                 format: "json"
@@ -36,8 +36,9 @@
                                 .done(function( data ) {
                                   $.each( data, function( i, item ) {
                                     testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
+                                    const json_obj = JSON.parse(item.testjson)
                                     const testName = JSON.parse(item.testjson)['test_id']
-                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" onClick="showApproveTestSet(\'' + testName + '\')"><h3>' + testName.slice(0,9) + '</h3></div></div>')
+                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showApproveTestSet(\'' + testName + '\')"><h3>testID: ' + testName.slice(0,9) + '</h3><h3>madeBy: '+json_obj['user_id']+'</h3><h3>'+json_obj['description']+'</h3></div></div>')
                                     cardList.appendTo('#data_panel')
                                   });
                                 });
