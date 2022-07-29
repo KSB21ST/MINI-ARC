@@ -8,7 +8,7 @@ var COPY_PASTE_DATA = new Array();
 var SELECTED_DATA = new Array();
 var LAYERS = new Array();
 var TESTSETS = new Array();
-TESTSETS.push(new TESTSET());
+// TESTSETS.push(new TESTSET());
 LAYERS.push(new Layer(new Array(), 0, 5, 5, 0));
 var currentLayerIndex = 0;
 var EXAMPLES = new Array();
@@ -397,11 +397,34 @@ function newExample() {
     initLayerPreview();
 }
 
+function reloadExample() {
+    const queryString = window.location.href;
+    const params = queryString.split('/')
+    var myData = {
+        'index': params[4],
+    }
+    $.ajax({
+        type: 'GET',
+        url: '/testset/queryone',
+        data: myData,
+        dataType: 'json',
+        async: false,
+        contentType: 'application/json; charset=utf-8'
+    }).done(function(data) {
+        TESTSETS = new Array();
+        $.each( data, function( i, item ) {
+            testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
+            testSet.forEach((p) => {
+                TESTSETS.push(new TESTSET(p.input_cells, p.output_cells));
+                console.log(p.input_cells, p.output_cells, TESTSETS)
+            })
+        });
+    });
+    currentExample = TESTSETS.length - 1;
+    initLayerPreview();
+}
+
 function submitFinalTestSet() {
-    // if(TESTSETS.length < 5){
-    //     infoMsg('Not enough test pairs!');
-    //     return;
-    // }
     console.log(TESTSETS)
     var user_id = $('#user_id').val();
     var description = $('#task_description').val();
@@ -688,6 +711,23 @@ function redo() {
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
+}
+
+function viewpage(){
+    console.log("viewpage")
+    var urlString = location.href;
+    console.log(urlString.split('/'))
+    var oldURL = '/testset'
+    var changeURL = '/testset/list'
+    var newURL=""
+    if (urlString.split('/').length === 5) {
+        var urlsplit = urlString.split('/')
+        var newURL = oldURL + '/' + urlsplit[4]
+        window.location.replace(urlString.replace(newURL, changeURL));
+    }
+    else if (urlString.match(oldURL)){
+        window.location.replace(urlString.replace(oldURL, changeURL));
+    }
 }
 
 // Initial event binding.

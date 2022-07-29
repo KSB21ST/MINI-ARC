@@ -52,8 +52,7 @@ def show_testset():
 
 @app.route('/testset/<state>')
 def show_url_param(state):
-    print(state)
-    return render_template('testset_interface.html')
+    return render_template('testset_interface.html', id=state)
 
 @app.route('/testset/submit', methods=['POST', 'GET'])
 def store_final_set():
@@ -108,6 +107,17 @@ def get_approved_test_list():
         print(e)
     return jsonify(data)
 
+@app.route('/testset/get_disapproved_list', methods=['POST', 'GET'])
+def get_disapproved_test_list():
+    try:
+        cur = db.get_db().cursor()
+        cur.execute("SELECT * from testsets WHERE approve=0")
+        data = [dict((cur.description[i][0], value) \
+               for i, value in enumerate(row)) for row in cur.fetchall()]
+    except Exception as e:
+        print(e)
+    return jsonify(data)
+
 @app.route('/testset/queryone', methods=['POST', 'GET'])
 def get_test_one():
     json_idx = request.args.get('index')
@@ -122,9 +132,41 @@ def get_test_one():
         print(e)
     return jsonify(data)
 
-@app.route('/testset/list/admin')
+@app.route('/testset/admin')
 def show_test_list_admin():
     return render_template('testset_list_admin.html')
+
+@app.route('/testset/search', methods=['POST', 'GET'])
+def search_test():
+    _user_id = request.args['user_id']
+    _description = request.args['description']
+    _approval = request.args['approval']
+    print("search_testset", _user_id, _description, _approval)
+    query_ = ""
+    if(_user_id):
+        if(_description):
+            query_ = "SELECT * from testsets WHERE user_id='" + _user_id + "' AND description='"+_description+"'"
+        else:
+            query_ = "SELECT * from testsets WHERE user_id='" + _user_id + "'"
+    else:
+        if(_description):
+            query_ = "SELECT * from testsets WHERE description='"+_description+"'"
+        else:
+            query_ = "SELECT * from testsets"
+    if(int(_approval) > -1):
+        if(_user_id or _description):
+            query_ = query_ + " AND approve=" + _approval
+        else:
+            query_ = query_ + " WHERE approve=" + _approval
+    print("search: ", query_)
+    try:
+        cur = db.get_db().cursor()
+        cur.execute(query_)
+        data = [dict((cur.description[i][0], value) \
+               for i, value in enumerate(row)) for row in cur.fetchall()]
+    except Exception as e:
+        print(e)
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='80', debug=False)
