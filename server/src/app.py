@@ -107,7 +107,6 @@ def get_disapproved_test_list():
 @app.route('/testset/queryone', methods=['POST', 'GET'])
 def get_test_one():
     json_idx = request.args.get('index')
-    print("queryone ", json_idx)
     # query_ = "SELECT * from testsets limit 1 offset " + json_idx
     query_ = "SELECT * from testsets WHERE test_id='" + json_idx + "'"
     try:
@@ -128,6 +127,7 @@ def search_test():
     _user_id = request.args['user_id']
     _description = request.args['description']
     _approval = request.args['approval']
+    print("search_testset", _user_id, _description, _approval)
     query_ = ""
     if(_user_id):
         if(_description):
@@ -139,11 +139,12 @@ def search_test():
             query_ = "SELECT * from testsets WHERE description='"+_description+"'"
         else:
             query_ = "SELECT * from testsets"
-    if(_approval):
+    if(int(_approval) > -1):
         if(_user_id or _description):
             query_ = query_ + " AND approve=" + _approval
         else:
             query_ = query_ + " WHERE approve=" + _approval
+    print("search: ", query_)
     try:
         cur = db.get_db().cursor()
         cur.execute(query_)

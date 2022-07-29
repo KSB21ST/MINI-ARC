@@ -119,18 +119,24 @@ function fillTestInput(inputGrid) {
 }
 
 function searchTestSet() {
+    console.log("searchTestSet")
     var user_id = $('#user_id').val();
     var description = $('#task_description').val();
     var testData = 
     {
         'user_id': user_id,
         'description': description,
+        'approval': '-1'
     }
+    $('.cardLabel').remove();
+    $('.admin_btn').remove();
+    $('.layer_preview').remove();
     $.ajax({
         type: 'GET',
         url: '/testset/search',
         data: testData,
         dataType: 'json',
+        async: false,
         contentType: 'application/json; charset=utf-8'
     }).done(function(data) {
         $('.column').remove();
@@ -156,8 +162,10 @@ function searchAdminTestSet() {
     }
     if(document.getElementById("approved").checked){
         testData['approval'] = approval
-    }else{
+    }else if(document.getElementById("disapproved").checked){
         testData['approval'] = disapproval
+    }else{
+        testData['approval'] = '-1'
     }
     $('.cardLabel').remove();
     $('.admin_btn').remove();
