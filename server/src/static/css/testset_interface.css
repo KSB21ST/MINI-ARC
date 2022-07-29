@@ -118,18 +118,11 @@ input[class="layer_button"]:checked + .layer_selector {
     box-shadow: 0px 0px 6px 2px #0055ff;
 }
 
-<<<<<<< HEAD
-#finished_pairs {
-    float: left;
-    margin: 10px;
-    margin-bottom: 20px;
-=======
 #layer_panel {
     height: 68vh;
     padding-top: 10px;
     overflow-x: hidden;
     overflow-y: scroll;
->>>>>>> ba5448853df29534cd9436af39817e4c37cea0ef
 }
 
 

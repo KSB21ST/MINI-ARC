@@ -400,23 +400,29 @@ function newExample() {
 function reloadExample() {
     const queryString = window.location.href;
     const params = queryString.split('/')
-    $.getJSON( '/testset/queryone', {
-    index: params[4],
-    tags: "mount rainier",
-    tagmode: "any",
-    format: "json"
-    })
-    .done(function( data ) {
+    var myData = {
+        'index': params[4],
+    }
+    $.ajax({
+        type: 'GET',
+        url: '/testset/queryone',
+        data: myData,
+        dataType: 'json',
+        async: false,
+        contentType: 'application/json; charset=utf-8'
+    }).done(function(data) {
         $.each( data, function( i, item ) {
             testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
             testSet.forEach((p) => {
                 TESTSETS.push(new TESTSET(p.input_cells, p.output_cells));
+                console.log(TESTSETS)
             })
         });
     });
     currentExample = TESTSETS.length - 1;
     resetInputGrid();
     resetOutputGrid();
+    console.log("initLayerPreview")
     initLayerPreview();
 }
 
