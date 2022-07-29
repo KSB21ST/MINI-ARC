@@ -30,6 +30,9 @@ const user_id = Date.now().toString(36) + Math.random().toString(36).substr(2);
 var prevTime = 0
 var currTime = 0
 
+// Task List
+var TASKLIST = new Array();
+
 var keyState = {};
 onkeydown = onkeyup = (event) => {
     keyState[event.key] = (event.type == 'keydown');
@@ -306,6 +309,17 @@ function loadTaskFromFile(e) {
     reader.readAsText(file);
 }
 
+function loadTaskFromDb(task_name) {
+    matching_task = TASKLIST.filter(task => task['task_name'] == task_name);
+    if (!matching_task.length) {
+        return;
+    }
+    content = JSON.parse(matching_task[0]['content']);
+    loadJSONTask(content['train'], content['test']);
+    $('#load_task_file_input')[0].value = "";
+    display_task_name(task_name, null, null);
+}
+
 function randomTask() {
     var subset = "training";
     $.getJSON("https://api.github.com/repos/fchollet/ARC/contents/data/" + subset, function(tasks) {
@@ -333,6 +347,16 @@ function randomTask() {
       errorMsg('Error loading task list');
     });
 }
+
+function openTaskList() {
+    $("#task_side_nav").width("250px");
+    $("#workspace").css('margin-left', '250px');
+}
+
+function closeTaskList() {
+    $("#task_side_nav").width("0");
+    $("#workspace").css('margin-left', '0');
+  }
 
 function prevTestInput() {
     if (CURRENT_TEST_PAIR_INDEX <= 0) {
@@ -680,9 +704,18 @@ function redo() {
 
 // Initial event binding.
 
-// $(window).load(function() {
-//     $('#start_page').modal('show');
-// })
+$(window).load(function() {
+    // $('#start_page').modal('show');
+    $.getJSON(
+        "/tasklist"
+    ).done(function(data) {
+        TASKLIST = data;
+        for (var i = 0; i < TASKLIST.length; i++) {
+            task_item = $(`<a onclick=loadTaskFromDb("${TASKLIST[i]['task_name']}")>${TASKLIST[i]['task_name']}</a>`);
+            task_item.appendTo($('#task_side_nav'));
+        }
+    })
+})
 
 $(document).ready(function () {
     $('#symbol_picker').find('.symbol_preview').click(function(event) {

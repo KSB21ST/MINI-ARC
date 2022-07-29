@@ -16,7 +16,22 @@ db.init_app(app)
 def show():
     return render_template('testing_interface.html')
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/tasklist', methods=['GET'])
+def getTaskList():
+    try:
+        cur = db.get_db().cursor()
+        cur.execute("SELECT * from tasklist")
+        data = [dict((cur.description[i][0], value) \
+               for i, value in enumerate(row)) for row in cur.fetchall()]
+    except Exception as e:
+        print(e)
+    return jsonify(data)
+
+@app.route('/tasklist/<taskname>', methods=['GET'])
+def getTask():
+    return
+
+@app.route('/', methods=['POST'])
 def store_log():
     json_obj = request.json
     try:
