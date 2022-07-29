@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>ARC testing interface</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/testset_list.js') }}"></script>
+
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/testset_common.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/testset_list.css') }}">
+
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+
+    </head>
+    <body>
+        <div id="workspace">
+                <div id="cardlist_view">
+                    <div id="edition_view">
+                        <div class="text">Waiting Test Sets</div>
+                        <div id="data_panel">
+                            <p></p>
+                            <div class="row">
+                            </div>
+                        </div>
+
+                        <script>
+                            (function() {
+                              $.getJSON( '/testset/getlist', {
+                                tags: "mount rainier",
+                                tagmode: "any",
+                                format: "json"
+                              })
+                                .done(function( data ) {
+                                  $.each( data, function( i, item ) {
+                                    testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
+                                    const testName = JSON.parse(item.testjson)['test_id']
+                                    const testApprove = item.approve
+                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" onClick="showAllTestSet(\'' + testName + '\')"><h3>' + testName.slice(0,9) + '</h3><p>approved: ' + testApprove + '</p></div></div>')
+                                    cardList.appendTo('#data_panel')
+                                  });
+                                });
+                            })();
+                            </script>
+                    </div>
+
+                    <div id="error_display"></div>
+                    <div id="info_display"></div>
+                    <!-- <button onclick="submitFinalTestSet()" id="submit_final_btn">Submit final</button> -->
+                </div>
+                <div id="cardone_view">
+                    <div class="text">Chosen Testset</div>
+                    <div id="layer_panel">
+                        <p></p>
+                    </div>
+                </div>
+        </div>
+    </body>
+</html>

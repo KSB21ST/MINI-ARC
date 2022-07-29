@@ -8,17 +8,21 @@ var COPY_PASTE_DATA = new Array();
 var SELECTED_DATA = new Array();
 var LAYERS = new Array();
 var TESTSETS = new Array();
+TESTSETS.push(new TESTSET());
 LAYERS.push(new Layer(new Array(), 0, 5, 5, 0));
 var currentLayerIndex = 0;
 var EXAMPLES = new Array();
 var currentExample = 0;
 var tries = 0;
 var logSaved = false;
+const NUM_ROWS = 5;
+const NUM_COLS = 5;
 
 // Cosmetic.
 var EDITION_GRID_HEIGHT = 300;
 var EDITION_GRID_WIDTH = 300;
 var MAX_CELL_SIZE = 100;
+var PREVIEW_GRID_SIZE = 75;
 
 // Logs
 var logs = new Log("", "");
@@ -89,10 +93,12 @@ function refreshEditionGrid(jqGrid, dataGrid) {
 
 function syncFromEditionGridToDataGrid() {
     copyJqGridToDataGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
+    copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
 }
 
 function syncFromDataGridToEditionGrid() {
     refreshEditionGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
+    refreshEditionGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
 }
 
 function getSelectedSymbol() {
@@ -103,6 +109,8 @@ function getSelectedSymbol() {
 function setUpEditionGridListeners(jqGrid) {
     jqGrid.find('.cell').click(function(event) {
         cell = $(event.target);
+        var parentGrid = cell.parent().parent().parent().attr('id');
+        console.log(parentGrid)
         symbol = getSelectedSymbol();
 
         mode = $('input[name=tool_switching]:checked').val();
@@ -126,7 +134,16 @@ function setUpEditionGridListeners(jqGrid) {
         else if (mode == 'edit') {
             // Else: fill just this cell.
             setCellSymbol(cell, symbol);
-            LAYERS[currentLayerIndex].addCell(new Cell(cell.attr('x'), cell.attr('y'), cell.attr('symbol')))
+            var row = cell.attr('x');
+            var col = cell.attr('y');
+            if (TESTSETS.length != 0) {
+                if (parentGrid == 'input_grid') {
+                    TESTSETS[currentExample].input_cells[row][col] = symbol;
+                } else if (parentGrid == 'output_grid') {
+                    TESTSETS[currentExample].output_cells[row][col] = symbol;
+                }
+            }
+            initLayerPreview();
             syncFromEditionGridToDataGrid();
             addLog({tool: 'edit', symbol: symbol, row: cell.attr('x'), col: cell.attr('y')});
         }
@@ -136,9 +153,9 @@ function setUpEditionGridListeners(jqGrid) {
 
 function resizeOutputGrid() {
     size = $('#output_grid_size').val();
-    size = parseSizeTuple(size);
-    height = size[0];
-    width = size[1];
+    // size = parseSizeTuple(size);
+    height = 5;
+    width = 5;
 
     jqGrid = $('#output_grid .edition_grid');
     syncFromEditionGridToDataGrid();
@@ -152,47 +169,28 @@ function resizeOutputGrid() {
     }
     updateAllLayers();
     initLayerPreview();
-    addLog({tool: 'resizeOutputGrid', height: height, width: width});
+    // addLog({tool: 'resizeOutputGrid', height: height, width: width});
+    
 }
 
 function resetOutputGrid() {
-    syncFromEditionGridToDataGrid();
+    copyJqGridToDataGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
     CURRENT_OUTPUT_GRID = new Grid(5, 5);
-    syncFromDataGridToEditionGrid();
-    $('#output_grid_size').val("5x5");
-    resizeOutputGrid();
-    LAYERS[currentLayerIndex].height = CURRENT_OUTPUT_GRID.height;
-    LAYERS[currentLayerIndex].width = CURRENT_OUTPUT_GRID.width;
-    LAYERS[currentLayerIndex].cells = [];
-    updateAllLayers();
+    var blank = new Grid(5,5);
+    TESTSETS[currentExample].output_cells = blank.grid;
+    refreshEditionGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
     initLayerPreview();
-    addLog({tool: 'resetOutputGrid'});
+    var layerSlot = $('#layer_' + currentExample);
+    layerSlot.val('checked', true);
 }
 
 function resetInputGrid() {
     copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
     CURRENT_INPUT_GRID = new Grid(5, 5);
+    var blank = new Grid(5,5);
+    TESTSETS[currentExample].input_cells = blank.grid;
     refreshEditionGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
-    $('#input_grid_size').val("5x5");
-
-    jqGrid = $('#input .edition_grid');
-    copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
-    dataGrid = JSON.parse(JSON.stringify(CURRENT_INPUT_GRID.grid));
-    CURRENT_INPUT_GRID = new Grid(5, 5, dataGrid);
-    refreshEditionGrid(jqGrid, CURRENT_INPUT_GRID);
-    
-    for (var i = 0; i < LAYERS.length; i++) {
-        LAYERS[i].height = CURRENT_INPUT_GRID.height;
-        LAYERS[i].width = CURRENT_INPUT_GRID.width;
-    }
-    updateAllLayers();
     initLayerPreview();
-    LAYERS[currentLayerIndex].height = CURRENT_INPUT_GRID.height;
-    LAYERS[currentLayerIndex].width = CURRENT_INPUT_GRID.width;
-    LAYERS[currentLayerIndex].cells = [];
-    updateAllLayers();
-    initLayerPreview();
-    addLog({tool: 'resetInputGrid'});
 }
 
 function copyFromInput() {
@@ -239,32 +237,42 @@ function fillPairPreview(inputGrid, outputGrid) {
 
 function fillLayerPreview(layerId) {
     var layerSlot = $('#layer_' + layerId);
+    var exampleSlot = $('#example_' + layerId);
     if (!layerSlot.length) {
-        layerSlot = $('<div id ="layer_' + layerId + '" class="layer_preview" value="' + layerId + '"><input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><label for="' + layerId + '" class="layer_selector"></label><div class="grid_preview"></div></div>');
-        layerSlot.appendTo('#layer_panel');
+        layerSlot = $('<div id ="layer_' + layerId + '" class="layer_preview container-fluid" value="' + layerId + '"><div class="row justify-content-center gx-3"><input type="radio" class="layer_button" name="layer" id="' + layerId + '" value="' + layerId + '" checked><label for="' + layerId + '" class="layer_selector"></label><div class="input_preview col-sm-auto"></div><div class="col-1"><p>&#8594;</p></div><div class="output_preview col-sm-auto"></div></div>');
+        layerSlot.appendTo(`#layer_panel`);
+        exampleSlot = $('<div id ="example_' + layerId + '" class="example_preview container-fluid" value="' + layerId + '"><div class="row justify-content-center gx-3"><div class="input_preview col-sm-auto"></div><div class="col-1"><p>&#8594;</p></div><div class="output_preview col-sm-auto"></div></div><p></p>');
+        exampleSlot.appendTo(`#example_panel`);
         $(`input[type=radio][id=${layerId}]`).click(function() {
             initializeSelectable();
             initializeLayerChange();
         })
     }
 
-    var jqInputGrid = layerSlot.find('.grid_preview');
-    // if (!jqInputGrid.length) {
-    //     jqInputGrid = $('<div class="grid_preview"></div>');
-    //     jqInputGrid.appendTo(layerSlot);
-    //     // jqInputGrid.appendTo($('#layer_'+layerId));
-    //     qwhitspace = $('<p></p>');
-    //     qwhitspace.appendTo(layerSlot);
-    // }
+    var jqInputGrid = layerSlot.find('.input_preview');
+    var jqOutputGrid = layerSlot.find('.output_preview');
 
-    layerGrid = LAYERS[layerId].getGrid();
-    fillJqGridWithData(jqInputGrid, layerGrid);
-    fitCellsToContainer(jqInputGrid, layerGrid.height, layerGrid.width, 100, 100);
+    inputGrid = new Grid(5,5,TESTSETS[layerId].input_cells);
+    outputGrid = new Grid(5,5,TESTSETS[layerId].output_cells);
+    fillJqGridWithData(jqInputGrid, inputGrid);
+    fitCellsToContainer(jqInputGrid, 5, 5, PREVIEW_GRID_SIZE, PREVIEW_GRID_SIZE);
+    fillJqGridWithData(jqOutputGrid, outputGrid);
+    fitCellsToContainer(jqOutputGrid, 5, 5, PREVIEW_GRID_SIZE, PREVIEW_GRID_SIZE);
+
+    jqInputGrid = exampleSlot.find('.input_preview');
+    jqOutputGrid = exampleSlot.find('.output_preview');
+
+    inputGrid = new Grid(5,5,TESTSETS[layerId].input_cells);
+    outputGrid = new Grid(5,5,TESTSETS[layerId].output_cells);
+    fillJqGridWithData(jqInputGrid, inputGrid);
+    fitCellsToContainer(jqInputGrid, 5, 5, PREVIEW_GRID_SIZE, PREVIEW_GRID_SIZE);
+    fillJqGridWithData(jqOutputGrid, outputGrid);
+    fitCellsToContainer(jqOutputGrid, 5, 5, PREVIEW_GRID_SIZE, PREVIEW_GRID_SIZE);
 }
 
 function initLayerPreview() {
-    $('.layer_preview').remove();
-    for (var id = 0; id < LAYERS.length; id++) {
+    // $('.layer_preview').remove();
+    for (var id = 0; id < TESTSETS.length; id++) {
         fillLayerPreview(id);
     }
 }
@@ -381,65 +389,77 @@ function nextTestInput() {
     $('#total_test_input_count_display').html(test.length);
 }
 
-function saveLogs() {
-    if (logSaved) {
+function newExample() {
+    TESTSETS.push(new TESTSET());
+    currentExample = TESTSETS.length - 1;
+    resetInputGrid();
+    resetOutputGrid();
+    initLayerPreview();
+}
+
+function reloadExample() {
+    const queryString = window.location.href;
+    const params = queryString.split('/')
+    $.getJSON( '/testset/queryone', {
+    index: params[4],
+    tags: "mount rainier",
+    tagmode: "any",
+    format: "json"
+    })
+    .done(function( data ) {
+        $.each( data, function( i, item ) {
+            testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
+            testSet.forEach((p) => {
+                TESTSETS.push(new TESTSET(p.input_cells, p.output_cells));
+            })
+        });
+    });
+    currentExample = TESTSETS.length - 1;
+    resetInputGrid();
+    resetOutputGrid();
+    initLayerPreview();
+}
+
+function submitFinalTestSet() {
+    // if(TESTSETS.length < 5){
+    //     infoMsg('Not enough test pairs!');
+    //     return;
+    // }
+    console.log(TESTSETS)
+    var user_id = $('#user_id').val();
+    var description = $('#task_description').val();
+    if (user_id.length == 0 || description.length == 0) {
+        const unsuccessful_toast = new bootstrap.Toast($('#unsuccessful_submit'))
+        unsuccessful_toast.show();
         return;
+    }
+    var testData = 
+    {
+        'user_id': user_id,
+        'description': description,
+        'test_id': Date.now().toString(36) + Math.random().toString(36).substr(2),
+        'testArray': JSON.stringify(TESTSETS),
+        'Description': description	
     }
     $.ajax({
         type: 'POST',
-        url: window.location.href,
-        data: logs.getString(),
+        url: '/testset/submit',
+        data: JSON.stringify(testData),
         dataType: 'json',
         contentType: 'application/json; charset=utf-8'
     }).done(function(msg) {
-        console.log("Data Saved: \n" + logs.getString());
+        console.log("Testset Saved: \n" + TESTSETS.getString());
     });
-    logSaved = true;
-}
-
-function submitSolution() {
-    syncFromEditionGridToDataGrid();
-    reference_output = TEST_PAIRS[CURRENT_TEST_PAIR_INDEX]['output'];
-    submitted_output = CURRENT_OUTPUT_GRID.grid;
-    if (reference_output.length != submitted_output.length) {
-        errorMsg('Wrong solution.');
-        addLog({tool: "check", correct: false});
-        tries += 1
-        if (tries >= 3) {
-            saveLogs();
-        }
-        return
-    }
-    for (var i = 0; i < reference_output.length; i++){
-        ref_row = reference_output[i];
-        for (var j = 0; j < ref_row.length; j++){
-            if (ref_row[j] != submitted_output[i][j]) {
-                errorMsg('Wrong solution.');
-                addLog({tool: "check", correct: false});
-                tries += 1
-                if (tries >= 3) {
-                    saveLogs();
-                }
-                return
-            }
-        }
-
-    }
-    addLog({tool: "check", correct: true});
-    saveLogs();
-    infoMsg('Correct solution!');
-}
-
-function submitTestSet() {
-    copyJqGridToDataGrid($('#input_grid .edition_grid'), CURRENT_INPUT_GRID);
-    submitted_input = CURRENT_INPUT_GRID.grid;
-    copyJqGridToDataGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
-    submitted_output = CURRENT_OUTPUT_GRID.grid;
-    TESTSETS.push(new TESTSET(submitted_input, submitted_output));
-    console.log(TESTSETS);
-    infoMsg('Saved solution!');
     resetInputGrid();
     resetOutputGrid();
+    TESTSETS = new Array();
+    TESTSETS.push(new TESTSET());
+    currentExample = 0;
+    $('.layer_preview').remove();
+    $('.example_preview').remove();
+    initLayerPreview();
+    const toast = new bootstrap.Toast($('#successful_submit'))
+    toast.show();
 }
 
 function fillTestInput(inputGrid) {
@@ -475,23 +495,15 @@ function initializeSelectable() {
 }
 
 function initializeLayerChange() {
-    currentLayerIndex = $('input[name=layer]:checked').val();
-    infoMsg(`layer ${currentLayerIndex} selected`);
-    var currLayer = LAYERS.filter(layer => layer.id == currentLayerIndex);
-    if (!currLayer.length) {
-        return;
-    }
-    currLayer = currLayer[0];
-    currLayer.cells = currLayer.cells.filter(cell => cell.val > 0);
-
-    $('.ui-selected').removeClass('ui-selected');
-    initializeSelectable();
-    console.log(`layer ${currentLayerIndex}`);
-    console.log(currLayer.cells);
-    for (var i = 0; i < currLayer.cells.length; i++) {
-        var currCell = currLayer.cells[i];
-        setCellSymbol($('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`), currCell.val);
-        $('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`).addClass('ui-selected');
+    currentExample = $('input[name=layer]:checked').val();
+    console.log(currExample);
+    var currExample = TESTSETS[currentExample];
+    console.log(currExample);
+    for (var r = 0; r < NUM_ROWS; r++) {
+        for (var c = 0; c < NUM_COLS; c++) {
+            setCellSymbol($('#input_grid').find(`[x=${r}][y=${c}]`), currExample.input_cells[r][c]);
+            setCellSymbol($('#output_grid').find(`[x=${r}][y=${c}]`), currExample.output_cells[r][c]);
+        }
     }
     syncFromEditionGridToDataGrid();
     addLog({tool: 'layerChange', new_layer: currentLayerIndex})
@@ -557,18 +569,6 @@ function addLayer() {
         infoMsg(`Data added to Layer ${LAYERS.length}`)
         updateAllLayers();
         initLayerPreview();
-}
-
-function deleteLayer() {
-    currentLayerIndex = $('input[name=layer]:checked').val();
-    if (currentLayerIndex === undefined){
-        return;
-    }
-    LAYERS = LAYERS.filter(layer => layer.id != currentLayerIndex);
-    $('#layer_'+currentLayerIndex).remove();
-    infoMsg("delete Layer " + currentLayerIndex);
-    updateAllLayers();
-    makeGridFromLayer();
 }
 
 function updateAllLayers() {
@@ -717,6 +717,7 @@ function redo() {
 
 
 $(document).ready(function () {
+    initLayerPreview();
     $('#symbol_picker').find('.symbol_preview').click(function(event) {
         symbol_preview = $(event.target);
         $('#symbol_picker').find('.symbol_preview').each(function(i, preview) {
@@ -775,7 +776,7 @@ $(document).ready(function () {
         initializeSelectable();
     });
 
-    $('button[name=tool_switching][id=tool_clear_selection]').click(function() {
+    $('button[id=tool_clear_selection]').click(function() {
         $('.ui-selected').removeClass('ui-selected');
     });
     
