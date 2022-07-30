@@ -723,12 +723,12 @@ function redo() {
     makeGridFromLayer();
 }
 
-function viewpage(){
+function viewpage(newurl){
     console.log("viewpage")
     var urlString = location.href;
     console.log(urlString.split('/'))
     var oldURL = '/testset'
-    var changeURL = '/testset/list'
+    var changeURL = newurl
     var newURL=""
     if (urlString.split('/').length === 5) {
         var urlsplit = urlString.split('/')
