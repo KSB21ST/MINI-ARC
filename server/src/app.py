@@ -18,6 +18,7 @@ def show():
 
 @app.route('/tasklist', methods=['GET'])
 def getTaskList():
+    data = []
     try:
         cur = db.get_db().cursor()
         cur.execute("SELECT * from tasklist")

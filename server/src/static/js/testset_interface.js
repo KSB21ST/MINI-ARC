@@ -8,7 +8,7 @@ var COPY_PASTE_DATA = new Array();
 var SELECTED_DATA = new Array();
 var LAYERS = new Array();
 var TESTSETS = new Array();
-// TESTSETS.push(new TESTSET());
+TESTSETS.push(new TESTSET());
 LAYERS.push(new Layer(new Array(), 0, 5, 5, 0));
 var currentLayerIndex = 0;
 var EXAMPLES = new Array();
@@ -123,13 +123,23 @@ function setUpEditionGridListeners(jqGrid) {
                 }
             }
             syncFromEditionGridToDataGrid();
-            grid = CURRENT_OUTPUT_GRID.grid;
+            if (parentGrid == 'input_grid') {
+                grid = CURRENT_INPUT_GRID.grid;
+            } else {
+                grid = CURRENT_OUTPUT_GRID.grid;
+            }
             affectedCells = floodfillFromLocation(grid, cell.attr('x'), cell.attr('y'), symbol);
             for (var i = 0; i < affectedCells.length; i++) {
-                LAYERS[currentLayerIndex].addCell(affectedCells[i]);
+                var currCell = affectedCells[i]
+                if (parentGrid == 'input_grid') {
+                    TESTSETS[currentExample].input_cells[currCell.row][currCell.col] = currCell.val
+                } else {
+                    TESTSETS[currentExample].output_cells[currCell.row][currCell.col] = currCell.val
+                }
             }
+            initLayerPreview();
+            // syncFromEditionGridToDataGrid();
             syncFromDataGridToEditionGrid();
-            addLog({tool: 'floodfill', symbol: symbol, row: cell.attr('x'), col: cell.attr('y'), cells: [...new Set(affectedCells)]});
         }
         else if (mode == 'edit') {
             // Else: fill just this cell.
@@ -145,7 +155,7 @@ function setUpEditionGridListeners(jqGrid) {
             }
             initLayerPreview();
             syncFromEditionGridToDataGrid();
-            addLog({tool: 'edit', symbol: symbol, row: cell.attr('x'), col: cell.attr('y')});
+            // addLog({tool: 'edit', symbol: symbol, row: cell.attr('x'), col: cell.attr('y')});
         }
         updateLayer(currentLayerIndex);
     });
@@ -743,18 +753,29 @@ $(document).ready(function () {
         symbol_preview.addClass('selected-symbol-preview');
 
         toolMode = $('input[name=tool_switching]:checked').val();
-        var selectedCells = [];
+        // var selectedCells = [];
         if (toolMode == 'select') {
             $('.edition_grid').find('.ui-selected').each(function(i, cell) {
                 symbol = getSelectedSymbol();
                 setCellSymbol($(cell), symbol);
-                LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
-                selectedCells.push(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
+                var parentGrid = $(cell).parent().parent().parent().attr('id');
+                var row = $(cell).attr('x');
+                var col = $(cell).attr('y');
+                if (parentGrid == 'input_grid') {
+                    TESTSETS[currentExample].input_cells[row][col] = symbol;
+                } else {
+                    TESTSETS[currentExample].output_cells[row][col] = symbol;
+                }
+                
+                // LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
+                // selectedCells.push(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
             });
-            addLog({tool: 'select_fill', selected_cells: selectedCells});
+            // addLog({tool: 'select_fill', selected_cells: selectedCells});
         }
-        LAYERS[currentLayerIndex].cells = LAYERS[currentLayerIndex].cells.filter(cell => cell.val > 0);
-        updateLayer(currentLayerIndex);
+        // LAYERS[currentLayerIndex].cells = LAYERS[currentLayerIndex].cells.filter(cell => cell.val > 0);
+        // updateLayer(currentLayerIndex);
+        initLayerPreview();
+        syncFromEditionGridToDataGrid();
     });
 
     $('.edition_grid').each(function(i, jqGrid) {

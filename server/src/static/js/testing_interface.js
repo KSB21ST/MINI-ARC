@@ -69,7 +69,7 @@ function resetTask() {
     CURRENT_INPUT_GRID = new Grid(3, 3);
     TEST_PAIRS = new Array();
     CURRENT_TEST_PAIR_INDEX = 0;
-    $('#task_preview').html('');
+    // $('#task_preview').html('');
     resetOutputGrid();
     EXAMPLES = [];
     LAYERS = new Array();
@@ -187,30 +187,32 @@ function copyFromInput() {
 }
 
 function fillPairPreview(inputGrid, outputGrid) {
-    var pairSlot = $('#pair_preview');
-    if (!pairSlot.length) {
-        // Create HTML for pair.
-        pairSlot = $('<div id="pair_preview" class="pair_preview"></div>');
-        pairSlot.appendTo('#task_preview');
-    }
-    var jqInputGrid = pairSlot.find('.input_preview');
+    var inputSlot = $('#input_pair');
+    var outputSlot = $('#output_pair');
+    // var pairSlot = $('#pair_preview');
+    // if (!pairSlot.length) {
+    //     // Create HTML for pair.
+    //     pairSlot = $('<div id="pair_preview" class="pair_preview"></div>');
+    //     pairSlot.appendTo('#task_preview');
+    // }
+    var jqInputGrid = inputSlot.find('.input_preview');
     if (jqInputGrid.length) {
         jqInputGrid.remove('.input_preview');
     }
     jqInputGrid = $('<div class="input_preview"></div>');
-    jqInputGrid.appendTo(pairSlot);
+    jqInputGrid.appendTo(inputSlot);
 
-    var jqOutputGrid = pairSlot.find('.output_preview');
+    var jqOutputGrid = outputSlot.find('.output_preview');
     if (jqOutputGrid.length) {
-        jqOutputGrid.remove('.output_preview');
+        jqOutputGrid.remove(".output_preview");
     }
     jqOutputGrid = $('<div class="output_preview"></div>');
-    jqOutputGrid.appendTo(pairSlot);
+    jqOutputGrid.appendTo(outputSlot);
 
     fillJqGridWithData(jqInputGrid, inputGrid);
-    fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 200, 200);
+    fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 175, 175);
     fillJqGridWithData(jqOutputGrid, outputGrid);
-    fitCellsToContainer(jqOutputGrid, outputGrid.height, outputGrid.width, 200, 200);
+    fitCellsToContainer(jqOutputGrid, outputGrid.height, outputGrid.width, 175, 175);
 }
 
 function fillLayerPreview(layerId) {
@@ -432,7 +434,7 @@ function submitSolution() {
 }
 
 function fillTestInput(inputGrid) {
-    jqInputGrid = $('#evaluation_input');
+    jqInputGrid = $('#evaluation_input #input_test');
     fillJqGridWithData(jqInputGrid, inputGrid);
     fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 200, 200);
 }

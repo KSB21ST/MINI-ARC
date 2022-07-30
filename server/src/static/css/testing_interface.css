@@ -1,70 +1,110 @@
 body {
     font-family: 'Open Sans', sans-serif;
-    min-width: 1410px;
+    min-width: 100vw;
 }
 
 #workspace {
-    width: 1410px;
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
     transition: margin-left .5s;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto;
+    margin-top: 2px;
 }
 
+/*Task demonstration*/
 #demonstration_examples_view {
-    float: left;
-    width: 450px;
+    display: flex;
+    flex-direction: column;
+    width: 40%;
     margin: 3px;
-    margin-right: 3px;
+    padding: 5px;
     background-color: #d5d5d5;
-}
-
-#evaluation_view {
-    float: left;
-    margin: 3px;
-    margin-left: 3px;
-    background-color: #d5d5d5;
-}
-
-#evaluation-input-view {
-    float: left;
-    width: 400px;
-    margin: 10px;
-}
-
-#evaluation_output_editor {
-    float: left;
-    width: 420px;
-    margin: 10px;
-    margin-bottom: 20px;
 }
 
 #load_task_control_btns {
     background: white;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+#task_demo_header {
+    background: white;
+}
+
+#task_preview {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 200px;
+}
+
+#input_pair {
+    width: 40%;
+    height: 100px;
+    justify-content: center;
+    border-width: 1px;
+    border-style: dotted;
+    border: #111;
+}
+
+#demo_arrow {
+    width: 10%;
+    height: 50px;
+}
+
+#output_pair {
+    width: 40%;
+    height: 100px;
+    justify-content: center;
+    border-width: 1px;
+    border-style: dotted;
+    border: #111;
+}
+
+#evaluation-input-view {
+    margin-top: 5px;
+}
+
+#evaluation_input {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#input_test {
+    width: 50%;
+    height: 100%;
+}
+
+#question {
+    width: 20%;
+    height: 100%;
+}
+
+/*Output Grid Editor*/
+#evaluation_view {
+    display: flex;
+    flex-direction: row;
+    width: 40%;
+    margin: 3px;
+    padding: 5px;
+    background-color: #d5d5d5;
+}
+
+#evaluation_output_editor {
+    
 }
 
 #editor_grid_control_btns {
     float: left;
-    margin-top: 10px;
-    margin-bottom: 10px;
     background: white;
     width: 100%;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-.layer_preview {
-    float: left;
-    margin: 15px;
-    padding: 15px;
-    background: #d5d5d5;
 }
 
 #resize_control_btns {
     width: 100%;
     float:left;
-    margin-bottom: 10px;
 }
 
 #submit_solution_btn {
@@ -81,6 +121,7 @@ body {
 button:focus {outline:0;}
 
 #layers {
+    width: 20%;
     margin: 3px;
     margin-left: 3px;
     padding: 5px;
@@ -91,6 +132,10 @@ button:focus {outline:0;}
     position: relative;
     width: 100px;
     height: 100px;
+    float: left;
+    margin: 15px;
+    padding: 15px;
+    background: #d5d5d5;
 }
 
 .layer_button {
@@ -114,32 +159,19 @@ input[class="layer_button"]:checked + .layer_selector {
     box-shadow: 0px 0px 6px 2px #0055ff;
 }
 
-/* 
-#layer_button {
-    float: left;
-    padding: 5px;
-} */
-
-/* #layer_panel {
-    float: left;
-    padding: 10px;
-} */
-
-
-
 #toolbar {
     float: left;
     margin-left: 10px;
     margin-top: 18px;
     margin-bottom: 10px;
-    width: 100%;
+    /* width: 100%; */
 
 }
 
 #symbol_picker {
     float: left;
     margin-left: 20px;
-    width: 100%;
+    /* width: 100%; */
 }
 
 .symbol_preview {
@@ -160,23 +192,25 @@ input, button {
     margin-left: 0;
 }
 
-/*Task demonstration*/
-
-.pair_preview {
+/* .pair_preview {
     height: 200px;
     padding: 5px;
     border-bottom: solid 1px #a1a1a1;
-}
+} */
+
 .input_preview {
-    height: 200px;
-    width: 200px;
-    float: left;
+    flex-grow: 3;
+    height: 175px;
+    width: 175px;
 }
 .output_preview {
-    height: 200px;
-    width: 200px;
-    float: left;
-    margin-left: 35px;
+    flex-grow: 3;
+    height: 175px;
+    width: 175px;
+}
+.arrow {
+    flex-grow: 1;
+    width: 10px;
 }
 
 .text {
@@ -185,10 +219,6 @@ input, button {
     padding-top: 5px;
     padding-bottom: 5px;
     margin-bottom: 10px;
-}
-
-#task_demo_header {
-    margin: 10px;
 }
 
 #modal_bg {
