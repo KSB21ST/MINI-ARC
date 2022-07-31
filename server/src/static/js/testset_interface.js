@@ -281,7 +281,8 @@ function fillLayerPreview(layerId) {
 }
 
 function initLayerPreview() {
-    // $('.layer_preview').remove();
+    $('.layer_preview').remove();
+    $('.example_preview').remove();
     for (var id = 0; id < TESTSETS.length; id++) {
         fillLayerPreview(id);
     }
@@ -407,6 +408,17 @@ function newExample() {
     initLayerPreview();
 }
 
+function deleteExample() {
+    if (TESTSETS.length <= 1) {
+        return;
+    }
+    TESTSETS.splice(currentExample, 1);
+    currentExample -= 1;
+    initLayerPreview();
+    $("#layer_"+(currentExample-1)).prop("checked", true)
+    initializeLayerChange();
+}
+
 function reloadExample() {
     const queryString = window.location.href;
     const params = queryString.split('/')
@@ -470,6 +482,7 @@ function submitFinalTestSet() {
     initLayerPreview();
     const toast = new bootstrap.Toast($('#successful_submit'))
     toast.show();
+    $('#task_description').val("");
 }
 
 function fillTestInput(inputGrid) {
@@ -516,7 +529,7 @@ function initializeLayerChange() {
         }
     }
     syncFromEditionGridToDataGrid();
-    addLog({tool: 'layerChange', new_layer: currentLayerIndex})
+    // addLog({tool: 'layerChange', new_layer: currentLayerIndex})
 }
 
 function updateLayer(id) {

@@ -21,7 +21,7 @@ var currTime = 0
 function fillTestListPreview(TestSet, LayerID) {
     var layerSlot = $('#layer_' + LayerID);
     if (!layerSlot.length) {
-        layerSlot = $('<div id ="layer_' + LayerID + '" class="layer_preview" value="' + LayerID + '"><div class="input_preview"></div><div class="output_preview"></div></div>');
+        layerSlot = $('<div id ="layer_' + LayerID + '" class="layer_preview" value="' + LayerID + '"><div class="input_preview"></div><div class="arrow"><h6>&#8594;</h6></div><div class="output_preview"></div></div>');
         $('#layer_panel').append(layerSlot)
     }
 

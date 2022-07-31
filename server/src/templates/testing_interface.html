@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/testing_interface.css') }}">
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">    
 </head>
 
 <body>
@@ -75,7 +75,9 @@
 
             <div class="preview" id="task_preview">
                 <div id="input_pair"></div>
-                <div id="demo_arrow" class="arrow"><h1>&#8594;</h1></div>
+                <div id="demo_arrow" class="arrow">
+                    <h1>&#8594;</h1>
+                </div>
                 <div id="output_pair"></div>
             </div>
 
@@ -87,10 +89,11 @@
                     <button onclick="nextTestInput()">Next</button>
                 </div>
 
-                <div id="evaluation_input" class="selectable_grid">
-                    <div id="input_test"></div>
-                    <p></p>
-                    <div id="question" class="arrow"><h1>&#8594; ?</h1></div>
+                <div id="evaluation_input">
+                    <div id="input_test" class="selectable_grid"></div>
+                    <div id="question" class="arrow">
+                        <h1>&#8594; ?</h1>
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,9 +110,9 @@
 
                         <button onclick="copyFromInput()">Copy from input</button>
                         <button onclick="resetOutputGrid()">Reset grid</button>
-                        <button id="tool_clear_selection" name="tool_switching" value="floodfill">
-                            <label for="tool_clear_selection">Clear Selection</label>
-                            <button onclick="submitSolution()" id="submit_solution_btn">Submit!</button>
+                        <button id="tool_clear_selection" name="tool_switching" value="floodfill">Clear
+                            Selection</button>
+                        <button onclick="submitSolution()" id="submit_solution_btn">Submit!</button>
                     </div>
 
                     <div id="output_grid">
@@ -134,15 +137,21 @@
 
 
                     <div id="toolbar">
-                        <div>
-                            <input type="radio" id="tool_edit" name="tool_switching" value="edit" checked>
-                            <label for="tool_edit">Edit</label>
+                        <div id="basic_tools">
+                            <input type="radio" id="tool_edit" name="tool_switching" value="edit" class="tool_switching" checked>
+                            <label for="tool_edit" class="tool_label"><i class="bi bi-pen"></i></label>
 
-                            <input type="radio" id="tool_select" name="tool_switching" value="select">
-                            <label for="tool_select">Select</label>
+                            <input type="radio" id="tool_select" name="tool_switching" value="select" class="tool_switching">
+                            <label for="tool_select" class="tool_label"><i class="bi bi-cursor"></i></label>
 
-                            <input type="radio" id="tool_floodfill" name="tool_switching" value="floodfill">
-                            <label for="tool_floodfill">Flood fill</label>
+                            <input type="radio" id="tool_floodfill" name="tool_switching" value="floodfill" class="tool_switching">
+                            <label for="tool_floodfill" class="tool_label"><i class="bi bi-paint-bucket"></i></label>
+                        </div>
+
+                        <div id="movement_tools">
+                            <button id="rotate" onclick="rotateCells()"><i class="bi bi-arrow-clockwise"></i></button>
+                            <button id="flip_horizontal" onclick="reflectY()"><i class="bi bi-border-middle"></i></button>
+                            <button id="flip_vertical" onclick="reflectX()"><i class="bi bi-border-center"></i></button>
                         </div>
                     </div>
 
@@ -166,14 +175,11 @@
         </div>
 
         <div id="layers">
-            <div id="layer_panel_view">
-
-                <div class="text">LAYER PANEL<button class="add_layer">ADD LAYER</button></div>
-                <div id="layer_panel">
-                    <input type="button" id="button1" onclick="addLayer()" value="create Layer from Selection" />
-                    <input type="button" id="button2" onclick="deleteLayer()" value="delete Layer" />
-                    <p></p>
-                </div>
+            <div class="text">LAYER PANEL<button class="add_layer">ADD LAYER</button></div>
+            <div id="layer_panel">
+                <input type="button" id="button1" onclick="addLayer()" value="create Layer from Selection" />
+                <input type="button" id="button2" onclick="deleteLayer()" value="delete Layer" />
+                <p></p>
             </div>
         </div>
     </div>

@@ -22,5 +22,6 @@ CREATE TABLE testsets (
 CREATE TABLE tasklist (
     id              INTEGER         PRIMARY KEY     AUTOINCREMENT   ,
     task_name       TEXT            NOT NULL                        ,
-    content         TEXT            NOT NULL
+    content         TEXT            NOT NULL                        ,
+    type            TEXT
 );
