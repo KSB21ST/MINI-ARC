@@ -444,6 +444,7 @@ function reloadExample() {
     });
     currentExample = TESTSETS.length - 1;
     initLayerPreview();
+    initializeLayerChange()
 }
 
 function submitFinalTestSet() {

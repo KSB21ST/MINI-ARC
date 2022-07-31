@@ -128,15 +128,17 @@ function approveSet(id) {
         url: '/testset/submit_approval',
         data: JSON.stringify(testData),
         dataType: 'json',
+        async: false,
         contentType: 'application/json; charset=utf-8'
     }).done(function(msg) {
-        location.reload();
-        if(approval==='1') {
-            infoMsg(`Approved testset ${id}`)
-        }else{
-            infoMsg(`Disapproved testset ${id}`)
-        }
+        // location.reload();
+        // if(approval==='1') {
+        //     infoMsg(`Approved testset ${id}`)
+        // }else{
+        //     infoMsg(`Disapproved testset ${id}`)
+        // }
     });
+    location.reload();
 }
 
 function deleteSet(id) {
@@ -149,11 +151,13 @@ function deleteSet(id) {
         url: '/testset/delete',
         data: JSON.stringify(testData),
         dataType: 'json',
+        async: false,
         contentType: 'application/json; charset=utf-8'
     }).done(function(msg) {
-        location.reload();
-        infoMsg(`Deleted testset ${id}`)
+        // location.reload();
+        // infoMsg(`Deleted testset ${id}`)
     });
+    location.reload();
 }
 
 function fillTestInput(inputGrid) {
