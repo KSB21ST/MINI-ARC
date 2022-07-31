@@ -104,8 +104,10 @@ function showAllTestSet(id) {
             $('.admin_btn').remove();
             var approve_btn = $('<div class="admin_btn"><button onclick="approveSet(\'' + id + ',1\')" id="approve_solution_btn">Approve</button></div>')
             var disapprove_btn = $('<div class="admin_btn"><button onclick="approveSet(\'' + id + ',0\')" id="disapprove_solution_btn">Disapprove</button></div>')
+            var delete_btn = $('<div class="admin_btn"><button onclick="deleteSet(\'' + id + '\')" id="delete_solution_btn">Delete</button></div>')
             approve_btn.appendTo('#layer_panel')
             disapprove_btn.appendTo('#layer_panel')
+            delete_btn.appendTo('#layer_panel')
         });
 }
 
@@ -128,7 +130,29 @@ function approveSet(id) {
         dataType: 'json',
         contentType: 'application/json; charset=utf-8'
     }).done(function(msg) {
-        console.log("Testset Saved: \n" + TESTSETS.getString());
+        location.reload();
+        if(approval==='1') {
+            infoMsg(`Approved testset ${id}`)
+        }else{
+            infoMsg(`Disapproved testset ${id}`)
+        }
+    });
+}
+
+function deleteSet(id) {
+    var testData = 
+    {
+        'test_id': id,
+    }
+    $.ajax({
+        type: 'POST',
+        url: '/testset/delete',
+        data: JSON.stringify(testData),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8'
+    }).done(function(msg) {
+        location.reload();
+        infoMsg(`Deleted testset ${id}`)
     });
 }
 

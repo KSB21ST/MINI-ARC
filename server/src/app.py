@@ -82,6 +82,20 @@ def update_approval():
         print(e)
     return render_template('testset_list_admin.html')
 
+@app.route('/testset/delete', methods=['POST', 'GET'])
+def delete_set():
+    print("submit_approval")
+    json_obj = request.json
+    try:
+        con = db.get_db()
+        _query = "DELETE FROM testsets WHERE test_id='" + json_obj.get('test_id') + "'"
+        print(_query)
+        con.execute(_query)
+        con.commit()
+    except Exception as e:
+        print(e)
+    return render_template('testset_list_admin.html')
+
 @app.route('/testset/list')
 def show_test_list():
     return render_template('testset_list.html')
