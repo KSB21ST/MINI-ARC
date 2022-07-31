@@ -247,3 +247,32 @@ function MovePage(url, newurl){
         window.location.replace(urlString.replace(oldURL, changeURL));
     }
 }
+
+function saveAsFile() {
+    console.log(saveAsFile)
+    testsets = []
+    const element = document.getElementsByClassName('card');
+    for (var i = 0; i < element.length ; i++) {
+        var v = element.item(i);
+        testsets.push({
+            'testid': v.onclick.toString().split("'")[1], 
+            'userid': v.getElementsByTagName("h6")[1].textContent.split(": ")[1],
+            'Description': v.getElementsByTagName("h6")[2].textContent,
+        });
+    }
+    console.log(testsets)
+    var testData = 
+    {
+        'testsets': testsets,
+    }
+    $.ajax({
+        type: 'POST',
+        url: '/testset/save',
+        data: JSON.stringify(testData),
+        dataType: 'json',
+        asyn:false,
+        contentType: 'application/json; charset=utf-8'
+    }).done(function(msg) {
+        console.log(msg);
+    });
+}
