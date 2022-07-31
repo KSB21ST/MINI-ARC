@@ -41,10 +41,10 @@
 
     <div id="modal_bg">
         <div id="modal">
-            <div>Welcome to the ARC testing interface. <br /> Choose a task file to start, or click on "Random task" to
-                load one from the ARC project on github.</div>
+            <div>Welcome to the ARC testing interface. <br /> Click on "Random task" to
+                load a random task.</div>
             <br />
-            <input type="file" class="load_task" />
+            <!-- <input type="file" class="load_task" /> -->
             <button onclick="randomTask()" id="random_task_btn">Random task</button>
         </div>
     </div>
@@ -149,9 +149,15 @@
                         </div>
 
                         <div id="movement_tools">
-                            <button id="rotate" onclick="rotateCells()"><i class="bi bi-arrow-clockwise"></i></button>
-                            <button id="flip_horizontal" onclick="reflectY()"><i class="bi bi-border-middle"></i></button>
-                            <button id="flip_vertical" onclick="reflectX()"><i class="bi bi-border-center"></i></button>
+                            <button class="extra_tools" id="rotate" onclick="rotateCells()">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                            <button class="extra_tools" id="flip_horizontal" onclick="reflectY()">
+                                <i class="bi bi-border-middle"></i>
+                            </button>
+                            <button class="extra_tools" id="flip_vertical" onclick="reflectX()">
+                                <i class="bi bi-border-center"></i>
+                            </button>
                         </div>
                     </div>
 
