@@ -7,7 +7,6 @@ body {
     height: 95vh;
     width: 97vw;
     padding: 5px 5px 5px 5px;
-    overflow: hidden;
 }
 
 #evaluation_view {

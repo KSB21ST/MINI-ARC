@@ -1,12 +1,15 @@
 body {
     font-family: 'Open Sans', sans-serif;
     min-width: 100vw;
+    overflow: hidden;
 }
 
 #workspace {
     display: flex;
     flex-direction: row;
+    float: left;
     width: 100vw;
+    height: 90vh;
     transition: margin-left .5s;
     margin: auto;
     margin-top: 2px;
@@ -84,27 +87,34 @@ body {
 
 /*Output Grid Editor*/
 #evaluation_view {
-    display: flex;
-    flex-direction: row;
     width: 40%;
     margin: 3px;
-    padding: 5px;
+    padding: 3px;
     background-color: #d5d5d5;
 }
 
-#evaluation_output_editor {
-    
-}
+/* #evaluation_output_editor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #d5d5d5;
+} */
 
-#editor_grid_control_btns {
-    float: left;
-    background: white;
-    width: 100%;
+#edition_view {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #d5d5d5;
+    padding: 5px;
 }
 
 #resize_control_btns {
     width: 100%;
-    float:left;
+}
+
+#editor_grid_control_btns {
+    padding: 5px;
+    background: white;
 }
 
 #submit_solution_btn {
@@ -114,6 +124,14 @@ body {
     background: rgb(28, 184, 65);
 }
 
+#output_grid {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 10px;
+    padding: 5px;
+}
+
 #submit_solution_btn:active {
   background: blue;
 }
@@ -121,20 +139,34 @@ body {
 button:focus {outline:0;}
 
 #layers {
+    display: flex;
+    flex-direction: column;
     width: 20%;
+    height: 100%;
     margin: 3px;
     margin-left: 3px;
     padding: 5px;
     background-color: #d5d5d5;
 }
 
+#layer_panel {
+    height: 95%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+
+
 .layer_preview {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    justify-content: center;
     position: relative;
-    width: 100px;
+    width: 100%;
     height: 100px;
-    float: left;
-    margin: 15px;
-    padding: 15px;
+    padding: 3px;
     background: #d5d5d5;
 }
 
@@ -143,20 +175,28 @@ button:focus {outline:0;}
 }
 
 .layer_selector {
+    z-index: 0;
     position: absolute;
     width: 100%;
     height: 100%;
-    top: 2px;
-    left: 2px;
+    margin: 2px;
+    /* top: 2px;
+    left: 2px; */
     border: 1px solid black;
-    border-radius: 4px;
-    transition: all ease .5s;
-    transform: translate(-12.5px, -3px);
+    /* transition: all ease .5s; */
+    transform: translate(-12.5px, 0);
 }
 
 input[class="layer_button"]:checked + .layer_selector {
-    border-color: #0055ff; 
-    box-shadow: 0px 0px 6px 2px #0055ff;
+    /* border-color: #0055ff; 
+    box-shadow: 0px 0px 6px 2px #0055ff; */
+    background-color: aliceblue;
+    opacity: 50%;
+}
+
+.tool_label {
+    width: 30px;
+    height: 30px;
 }
 
 #toolbar {
@@ -166,6 +206,25 @@ input[class="layer_button"]:checked + .layer_selector {
     margin-bottom: 10px;
     /* width: 100%; */
 
+}
+
+.tool_switching {
+    display: none;
+}
+
+.horizontal_flip {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+input[name="tool_switching"]:checked + label {
+    /* border-color: #0055ff; 
+    box-shadow: 0px 0px 6px 2px #0055ff; */
+    border: 2px solid black;
+    background-color: dimgray;
 }
 
 #symbol_picker {
@@ -180,9 +239,9 @@ input[class="layer_button"]:checked + .layer_selector {
     float: left;
 }
 
-label {
+/* label {
     margin-left: 10px;
-}
+} */
 
 input, button {
     margin-left: 10px;

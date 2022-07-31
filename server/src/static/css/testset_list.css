@@ -1,24 +1,26 @@
 body {
     font-family: 'Open Sans', sans-serif;
-    min-width: 1410px;
+    min-width: 100vw;
 }
 
 #workspace {
-    width: 1410px;
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
     margin-left: auto;
     margin-right: auto;
 }
 
 #cardlist_view {
-    float: left;
-    width: 650px;
+    /* float: left; */
+    width: 50%;
     margin: 3px;
     margin-right: 3px;
 }
 
 #cardone_view {
-    float: left;
-    width: 650px;
+    /* float: left; */
+    width: 50%;
     margin: 3px;
     margin-left: 3px;
 }
@@ -39,20 +41,37 @@ body {
     padding-bottom: 5px;
 }
 
+.layer_preview {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: 100px;
+    margin: 1px;
+    /* margin-left: 180px; */
+    padding: 1px;
+}
+
 .input_preview {
-    float: left;
+    display: inline-block;
+    width: fit-content;
+    margin: 5px;
+    /* float: left; */
+}
+
+.arrow {
+    display: inline-block;
+    width: fit-content;
+    justify-content: center;
+    margin: 5px;
+    /* float: left; */
 }
 
 .output_preview {
-    float: right;
-}
-
-.layer_preview {
-    width: 400px;
-    height: 100px;
-    margin: 1px;
-    margin-left: 180px;
-    padding: 1px;
+    display: inline-block;
+    width: fit-content;
+    margin: 5px;
+    /* float: right; */
 }
 
 #data_panel {
@@ -155,7 +174,7 @@ input, button {
     padding: 5px;
     border-bottom: solid 1px #a1a1a1;
 }
-.input_preview {
+/* .input_preview {
     height: 80%;
     width: 40%;
     float: left;
@@ -165,7 +184,7 @@ input, button {
     width: 40%;
     float: left;
     margin-left: 35px;
-}
+} */
 
 .text {
     text-align: center;

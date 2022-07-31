@@ -45,6 +45,16 @@
             Please check if you filled out your name and task description.
         </div>
     </div>
+
+    <div id="delete_fail" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto text-danger"><i class="bi bi-exclamation-lg"></i>Error</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            There must be at least one example.
+        </div>
+    </div>
 </div>
 
 <div id="submission_modal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -56,11 +66,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <label>Name</label>
+                <label>Participant Name</label>
                 <br>
                 <input id="user_id">
                 <p></p>
-                <label>Description</label>
+                <label>Task Description</label>
                 <br>
                 <input id="task_description">
                 <hr>
@@ -226,8 +236,8 @@
                     <div class="text">
                         <h3 class="h4">Finished Pairs</h3>
                     </div>
-                    <button type="button" class="btn btn-outline-dark" onclick="newExample()" id="new_example_btn"><i
-                            class="bi bi-plus-circle"></i> New Example</button>
+                    <button type="button" class="btn btn-outline-dark" onclick="newExample()" id="new_example_btn"><i class="bi bi-plus-circle"></i> New Example</button>
+                    <button type="button" class="btn btn-outline-danger" onclick="deleteExample()" id="delete_example_btn"><i class="bi bi-trash3"></i> Delete Example</button>
                     <p></p>
                     <div id="layer_panel">
                         {% if id %}
