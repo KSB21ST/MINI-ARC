@@ -705,108 +705,69 @@ function reflectX() {
     ind.forEach(function (idx) {
         nonEmptyCells.push(currCells[idx]);
     })
-    if (selected.length) {
-        xs = new Array();
-        ys = new Array();
-        symbols = new Array();
-
-        for (var i = 0; i < selected.length; i++) {
-            xs.push($(selected[i]).attr('x'));
-            ys.push($(selected[i]).attr('y'));
-            symbols.push($(selected[i]).attr('symbol'));
-        }
-
-        minx = Math.min(...xs);
-        miny = Math.min(...ys);
-        targetx = minx;
-        targety = miny;
-
-        newxs = xs.map((v) => { return (v - minx + targetx) });
-        newminx= Math.min(...newxs);
-        newmaxx = Math.max(...newxs);
-
-        reflected = new Array();
-        for (var i = 0; i < xs.length; i++) {
-            x = xs[i];
-            y = ys[i];
-            symbol = symbols[i];
-            newx = (newmaxx + newminx) - newxs[i];
-            newy = y - miny + targety;
-            res = jqGrid.find('[x="' + newx + '"][y="' + newy + '"] ');
-            cell = $(res[0]);
-            setCellSymbol(cell, symbol);
-            reflected.push(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')))
-        }
-        selected.forEach(function(cell) {
-            LAYERS[currentLayerIndex].removeCell($(cell).attr('x'), $(cell).attr('y'));
-        })
-        reflected.forEach(cell => LAYERS[currentLayerIndex].addCell(cell));
-        updateAllLayers();
-        makeGridFromLayer();
-        addLog({ tool: 'reflectX', selected_cells: selected});
-    }
+    var currCellsRow = nonEmptyCells.map(cell => cell.row);
+    var currCellsCol = nonEmptyCells.map(cell => cell.col);
+    var minRow = Math.min(...currCellsRow);
+    var maxRow = Math.max(...currCellsRow);
+    var minCol = Math.min(...currCellsCol);
+    var maxCol = Math.max(...currCellsCol);
+    var height = maxRow - minRow + 1;
+    var width = maxCol - minCol + 1;
+    ind.forEach(function (idx) {
+        var cell = currCells[idx];
+        var newCol = cell.col;
+        var newRow = -(cell.row - minRow - Math.floor((maxRow-minRow)/2 + 1)) + minRow;
+        console.log(newCol + ' ' + newRow);
+        currCells[idx].row = (newRow);
+        currCells[idx].col = (newCol);
+        selectedCells.push(new Cell(currCells[idx].row, currCells[idx].col, currCells[idx].val));
+    });
+    var validCells = selectedCells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
+    updateAllLayers();
+    initLayerPreview();
+    makeGridFromLayer();
+    addLog({ tool: 'reflectX', selected_cells: validCells});
 }
 
 function reflectY() {
     var currCells = LAYERS[currentLayerIndex].cells;
-    selected = $('.edition_grid').find('.ui-selected');
-    selected_cells = new Array();
-    selected.each(function(i, cell) {
+    var selectedCells = new Array();
+    var ind = new Array();
+    $('.edition_grid').find('.ui-selected').each(function (i, cell) {
         var row = $(cell).attr('x');
         var col = $(cell).attr('y');
         for (var j = 0; j < currCells.length; j++) {
             if (currCells[j].row == row && currCells[j].col == col && currCells[j].val > 0) {
-                selected_cells.push(new Cell(row, col, currCells[j].val));
+                ind.push(j);
             }
         }
+    });
+    var nonEmptyCells = [];
+    ind.forEach(function (idx) {
+        nonEmptyCells.push(currCells[idx]);
     })
-    selected = selected_cells;
-    if (selected.length == 0) {
-        return;
-    }
-
-    // jqGrid = $(selected.parent().parent()[0]);
-
-    if (selected.length) {
-        xs = new Array();
-        ys = new Array();
-        symbols = new Array();
-
-        for (var i = 0; i < selected.length; i++) {
-            xs.push($(selected[i]).attr('x'));
-            ys.push($(selected[i]).attr('y'));
-            symbols.push($(selected[i]).attr('symbol'));
-        }
-
-        minx = Math.min(...xs);
-        miny = Math.min(...ys);
-        targetx = minx;
-        targety = miny;
-
-        newys = ys.map((v) => { return (v - miny + targety) });
-        newminy = Math.min(...newys);
-        newmaxy = Math.max(...newys);
-
-        reflected = new Array();
-        for (var i = 0; i < xs.length; i++) {
-            x = xs[i];
-            y = ys[i];
-            symbol = symbols[i];
-            newx = x - minx + targetx;
-            newy = (newmaxy + newminy) - newys[i];
-            res = jqGrid.find('[x="' + newx + '"][y="' + newy + '"] ');
-            cell = $(res[0]);
-            setCellSymbol(cell, symbol);
-            reflected.push(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')))
-        }
-        selected.forEach(function(cell) {
-            LAYERS[currentLayerIndex].removeCell($(cell).attr('x'), $(cell).attr('y'));
-        })
-        reflected.forEach(cell => LAYERS[currentLayerIndex].addCell(cell));
-        updateAllLayers();
-        makeGridFromLayer();
-        addLog({ tool: 'reflectY', selected_cells: selected});
-    }
+    var currCellsRow = nonEmptyCells.map(cell => cell.row);
+    var currCellsCol = nonEmptyCells.map(cell => cell.col);
+    var minRow = Math.min(...currCellsRow);
+    var maxRow = Math.max(...currCellsRow);
+    var minCol = Math.min(...currCellsCol);
+    var maxCol = Math.max(...currCellsCol);
+    var height = maxRow - minRow + 1;
+    var width = maxCol - minCol + 1;
+    ind.forEach(function (idx) {
+        var cell = currCells[idx];
+        var newCol = -(cell.col - minCol - Math.floor((maxCol-minCol)/2 + 1)) + minCol;
+        var newRow = cell.row;
+        console.log(newCol + ' ' + newRow);
+        currCells[idx].row = (newRow);
+        currCells[idx].col = (newCol);
+        selectedCells.push(new Cell(currCells[idx].row, currCells[idx].col, currCells[idx].val));
+    });
+    var validCells = selectedCells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
+    updateAllLayers();
+    initLayerPreview();
+    makeGridFromLayer();
+    addLog({ tool: 'reflectY', selected_cells: validCells});
 }
 
 function undo() {
