@@ -324,30 +324,38 @@ function loadTaskFromDb(task_name) {
 
 function randomTask() {
     var subset = "training";
-    $.getJSON("https://api.github.com/repos/fchollet/ARC/contents/data/" + subset, function (tasks) {
-        var task_index = Math.floor(Math.random() * tasks.length)
-        var task = tasks[task_index];
-        $.getJSON(task["download_url"], function (json) {
-            try {
-                train = json['train'];
-                test = json['test'];
-            } catch (e) {
-                errorMsg('Bad file format');
-                return;
-            }
-            logs = new Log(task['name'].split('.')[0], user_id);
-            loadJSONTask(train, test);
-            //$('#load_task_file_input')[0].value = "";
-            infoMsg("Loaded task training/" + task["name"]);
-            display_task_name(task['name'], task_index, tasks.length);
-        })
-            .error(function () {
-                errorMsg('Error loading task');
-            });
-    })
-        .error(function () {
-            errorMsg('Error loading task list');
-        });
+    // $.getJSON("https://api.github.com/repos/fchollet/ARC/contents/data/" + subset, function (tasks) {
+    //     var task_index = Math.floor(Math.random() * tasks.length)
+    //     var task = tasks[task_index];
+    //     $.getJSON(task["download_url"], function (json) {
+    //         try {
+    //             train = json['train'];
+    //             test = json['test'];
+    //         } catch (e) {
+    //             errorMsg('Bad file format');
+    //             return;
+    //         }
+    //         logs = new Log(task['name'].split('.')[0], user_id);
+    //         loadJSONTask(train, test);
+    //         //$('#load_task_file_input')[0].value = "";
+    //         infoMsg("Loaded task training/" + task["name"]);
+    //         display_task_name(task['name'], task_index, tasks.length);
+    //     })
+    //         .error(function () {
+    //             errorMsg('Error loading task');
+    //         });
+    // })
+    //     .error(function () {
+    //         errorMsg('Error loading task list');
+    //     });
+    task_subset = TASKLIST.filter(t => t['type'] == 'training');
+    var task_index = Math.floor(Math.random() * task_subset.length);
+    var task = task_subset[task_index];
+    var json = JSON.parse(task['content']);
+    loadJSONTask(json['train'], json['test']);
+    infoMsg("Loaded task training/" + task_subset["task_name"]);
+    display_task_name(task['task_name'], task, task.length);
+    logs = new Log(task['task_name'], user_id);
 }
 
 function openTaskList() {
@@ -469,11 +477,12 @@ function initializeSelectable() {
 function initializeLayerChange() {
     currentLayerIndex = $('input[name=layer]:checked').val();
     infoMsg(`layer ${currentLayerIndex} selected`);
-    var currLayer = LAYERS.filter(layer => layer.id == currentLayerIndex);
-    if (!currLayer.length) {
-        return;
-    }
-    currLayer = currLayer[0];
+    // var currLayer = LAYERS.filter(layer => layer.id == currentLayerIndex);
+    var currLayer = LAYERS[currentLayerIndex];
+    // if (!currLayer.length) {
+    //     return;
+    // }
+    // currLayer = currLayer[0];
     currLayer.cells = currLayer.cells.filter(cell => cell.val > 0);
 
     $('.ui-selected').removeClass('ui-selected');
@@ -492,7 +501,8 @@ function initializeLayerChange() {
 function updateLayer(id) {
     var layerSlot = $('#layer_' + id);
     var jqInputGrid = layerSlot.find('.grid_preview');
-    var layer = LAYERS.find(layer => layer.id == id);
+    // var layer = LAYERS.find(layer => layer.id == id);
+    var layer = LAYERS[id];
     if (layer == undefined) {
         return;
     }
@@ -549,17 +559,25 @@ function addLayer() {
     infoMsg(`Data added to Layer ${LAYERS.length}`)
     updateAllLayers();
     initLayerPreview();
+    makeGridFromLayer();
 }
 
 function deleteLayer() {
     currentLayerIndex = $('input[name=layer]:checked').val();
+    if (LAYERS.length <= 1) {
+        errorMsg('There must exist at least one layer');
+        return;
+    }
     if (currentLayerIndex === undefined) {
         return;
     }
-    LAYERS = LAYERS.filter(layer => layer.id != currentLayerIndex);
-    $('#layer_' + currentLayerIndex).remove();
+    LAYERS.splice(currentLayerIndex, 1);
     infoMsg("delete Layer " + currentLayerIndex);
     updateAllLayers();
+    initLayerPreview();
+    currentLayerIndex -= 1;
+    $("#layer_"+(currentLayerIndex-1)).prop("checked", true)
+    initializeLayerChange();
     makeGridFromLayer();
 }
 
@@ -611,9 +629,10 @@ function translateCells(xChange, yChange) {
         currLayer[idx].col = (parseInt(currLayer[idx].col) + xChange);
         selectedCells.push(new Cell(currLayer[idx].row, currLayer[idx].col, currLayer[idx].val));
     });
-    LAYERS[currentLayerIndex].cells = LAYERS[currentLayerIndex].cells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
+    // LAYERS[currentLayerIndex].cells = LAYERS[currentLayerIndex].cells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
     $('.ui-selected').removeClass('ui-selected');
-    var validCells = selectedCells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
+    // var validCells = selectedCells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
+    validCells = selectedCells;
     console.log(validCells);
     updateAllLayers();
     initLayerPreview();
@@ -669,75 +688,125 @@ function rotateCells() {
     addLog({ tool: 'rotate', selected_cells: validCells })
 }
 
+function reflectX() {
+    var currCells = LAYERS[currentLayerIndex].cells;
+    var selectedCells = new Array();
+    var ind = new Array();
+    $('.edition_grid').find('.ui-selected').each(function (i, cell) {
+        var row = $(cell).attr('x');
+        var col = $(cell).attr('y');
+        for (var j = 0; j < currCells.length; j++) {
+            if (currCells[j].row == row && currCells[j].col == col && currCells[j].val > 0) {
+                ind.push(j);
+            }
+        }
+    });
+    var nonEmptyCells = [];
+    ind.forEach(function (idx) {
+        nonEmptyCells.push(currCells[idx]);
+    })
+    if (selected.length) {
+        xs = new Array();
+        ys = new Array();
+        symbols = new Array();
+
+        for (var i = 0; i < selected.length; i++) {
+            xs.push($(selected[i]).attr('x'));
+            ys.push($(selected[i]).attr('y'));
+            symbols.push($(selected[i]).attr('symbol'));
+        }
+
+        minx = Math.min(...xs);
+        miny = Math.min(...ys);
+        targetx = minx;
+        targety = miny;
+
+        newxs = xs.map((v) => { return (v - minx + targetx) });
+        newminx= Math.min(...newxs);
+        newmaxx = Math.max(...newxs);
+
+        reflected = new Array();
+        for (var i = 0; i < xs.length; i++) {
+            x = xs[i];
+            y = ys[i];
+            symbol = symbols[i];
+            newx = (newmaxx + newminx) - newxs[i];
+            newy = y - miny + targety;
+            res = jqGrid.find('[x="' + newx + '"][y="' + newy + '"] ');
+            cell = $(res[0]);
+            setCellSymbol(cell, symbol);
+            reflected.push(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')))
+        }
+        selected.forEach(function(cell) {
+            LAYERS[currentLayerIndex].removeCell($(cell).attr('x'), $(cell).attr('y'));
+        })
+        reflected.forEach(cell => LAYERS[currentLayerIndex].addCell(cell));
+        updateAllLayers();
+        makeGridFromLayer();
+        addLog({ tool: 'reflectX', selected_cells: selected});
+    }
+}
+
 function reflectY() {
+    var currCells = LAYERS[currentLayerIndex].cells;
     selected = $('.edition_grid').find('.ui-selected');
+    selected_cells = new Array();
+    selected.each(function(i, cell) {
+        var row = $(cell).attr('x');
+        var col = $(cell).attr('y');
+        for (var j = 0; j < currCells.length; j++) {
+            if (currCells[j].row == row && currCells[j].col == col && currCells[j].val > 0) {
+                selected_cells.push(new Cell(row, col, currCells[j].val));
+            }
+        }
+    })
+    selected = selected_cells;
     if (selected.length == 0) {
-        errorMsg('Select a target cell on the output grid.');
         return;
     }
-    xs = selected.map(cell => cell.col);
-    ys = selected.map(cell => cell.row);
-    symbols = selected.map(cell => cell.val);
-    minx = Math.min(...xs);
-    miny = Math.min(...ys);
 
-    newys = ys.map((v) => { return (v - miny) });
-    newminy = Math.min(...newys);
-    newmaxy = Math.max(...newys);
+    // jqGrid = $(selected.parent().parent()[0]);
 
-    reflected = new Array();
-    selected.each(function (i, cell) {
-        x = xs[i];
-        y = ys[i];
-        symbol = symbols[i];
-        newx = x - minx;
-        newy = (newmaxy + newminy) - newys[i];
-        res = jqGrid.find('[x="' + newx + '"][y="' + newy + '"] ');
-        reflected.push(new Cell(newCell.attr('x'), newCell.attr('y'), newCell.attr('symbol')));
-    })
-    selected.each(function(i, cell) {
-        LAYERS[currentLayerIndex].removeCell($(cell).attr('x'), $(cell).attr('y'));
-    })
-    reflected.forEach(function(cell, i) {
-        LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
-    })
-    updateAllLayers();
-    return reflected;
-    // targetx = parseInt(selected.attr('x'));
-    // targety = parseInt(selected.attr('y'));
+    if (selected.length) {
+        xs = new Array();
+        ys = new Array();
+        symbols = new Array();
 
-    // xs = new Array();
-    // ys = new Array();
-    // symbols = new Array();
+        for (var i = 0; i < selected.length; i++) {
+            xs.push($(selected[i]).attr('x'));
+            ys.push($(selected[i]).attr('y'));
+            symbols.push($(selected[i]).attr('symbol'));
+        }
 
-    // for (var i = 0; i < COPY_PASTE_DATA.length; i++) {
-    //     xs.push(COPY_PASTE_DATA[i][0]);
-    //     ys.push(COPY_PASTE_DATA[i][1]);
-    //     symbols.push(COPY_PASTE_DATA[i][2]);
-    // }
+        minx = Math.min(...xs);
+        miny = Math.min(...ys);
+        targetx = minx;
+        targety = miny;
 
-    // minx = Math.min(...xs);
-    // miny = Math.min(...ys);
+        newys = ys.map((v) => { return (v - miny + targety) });
+        newminy = Math.min(...newys);
+        newmaxy = Math.max(...newys);
 
-    // newys = ys.map((v) => { return (v - miny + targety) });
-    // newminy = Math.min(...newys);
-    // newmaxy = Math.max(...newys);
-
-    // for (var i = 0; i < xs.length; i++) {
-    //     x = xs[i];
-    //     y = ys[i];
-    //     symbol = symbols[i];
-    //     newx = x - minx + targetx;
-    //     newy = (newmaxy + newminy) - newys[i];
-    //     res = jqGrid.find('[x="' + newx + '"][y="' + newy + '"] ');
-    //     if (res.length == 1) {
-    //         cell = $(res[0]);
-    //         setCellSymbol(cell, symbol);
-    //         LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
-    //         updateAllLayers();
-    //     }
-    // }
-    addLog({ tool: 'reflectY', copy_paste_data: COPY_PASTE_DATA });
+        reflected = new Array();
+        for (var i = 0; i < xs.length; i++) {
+            x = xs[i];
+            y = ys[i];
+            symbol = symbols[i];
+            newx = x - minx + targetx;
+            newy = (newmaxy + newminy) - newys[i];
+            res = jqGrid.find('[x="' + newx + '"][y="' + newy + '"] ');
+            cell = $(res[0]);
+            setCellSymbol(cell, symbol);
+            reflected.push(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')))
+        }
+        selected.forEach(function(cell) {
+            LAYERS[currentLayerIndex].removeCell($(cell).attr('x'), $(cell).attr('y'));
+        })
+        reflected.forEach(cell => LAYERS[currentLayerIndex].addCell(cell));
+        updateAllLayers();
+        makeGridFromLayer();
+        addLog({ tool: 'reflectY', selected_cells: selected});
+    }
 }
 
 function undo() {
@@ -784,10 +853,16 @@ $(window).load(function () {
         "/tasklist"
     ).done(function (data) {
         TASKLIST = data;
-        for (var i = 0; i < TASKLIST.length; i++) {
-            task_item = $(`<a onclick=loadTaskFromDb("${TASKLIST[i]['task_name']}")>${TASKLIST[i]['task_name']}</a>`);
-            task_item.appendTo($('#task_side_nav'));
-        }
+        types = ['selected_examples', 'training', 'evaluation']
+        types.forEach(function(t) {
+            task_with_type = TASKLIST.filter(task => task['type'] == t);
+            $(`<h3 class="task_type">${t}</h3><p></p>`).appendTo($('#task_side_nav'))
+            for (var i = 0; i < task_with_type.length; i++) {
+                task_item = $(`<a onclick=loadTaskFromDb("${task_with_type[i]['task_name']}")>${TASKLIST[i]['task_name']}</a>`);
+                task_item.appendTo($('#task_side_nav'));
+            }
+            $('<hr>').appendTo($('#task_side_nav'))
+        })
     })
 })
 
@@ -1051,19 +1126,19 @@ $(document).ready(function () {
             }
         }
 
-        if (event.which == 65) {
+        if (event.which == 65 || event.which == 37) {
             // Left arrow
             translateCells(-1, 0);
         }
-        if (event.which == 87) {
+        if (event.which == 87 || event.which == 38) {
             // Up arrow
             translateCells(0, -1);
         }
-        if (event.which == 68) {
+        if (event.which == 68 || event.which == 39) {
             // Right arrow
             translateCells(1, 0);
         }
-        if (event.which == 83) {
+        if (event.which == 83 || event.which == 40) {
             // Down arrow
             translateCells(0, 1);
         }
