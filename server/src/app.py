@@ -43,17 +43,11 @@ def store_log():
         con.commit()
     except:
         print("An error has occurred while inserting new data.")
-    # with open('json_data/{}_{}.json'.format(json_obj.get('task'), json_obj.get('user_id')), 'w') as f:
-    #     json.dump(json_obj, f)
     return render_template('testing_interface.html')
 
 @app.route('/testset')
 def show_testset():
     return render_template('testset_interface.html')
-
-@app.route('/testset/<state>')
-def show_url_param(state):
-    return render_template('testset_interface.html', id=state)
 
 @app.route('/testset/submit', methods=['POST', 'GET'])
 def store_final_set():
@@ -75,6 +69,20 @@ def update_approval():
     try:
         con = db.get_db()
         _query = "UPDATE testsets SET approve=" + str(json_obj.get('approve')) + " WHERE test_id='" + json_obj.get('test_id') + "'"
+        print(_query)
+        con.execute(_query)
+        con.commit()
+    except Exception as e:
+        print(e)
+    return render_template('testset_list_admin.html')
+
+@app.route('/testset/delete', methods=['POST', 'GET'])
+def delete_set():
+    print("submit_approval")
+    json_obj = request.json
+    try:
+        con = db.get_db()
+        _query = "DELETE FROM testsets WHERE test_id='" + json_obj.get('test_id') + "'"
         print(_query)
         con.execute(_query)
         con.commit()
@@ -172,6 +180,33 @@ def search_test():
 @app.route('/testset/approved')
 def show_approved_testset():
     return render_template('testset_approved_list.html')
+
+@app.route('/testset/save', methods=['POST', 'GET'])
+def save_json_test():
+    _list = request.json['testsets']
+    for d in _list:
+        query_ = "SELECT * from testsets WHERE test_id='" + d['testid'] + "' AND user_id='"+ d['userid'] + "' AND approve=1"
+        try:
+            cur = db.get_db().cursor()
+            cur.execute(query_)
+            data = [dict((cur.description[i][0], value) \
+                for i, value in enumerate(row)) for row in cur.fetchall()]
+            json_obj = json.loads(data[0]['testjson'])
+            testpairs = json.loads(json_obj['testArray'])
+            final_set = dict()
+            final_set['train'] = []
+            final_set['test'] = []
+            final_set['test'].append(testpairs[-1])
+            for i in range(len(testpairs)-1):
+                v = testpairs[i]
+                v['input'] = v.pop('input_cells')
+                v['output'] = v.pop('output_cells')
+                final_set['train'].append(v)
+            with open('json_data/{}_{}_{}.json'.format(d.get('userid'), d.get('Description'), d.get('testid')), 'w') as f:
+                json.dump(final_set, f)
+        except Exception as e:
+            print(e)
+    return jsonify('data')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='80', debug=False)
