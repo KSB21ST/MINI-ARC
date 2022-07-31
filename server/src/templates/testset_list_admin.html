@@ -89,7 +89,7 @@
                                     const testName = JSON.parse(item.testjson)['test_id']
                                     const testApprove = item.approve
                                     const json_obj = JSON.parse(item.testjson)
-                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showAllTestSet(\'' + testName + '\')"><h6>testID: ' + testName.slice(0,9) + '</h6><h6>madeBy: '+json_obj['user_id']+'</h6><h6>'+json_obj['description']+'</h6><h6>approved: ' + testApprove + '</h6></div></div>')
+                                    var cardList = $('<div class="column"><div tabindex="' + i + '" id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showAllTestSet(\'' + testName + '\')"><h6>testID: ' + testName.slice(0,9) + '</h6><h6>madeBy: '+json_obj['user_id']+'</h6><h6>'+json_obj['description']+'</h6><h6>approved: ' + testApprove + '</h6></div></div>')
                                     cardList.appendTo('#data_panel')
                                   });
                                 });

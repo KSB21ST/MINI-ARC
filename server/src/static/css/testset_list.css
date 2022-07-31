@@ -116,6 +116,10 @@ body {
 button:focus {outline:0;}
 
 /* Float four columns side by side */
+div:focus {
+    background-color: beige;
+}
+
 .column {
     float: left;
     width: 25%;

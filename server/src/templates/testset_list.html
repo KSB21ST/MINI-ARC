@@ -53,11 +53,11 @@
         <div id="workspace">
                 <div id="cardlist_view">
                     <div id="edition_view">
-                        <div class="text">Disapproved Test Sets</div>
+                        <div class="text"><i class="bi bi-hourglass-split"></i>Under Review</div>
                         <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
                             data-bs-target="#submission_modal" id="submit_final_btn">Search</button>
-                        <button type="button" class="btn btn-outline-dark" id="move_link_btn" onclick="MovePage('/list', '')">Make testsets</button>
-                        <button type="button" class="btn btn-outline-dark" id="move_link_btn" onclick="MovePage('list', 'approved')">approved list</button>
+                        <button type="button" class="btn btn-outline-dark" id="move_link_btn" onclick="MovePage('/list', '')"><i class="bi bi-plus-circle"></i> Create</button>
+                        <button type="button" class="btn btn-outline-dark" id="move_link_btn" onclick="MovePage('list', 'approved')"><i class="bi bi-puzzle"></i> Mini-ARC</button>
                         <div id="data_panel">
                             <p></p>
                             <div class="row">
@@ -76,7 +76,7 @@
                                     testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
                                     const json_obj = JSON.parse(item.testjson)
                                     const testName = JSON.parse(item.testjson)['test_id']
-                                    var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showDisApproveTestSet(\'' + testName + '\')"><h6>testID: ' + testName.slice(0,9) + '</h6><h6>madeBy: '+json_obj['user_id']+'</h6><h6>'+json_obj['description']+'</h6></div></div>')
+                                    var cardList = $('<div class="column"><div tabindex="' + i + '" id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showDisApproveTestSet(\'' + testName + '\')"><h6>testID: ' + testName.slice(0,9) + '</h6><h6>madeBy: '+json_obj['user_id']+'</h6><h6>'+json_obj['description']+'</h6></div></div>')
                                     cardList.appendTo('#data_panel')
                                   });
                                 });
@@ -90,7 +90,7 @@
                 </div>
                 
                 <div id="cardone_view">
-                    <div class="text">Chosen Testset</div>
+                    <!-- <div class="text">Chosen Testset</div> -->
                     <div id="layer_panel">
                         <p></p>
                     </div>

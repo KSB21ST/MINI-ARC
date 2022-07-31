@@ -62,7 +62,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Submit Testset?</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Submit Task?</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -93,7 +93,7 @@
             <div id="evaluation_output_editor" class="col col-sm-8 container border bg-light">
                 <div id="edition_view" class="col_container bg-light">
                     <div class="text">
-                        <h3 class="h4">Make Test Sets</h3>
+                        <h3 class="h4">Create your task</h3>
                     </div>
                     <div id="editor_grid_control_btns">
                         <!-- <label for="output_grid_size">Grid size: 5x5 </label> -->
@@ -107,14 +107,14 @@
                         </div>
                         <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
                             data-bs-target="#submission_modal" id="submit_final_btn">Submit final</button>
-                        <button type="button" class="btn btn-outline-dark" onclick="viewpage('/testset/list')">disapproved list</button>
-                        <button type="button" class="btn btn-outline-dark" onclick="viewpage('/testset/approved')">approved list</button>
+                        <button type="button" class="btn btn-outline-dark" onclick="viewpage('/testset/list')"><i class="bi bi-hourglass-split"></i> Under Review</button>
+                        <button type="button" class="btn btn-outline-dark" onclick="viewpage('/testset/approved')"><i class="bi bi-puzzle"></i> Mini-ARC</button>
                     </div>
 
                     <div class="row justify-content-center">
 
                         <div id="input_grid" class="col-auto">
-                            <div class="edition_grid selectable_grid">
+                            <div class="input_edition edition_grid selectable_grid">
                                 <div class="row">
                                     <div class="cell" symbol="0" x="0" y="0"></div>
                                     <div class="cell" symbol="0" x="0" y="1"></div>
@@ -159,7 +159,7 @@
                         </div>
 
                         <div id="output_grid" class="col-auto">
-                            <div class="edition_grid selectable_grid">
+                            <div class="output_edition edition_grid selectable_grid">
                                 <div class="row">
                                     <div class="cell" symbol="0" x="0" y="0"></div>
                                     <div class="cell" symbol="0" x="0" y="1"></div>
@@ -233,11 +233,11 @@
 
             <div id="finished_pairs" class="col-sm-4">
                 <div id="layer_panel_view" class="col_container p-3 border bg-light">
-                    <div class="text">
+                    <!-- <div class="text">
                         <h3 class="h4">Finished Pairs</h3>
-                    </div>
-                    <button type="button" class="btn btn-outline-dark" onclick="newExample()" id="new_example_btn"><i class="bi bi-plus-circle"></i> New Example</button>
-                    <button type="button" class="btn btn-outline-danger" onclick="deleteExample()" id="delete_example_btn"><i class="bi bi-trash3"></i> Delete Example</button>
+                    </div> -->
+                    <button type="button" class="btn btn-outline-dark" onclick="newExample()" id="new_example_btn"><i class="bi bi-plus-circle"></i> New Pair</button>
+                    <button type="button" class="btn btn-outline-danger" onclick="deleteExample()" id="delete_example_btn"><i class="bi bi-trash3"></i> Delete Pair</button>
                     <p></p>
                     <div id="layer_panel">
                         {% if id %}

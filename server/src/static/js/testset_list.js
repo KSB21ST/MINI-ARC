@@ -164,7 +164,7 @@ function searchTestSet() {
             testSet = JSON.parse(JSON.parse(item.testjson)['testArray'])
             const json_obj = JSON.parse(item.testjson)
             const testName = JSON.parse(item.testjson)['test_id']
-            var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showApproveTestSet(\'' + testName + '\')"><h6>testID: ' + testName.slice(0,9) + '</h6><h6>madeBy: '+json_obj['user_id']+'</h6><h6>'+json_obj['description']+'</h6></div></div>')
+            var cardList = $('<div class="column"><div tabindex="' + i + '" id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showApproveTestSet(\'' + testName + '\')"><h6>testID: ' + testName.slice(0,9) + '</h6><h6>madeBy: '+json_obj['user_id']+'</h6><h6>'+json_obj['description']+'</h6></div></div>')
             cardList.appendTo('#data_panel')
           });
     });
@@ -204,7 +204,7 @@ function searchAdminTestSet() {
             const json_obj = JSON.parse(item.testjson)
             const testApprove = item.approve
             const testName = JSON.parse(item.testjson)['test_id']
-            var cardList = $('<div class="column"><div id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showAllTestSet(\'' + testName + '\')"><h6>testID: ' + testName.slice(0,9) + '</h6><h6>madeBy: '+json_obj['user_id']+'</h6><h6>'+json_obj['description']+'</h6><h6>approved: ' + String(testApprove) + '</h6></div></div>')
+            var cardList = $('<div class="column"><div tabindex"' + i +'" id="cardview_' + i + '" class="card" style="font-size: 10px" onClick="showAllTestSet(\'' + testName + '\')"><h6>testID: ' + testName.slice(0,9) + '</h6><h6>madeBy: '+json_obj['user_id']+'</h6><h6>'+json_obj['description']+'</h6><h6>approved: ' + String(testApprove) + '</h6></div></div>')
             cardList.appendTo('#data_panel')
           });
     });
