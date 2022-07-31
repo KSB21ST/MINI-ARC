@@ -150,6 +150,8 @@ button:focus {outline:0;}
     margin-bottom: 20px;
     cursor : pointer;
     font-size: 10px;
+    width: 143px;
+    height: 154px;
   }
 
 

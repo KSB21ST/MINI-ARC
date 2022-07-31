@@ -169,6 +169,10 @@ def search_test():
         print(e)
     return jsonify(data)
 
+@app.route('/testset/approved')
+def show_approved_testset():
+    return render_template('testset_approved_list.html')
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='80', debug=False)
     

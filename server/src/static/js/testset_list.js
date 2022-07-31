@@ -48,7 +48,7 @@ function editTestSet(id){
     window.location.reload();
 }
 
-function showApproveTestSet(id) {
+function showDisApproveTestSet(id) {
     $.getJSON( '/testset/queryone', {
         index: id,
         tags: "mount rainier",
@@ -64,6 +64,26 @@ function showApproveTestSet(id) {
             layerlabel.appendTo('#layer_panel')
             $('.edit_btn').remove();
             var edit_btn = $('<div class="edit_btn"><button onclick="editTestSet(\'' + id + '\')" id="approve_solution_btn">Edit</button></div>')
+            edit_btn.appendTo('#layer_panel')
+        });
+}
+
+function showApproveTestSet(id) {
+    $.getJSON( '/testset/queryone', {
+        index: id,
+        tags: "mount rainier",
+        tagmode: "any",
+        format: "json"
+      })
+        .done(function( data ) {
+            testSet = JSON.parse(JSON.parse(data[0].testjson)['testArray'])
+            test_obj = JSON.parse(data[0].testjson)
+            initTestSetPreview(testSet)
+            $('.cardLabel').remove();
+            var layerlabel = $('<div class="cardLabel"><h6>' + id + '</h6><h6>madeBy: '+test_obj['user_id']+'</h6><h6>'+test_obj['description']+'</h6></div>')
+            layerlabel.appendTo('#layer_panel')
+            // $('.edit_btn').remove();
+            // var edit_btn = $('<div class="edit_btn"><button onclick="editTestSet(\'' + id + '\')" id="approve_solution_btn">Edit</button></div>')
             edit_btn.appendTo('#layer_panel')
         });
 }
@@ -188,4 +208,14 @@ function searchAdminTestSet() {
             cardList.appendTo('#data_panel')
           });
     });
+}
+
+function MovePage(url, newurl){
+    var urlString = location.href;
+    console.log(urlString.split('/'))
+    var oldURL = url
+    var changeURL = newurl
+    if (urlString.match(oldURL)){
+        window.location.replace(urlString.replace(oldURL, changeURL));
+    }
 }
