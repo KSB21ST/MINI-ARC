@@ -15,6 +15,11 @@ body {
     margin-top: 2px;
 }
 
+.task_type {
+    color: #f1f1f1;
+    margin-left: 5px;
+}
+
 /*Task demonstration*/
 #demonstration_examples_view {
     display: flex;
@@ -199,17 +204,25 @@ input[class="layer_button"]:checked + .layer_selector {
     height: 30px;
 }
 
+.tool_switching {
+    display: none;
+    margin: 5px;
+}
+
+.tool_label {
+    border: 2px solid black;
+    padding: 3px;
+}
+
 #toolbar {
+    display: flex;
+    flex-direction: row;
     float: left;
     margin-left: 10px;
     margin-top: 18px;
     margin-bottom: 10px;
     /* width: 100%; */
 
-}
-
-.tool_switching {
-    display: none;
 }
 
 .horizontal_flip {
