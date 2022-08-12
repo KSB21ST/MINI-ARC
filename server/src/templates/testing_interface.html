@@ -63,7 +63,7 @@
                     <p> -->
                 <label id='task_name' for="random_task_btn">Task name:</label>
                 <input type="file" id="load_task_file_input" class="load_task" style="display: none;" />
-                <input type="button" id="browse_task" value="Browse..." onclick="openTaskList()" />
+                <button id="browse_task" onclick="openTaskList()">Browse</button>
                 <button onclick="randomTask()" id="random_task_btn"> Random... </button>
             </div>
 
@@ -149,15 +149,26 @@
                         </div>
 
                         <div id="movement_tools">
-                            <button class="extra_tools" id="rotate" onclick="rotateCells()">
-                                <i class="bi bi-arrow-clockwise"></i>
-                            </button>
-                            <button class="extra_tools" id="flip_horizontal" onclick="reflectY()">
-                                <i class="bi bi-border-middle"></i>
-                            </button>
-                            <button class="extra_tools" id="flip_vertical" onclick="reflectX()">
-                                <i class="bi bi-border-center"></i>
-                            </button>
+                            <div>
+                                <button class="extra_tools" id="rotate" onclick="rotateCells()">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                                <span class="tooltip" id="tooltip_rotate">rotate clockwise</span>
+                            </div>
+
+                            <div>
+                                <button class="extra_tools" id="flip_horizontal" onclick="reflectY()">
+                                    <i class="bi bi-border-middle"></i>
+                                </button>
+                                <span class="tooltip" id="tooltip_flip_horizontal">horizontal flip</span>
+                            </div>
+
+                            <div>
+                                <button class="extra_tools" id="flip_vertical" onclick="reflectX()">
+                                    <i class="bi bi-border-center"></i>
+                                </button>
+                                <span class="tooltip" id="tooltip_flip_vertical">vertical flip</span>
+                            </div>
                         </div>
                     </div>
 
@@ -183,8 +194,8 @@
         <div id="layers">
             <div class="text">LAYER PANEL<button class="add_layer">ADD LAYER</button></div>
             <div id="layer_panel">
-                <input type="button" id="button1" onclick="addLayer()" value="create Layer from Selection" />
-                <input type="button" id="button2" onclick="deleteLayer()" value="delete Layer" />
+                <button id="button1" onclick="addLayer()">create Layer from Selection</button>
+                <button id="button2" onclick="deleteLayer()">delete Layer</button>
                 <p></p>
             </div>
         </div>

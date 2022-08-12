@@ -82,8 +82,8 @@ function resetTask() {
     // addLog({tool: 'start'});
 }
 
-function refreshEditionGrid(jqGrid, dataGrid) {
-    fillJqGridWithData(jqGrid, dataGrid);
+function refreshEditionGrid(jqGrid, dataGrid, pad) {
+    fillJqGridWithData(jqGrid, dataGrid, pad);
     setUpEditionGridListeners(jqGrid);
     fitCellsToContainer(jqGrid, dataGrid.height, dataGrid.width, EDITION_GRID_HEIGHT, EDITION_GRID_HEIGHT);
     initializeSelectable();
@@ -93,8 +93,8 @@ function syncFromEditionGridToDataGrid() {
     copyJqGridToDataGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
 }
 
-function syncFromDataGridToEditionGrid() {
-    refreshEditionGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID);
+function syncFromDataGridToEditionGrid(pad) {
+    refreshEditionGrid($('#output_grid .edition_grid'), CURRENT_OUTPUT_GRID, pad);
 }
 
 function getSelectedSymbol() {
@@ -146,7 +146,7 @@ function resizeOutputGrid() {
     syncFromEditionGridToDataGrid();
     dataGrid = JSON.parse(JSON.stringify(CURRENT_OUTPUT_GRID.grid));
     CURRENT_OUTPUT_GRID = new Grid(height, width, dataGrid);
-    refreshEditionGrid(jqGrid, CURRENT_OUTPUT_GRID);
+    refreshEditionGrid(jqGrid, CURRENT_OUTPUT_GRID, true);
 
     for (var i = 0; i < LAYERS.length; i++) {
         LAYERS[i].height = CURRENT_OUTPUT_GRID.height;
@@ -174,7 +174,7 @@ function resetOutputGrid() {
 function copyFromInput() {
     syncFromEditionGridToDataGrid();
     CURRENT_OUTPUT_GRID = convertSerializedGridToGridObject(CURRENT_INPUT_GRID.grid);
-    syncFromDataGridToEditionGrid();
+    syncFromDataGridToEditionGrid(true);
     currLayer = LAYERS[currentLayerIndex];
     currLayer.updateGrid(CURRENT_OUTPUT_GRID);
     for (var i = 0; i < LAYERS.length; i++) {
@@ -209,9 +209,9 @@ function fillPairPreview(inputGrid, outputGrid) {
     jqOutputGrid = $('<div class="output_preview"></div>');
     jqOutputGrid.appendTo(outputSlot);
 
-    fillJqGridWithData(jqInputGrid, inputGrid);
+    fillJqGridWithData(jqInputGrid, inputGrid, false);
     fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 175, 175);
-    fillJqGridWithData(jqOutputGrid, outputGrid);
+    fillJqGridWithData(jqOutputGrid, outputGrid, false);
     fitCellsToContainer(jqOutputGrid, outputGrid.height, outputGrid.width, 175, 175);
 }
 
@@ -229,7 +229,7 @@ function fillLayerPreview(layerId) {
     var jqInputGrid = layerSlot.find('.grid_preview');
 
     layerGrid = LAYERS[layerId].getGrid();
-    fillJqGridWithData(jqInputGrid, layerGrid);
+    fillJqGridWithData(jqInputGrid, layerGrid, false);
     fitCellsToContainer(jqInputGrid, layerGrid.height, layerGrid.width, 75, 75);
 }
 
@@ -324,30 +324,6 @@ function loadTaskFromDb(task_name) {
 
 function randomTask() {
     var subset = "training";
-    // $.getJSON("https://api.github.com/repos/fchollet/ARC/contents/data/" + subset, function (tasks) {
-    //     var task_index = Math.floor(Math.random() * tasks.length)
-    //     var task = tasks[task_index];
-    //     $.getJSON(task["download_url"], function (json) {
-    //         try {
-    //             train = json['train'];
-    //             test = json['test'];
-    //         } catch (e) {
-    //             errorMsg('Bad file format');
-    //             return;
-    //         }
-    //         logs = new Log(task['name'].split('.')[0], user_id);
-    //         loadJSONTask(train, test);
-    //         //$('#load_task_file_input')[0].value = "";
-    //         infoMsg("Loaded task training/" + task["name"]);
-    //         display_task_name(task['name'], task_index, tasks.length);
-    //     })
-    //         .error(function () {
-    //             errorMsg('Error loading task');
-    //         });
-    // })
-    //     .error(function () {
-    //         errorMsg('Error loading task list');
-    //     });
     task_subset = TASKLIST.filter(t => t['type'] == 'training');
     var task_index = Math.floor(Math.random() * task_subset.length);
     var task = task_subset[task_index];
@@ -443,7 +419,7 @@ function submitSolution() {
 
 function fillTestInput(inputGrid) {
     jqInputGrid = $('#evaluation_input #input_test');
-    fillJqGridWithData(jqInputGrid, inputGrid);
+    fillJqGridWithData(jqInputGrid, inputGrid, false);
     fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 200, 200);
     initializeSelectable();
 }
@@ -468,7 +444,22 @@ function initializeSelectable() {
         $('.selectable_grid').selectable(
             {
                 autoRefresh: false,
-                filter: '> .row > .cell'
+                filter: '> .row > .cell',
+                selected: function(event, ui) {
+                    LAYERS[currentLayerIndex].cells.forEach(function(cell) {
+                        cell.unselect();
+                    })
+                    $('.ui-selected').each(function(i, selected) {
+                        row = $(selected).attr('x');
+                        col = $(selected).attr('y');
+                        LAYERS[currentLayerIndex].cells.forEach(function(cell) {
+                            if (cell.row == row && cell.col == col) {
+                                cell.select();
+                                console.log(cell)
+                            }
+                        })
+                    })
+                }
             }
         );
     }
@@ -507,7 +498,7 @@ function updateLayer(id) {
         return;
     }
     var layerGrid = layer.getGrid();
-    fillJqGridWithData(jqInputGrid, layerGrid);
+    fillJqGridWithData(jqInputGrid, layerGrid, false);
     fitCellsToContainer(jqInputGrid, layerGrid.height, layerGrid.width, 75, 75);
 }
 
@@ -611,36 +602,20 @@ function makeGridFromLayer() {
 }
 
 function translateCells(xChange, yChange) {
-    var currLayer = LAYERS[currentLayerIndex].cells;
-    var selectedCells = new Array();
-    var ind = new Array();
-    $('.edition_grid').find('.ui-selected').each(function (i, cell) {
-        var row = $(cell).attr('x');
-        var col = $(cell).attr('y');
-        for (var j = 0; j < currLayer.length; j++) {
-            if (currLayer[j].row == row && currLayer[j].col == col && currLayer[j].val > 0) {
-                ind.push(j);
-            }
-        }
-    });
-    console.log(ind);
-    ind.forEach(function (idx) {
-        currLayer[idx].row = (parseInt(currLayer[idx].row) + yChange);
-        currLayer[idx].col = (parseInt(currLayer[idx].col) + xChange);
-        selectedCells.push(new Cell(currLayer[idx].row, currLayer[idx].col, currLayer[idx].val));
-    });
-    // LAYERS[currentLayerIndex].cells = LAYERS[currentLayerIndex].cells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
+    var selectedCells = LAYERS[currentLayerIndex].getSelected();
+    selectedCells.forEach(function(cell) {
+        cell.setRow(parseInt(cell.row)+yChange);
+        cell.setCol(parseInt(cell.col)+xChange);
+    })
     $('.ui-selected').removeClass('ui-selected');
-    // var validCells = selectedCells.filter(cell => cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width);
-    validCells = selectedCells;
-    console.log(validCells);
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
+    var validCells = selectedCells.filter(cell => (cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width));
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'translate', selected_cells: validCells, row_change: yChange, col_change: xChange });
+    addLog({ tool: 'translate', selected_cells: selectedCells, row_change: yChange, col_change: xChange });
 }
 
 function rotateCells() {
@@ -685,7 +660,7 @@ function rotateCells() {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'rotate', selected_cells: validCells })
+    addLog({ tool: 'rotate', selected_cells: nonEmptyCells })
 }
 
 function reflectX() {
@@ -709,14 +684,11 @@ function reflectX() {
     var currCellsCol = nonEmptyCells.map(cell => cell.col);
     var minRow = Math.min(...currCellsRow);
     var maxRow = Math.max(...currCellsRow);
-    var minCol = Math.min(...currCellsCol);
-    var maxCol = Math.max(...currCellsCol);
-    var height = maxRow - minRow + 1;
-    var width = maxCol - minCol + 1;
     ind.forEach(function (idx) {
         var cell = currCells[idx];
         var newCol = cell.col;
-        var newRow = -(cell.row - minRow - Math.floor((maxRow-minRow)/2 + 1)) + minRow;
+        var newRow = maxRow - cell.row + minRow;
+        // var newRow = -(cell.row - minRow - Math.floor((maxRow-minRow)/2)) + minRow;
         console.log(newCol + ' ' + newRow);
         currCells[idx].row = (newRow);
         currCells[idx].col = (newCol);
@@ -726,7 +698,10 @@ function reflectX() {
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
-    addLog({ tool: 'reflectX', selected_cells: validCells});
+    for (var i = 0; i < validCells.length; i++) {
+        $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
+    }
+    addLog({ tool: 'reflectX', selected_cells: nonEmptyCells});
 }
 
 function reflectY() {
@@ -752,11 +727,10 @@ function reflectY() {
     var maxRow = Math.max(...currCellsRow);
     var minCol = Math.min(...currCellsCol);
     var maxCol = Math.max(...currCellsCol);
-    var height = maxRow - minRow + 1;
-    var width = maxCol - minCol + 1;
     ind.forEach(function (idx) {
         var cell = currCells[idx];
-        var newCol = -(cell.col - minCol - Math.floor((maxCol-minCol)/2 + 1)) + minCol;
+        // var newCol = -(cell.col - minCol - Math.floor((maxCol-minCol)/2 + 1)) + minCol;
+        var newCol = maxCol - cell.col + minCol;
         var newRow = cell.row;
         console.log(newCol + ' ' + newRow);
         currCells[idx].row = (newRow);
@@ -767,6 +741,9 @@ function reflectY() {
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
+    for (var i = 0; i < validCells.length; i++) {
+        $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
+    }
     addLog({ tool: 'reflectY', selected_cells: validCells});
 }
 
@@ -819,7 +796,7 @@ $(window).load(function () {
             task_with_type = TASKLIST.filter(task => task['type'] == t);
             $(`<h3 class="task_type">${t}</h3><p></p>`).appendTo($('#task_side_nav'))
             for (var i = 0; i < task_with_type.length; i++) {
-                task_item = $(`<a onclick=loadTaskFromDb("${task_with_type[i]['task_name']}")>${TASKLIST[i]['task_name']}</a>`);
+                task_item = $(`<a onclick=loadTaskFromDb("${task_with_type[i]['task_name']}")>${task_with_type[i]['task_name']}</a>`);
                 task_item.appendTo($('#task_side_nav'));
             }
             $('<hr>').appendTo($('#task_side_nav'))
@@ -841,7 +818,7 @@ $(document).ready(function () {
             $('.edition_grid').find('.ui-selected').each(function (i, cell) {
                 symbol = getSelectedSymbol();
                 setCellSymbol($(cell), symbol);
-                LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
+                LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol'), true));
                 selectedCells.push(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
             });
             addLog({ tool: 'select_fill', selected_cells: selectedCells });
@@ -888,6 +865,9 @@ $(document).ready(function () {
 
     $('button[name=tool_switching][id=tool_clear_selection]').click(function () {
         $('.ui-selected').removeClass('ui-selected');
+        LAYERS[currentLayerIndex].cells.forEach(function(selected) {
+            selected.unselect();
+        })
     });
 
     $('input[type=text][name=size]').on('keydown', function (event) {

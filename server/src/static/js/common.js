@@ -1,3 +1,4 @@
+const PADDING = 5;
 
 class Grid {
     constructor(height, width, values) {
@@ -18,10 +19,11 @@ class Grid {
 }
 
 class Cell {
-    constructor(r, c, value) {
+    constructor(r, c, value, selected) {
         this.row = r;
         this.col = c;
         this.val = value;
+        this.selected = selected;
     }
 
     setRow(r) {
@@ -34,6 +36,14 @@ class Cell {
 
     setVal(val) {
         this.val = val;
+    }
+
+    select() {
+        this.selected = true;
+    }
+
+    unselect() {
+        this.selected = false;
     }
 }
 
@@ -109,12 +119,22 @@ class Layer {
         }
         for (var i = 0; i < this.cells.length; i++) {
             var cell = this.cells[i]
-            if(cell.val != undefined && cell.row < grid.length && cell.col < grid[0].length){
+            if(cell.val != undefined && cell.row >= 0 && cell.col >= 0 && cell.row < grid.length && cell.col < grid[0].length){
                 grid[cell.row][cell.col] = cell.val;
             }
             
         }
         return new Grid(this.height, this.width, grid);
+    }
+
+    getSelected() {
+        var selected = [];
+        for (var i = 0; i < this.cells.length; i++) {
+            if (this.cells[i].selected) {
+                selected.push(this.cells[i]);
+            }
+        }
+        return selected;
     }
 }
 
@@ -247,9 +267,11 @@ function fitCellsToContainer(jqGrid, height, width, containerHeight, containerWi
     size = Math.min(MAX_CELL_SIZE, size);
     jqGrid.find('.cell').css('height', size + 'px');
     jqGrid.find('.cell').css('width', size + 'px');
+    // jqGrid.find('.padding').css('height', 0);
+    // jqGrid.find('.padding').css('width', 0);
 }
 
-function fillJqGridWithData(jqGrid, dataGrid) {
+function fillJqGridWithData(jqGrid, dataGrid, pad) {
     jqGrid.empty();
     height = dataGrid.height;
     width = dataGrid.width;
@@ -258,9 +280,9 @@ function fillJqGridWithData(jqGrid, dataGrid) {
         row.addClass('row');
         for (var j = 0; j < width; j++){
             var cell = $(document.createElement('div'));
-            cell.addClass('cell');
             cell.attr('x', i);
             cell.attr('y', j);
+            cell.addClass('cell');
             setCellSymbol(cell, dataGrid.grid[i][j]);
             row.append(cell);
         }
