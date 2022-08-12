@@ -49,6 +49,10 @@ def store_log():
 def show_testset():
     return render_template('testset_interface.html')
 
+@app.route('/testset/<state>')
+def show_url_param(state):
+    return render_template('testset_interface.html', id=state)
+
 @app.route('/testset/submit', methods=['POST', 'GET'])
 def store_final_set():
     json_obj = request.json
@@ -196,13 +200,15 @@ def save_json_test():
             final_set = dict()
             final_set['train'] = []
             final_set['test'] = []
+            testpairs[-1]['input'] = testpairs[-1].pop('input_cells')
+            testpairs[-1]['output'] = testpairs[-1].pop('output_cells')
             final_set['test'].append(testpairs[-1])
             for i in range(len(testpairs)-1):
                 v = testpairs[i]
                 v['input'] = v.pop('input_cells')
                 v['output'] = v.pop('output_cells')
                 final_set['train'].append(v)
-            with open('json_data/{}_{}_{}.json'.format(d.get('userid'), d.get('Description'), d.get('testid')), 'w') as f:
+            with open('../../data/generated/{}_{}_{}.json'.format(d.get('userid'), d.get('Description'), d.get('testid')), 'w') as f:
                 json.dump(final_set, f)
         except Exception as e:
             print(e)
