@@ -21,6 +21,7 @@ var MAX_CELL_SIZE = 100;
 
 // Logs
 var logs = new Log("", "");
+var logsWithUndo = new Log("", "");
 var redoStates = new Array();
 
 // user id
@@ -38,12 +39,14 @@ onkeydown = onkeyup = (event) => {
     keyState[event.key] = (event.type == 'keydown');
 }
 
-function addLog(action) {
+function addLog(action, submit, freezeUpdateUndo) {
+    if (!submit) {
+        submit = 0;
+    }
     currTime = new Date()
     var time = currTime - prevTime
     prevTime = currTime
-
-    redoStates = [];
+    makeGridFromLayer();
     var gridCopy = [];
     for (var i = 0; i < CURRENT_OUTPUT_GRID.grid.length; i++) {
         gridCopy[i] = CURRENT_OUTPUT_GRID.grid[i].slice();
@@ -58,8 +61,20 @@ function addLog(action) {
         gridCopy,
         currentLayerIndex,
         layerCopy,
-        time
+        time,
+        submit
     );
+    if (!freezeUpdateUndo) {
+        redoStates = [];
+        logsWithUndo.addAction(
+            action,
+            gridCopy,
+            currentLayerIndex,
+            layerCopy,
+            time,
+            submit
+        );
+    }
 }
 
 function resetTask() {
@@ -69,17 +84,15 @@ function resetTask() {
     CURRENT_INPUT_GRID = new Grid(3, 3);
     TEST_PAIRS = new Array();
     CURRENT_TEST_PAIR_INDEX = 0;
-    // $('#task_preview').html('');
+    $('#task_preview').html('');
     resetOutputGrid();
     EXAMPLES = [];
     LAYERS = new Array();
     LAYERS.push(new Layer(new Array(), 0, 3, 3, 0));
     currentLayerIndex = 0;
     currentExample = 0;
-    updateAllLayers();
-    initLayerPreview();
 
-    // addLog({tool: 'start'});
+    addLog({tool: 'start'});
 }
 
 function refreshEditionGrid(jqGrid, dataGrid, pad) {
@@ -186,32 +199,37 @@ function copyFromInput() {
     addLog({ tool: 'copyFromInput' });
 }
 
-function fillPairPreview(inputGrid, outputGrid) {
-    var inputSlot = $('#input_pair');
-    var outputSlot = $('#output_pair');
-    // var pairSlot = $('#pair_preview');
-    // if (!pairSlot.length) {
-    //     // Create HTML for pair.
-    //     pairSlot = $('<div id="pair_preview" class="pair_preview"></div>');
-    //     pairSlot.appendTo('#task_preview');
-    // }
-    var jqInputGrid = inputSlot.find('.input_preview');
-    if (jqInputGrid.length) {
-        jqInputGrid.remove('.input_preview');
+function fillPairPreview(id, inputGrid, outputGrid) {
+    var pairSlot = $('#pair_preview_' + id);
+    var inputSlot = pairSlot.find('.input_pair');
+    var outputSlot = pairSlot.find('.output_pair');
+    if (!pairSlot.length) {
+        // Create HTML for pair.
+        pairSlot = $('<div id="pair_preview_' + id + '" class="pair_preview" index="' + id + '"></div>');
+        var inputSlot = $('<div class="input_pair"></div>');
+        var arrow = $('<div id="demo_arrow" class="arrow"><h1>&#8594;</h1></div>');
+        var outputSlot = $('<div class="output_pair"></div>');
+        inputSlot.appendTo(pairSlot);
+        arrow.appendTo(pairSlot);
+        outputSlot.appendTo(pairSlot);
+        pairSlot.appendTo('#task_preview');
     }
-    jqInputGrid = $('<div class="input_preview"></div>');
-    jqInputGrid.appendTo(inputSlot);
+    var jqInputGrid = inputSlot.find('.input_preview');
+    if (!jqInputGrid.length) {
+        jqInputGrid = $('<div class="input_preview"></div>');
+        jqInputGrid.appendTo(inputSlot);
+    }
 
     var jqOutputGrid = outputSlot.find('.output_preview');
-    if (jqOutputGrid.length) {
-        jqOutputGrid.remove(".output_preview");
+    if (!jqOutputGrid.length) {
+        jqOutputGrid = $('<div class="output_preview"></div>');
+        jqOutputGrid.appendTo(outputSlot);
     }
-    jqOutputGrid = $('<div class="output_preview"></div>');
-    jqOutputGrid.appendTo(outputSlot);
 
-    fillJqGridWithData(jqInputGrid, inputGrid, false);
+
+    fillJqGridWithData(jqInputGrid, inputGrid);
     fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 175, 175);
-    fillJqGridWithData(jqOutputGrid, outputGrid, false);
+    fillJqGridWithData(jqOutputGrid, outputGrid);
     fitCellsToContainer(jqOutputGrid, outputGrid.height, outputGrid.width, 175, 175);
 }
 
@@ -241,8 +259,6 @@ function initLayerPreview() {
 }
 
 function loadJSONTask(train, test) {
-    initLayerPreview();
-
     resetTask();
     $('#modal_bg').hide();
     $('#error_display').hide();
@@ -254,10 +270,9 @@ function loadJSONTask(train, test) {
         input_grid = convertSerializedGridToGridObject(values)
         values = pair['output'];
         output_grid = convertSerializedGridToGridObject(values)
-        EXAMPLES.push([input_grid, output_grid]);
-        // fillPairPreview(i, input_grid, output_grid);
+        // EXAMPLES.push([input_grid, output_grid]);
+        fillPairPreview(i, input_grid, output_grid);
     }
-    fillPairPreview(EXAMPLES[0][0], EXAMPLES[0][1]);
     $('#current_example_id').html('1');
     $('#total_examples').html(EXAMPLES.length);
     for (var i = 0; i < test.length; i++) {
@@ -270,7 +285,6 @@ function loadJSONTask(train, test) {
     CURRENT_TEST_PAIR_INDEX = 0;
     $('#current_test_input_id_display').html('1');
     $('#total_test_input_count_display').html(test.length);
-    initializeSelectable();
 }
 
 function display_task_name(task_name, task_index, number_of_tasks) {
@@ -307,6 +321,8 @@ function loadTaskFromFile(e) {
         $('#load_task_file_input')[0].value = "";
         display_task_name(file.name, null, null);
         logs = new Log(file.name, user_id);
+        logsWithUndo = new Log(file.name, user_id);
+        addLog({tool : 'start'});
     };
     reader.readAsText(file);
 }
@@ -320,11 +336,15 @@ function loadTaskFromDb(task_name) {
     loadJSONTask(content['train'], content['test']);
     $('#load_task_file_input')[0].value = "";
     display_task_name(task_name, null, null);
+    logs = new Log(task_name, user_id);
+    logsWithUndo = new Log(task_name, user_id);
+    addLog({tool : 'start'});
 }
 
 function randomTask() {
-    var subset = "training";
-    task_subset = TASKLIST.filter(t => t['type'] == 'training');
+    resetTask();
+    var subset = "MiniARC";
+    task_subset = TASKLIST.filter(t => t['type'] == subset);
     var task_index = Math.floor(Math.random() * task_subset.length);
     var task = task_subset[task_index];
     var json = JSON.parse(task['content']);
@@ -332,6 +352,8 @@ function randomTask() {
     infoMsg("Loaded task training/" + task_subset["task_name"]);
     display_task_name(task['task_name'], task, task.length);
     logs = new Log(task['task_name'], user_id);
+    logsWithUndo = new Log(task['task_name'], user_id);
+    addLog({tool : 'start'});
 }
 
 function openTaskList() {
@@ -390,7 +412,8 @@ function submitSolution() {
     submitted_output = CURRENT_OUTPUT_GRID.grid;
     if (reference_output.length != submitted_output.length) {
         errorMsg('Wrong solution.');
-        addLog({ tool: "check", correct: false });
+        logs.action_sequence[logs.action_sequence.length-1]['submit'] = -1;
+        // addLog({ tool: "check", correct: false });
         tries += 1
         if (tries >= 3) {
             saveLogs();
@@ -412,7 +435,8 @@ function submitSolution() {
         }
 
     }
-    addLog({ tool: "check", correct: true });
+    logs.action_sequence[logs.action_sequence.length-1]['submit'] = 1;
+    // addLog({ tool: "check", correct: true });
     saveLogs();
     infoMsg('Correct solution!');
 }
@@ -445,14 +469,14 @@ function initializeSelectable() {
             {
                 autoRefresh: false,
                 filter: '> .row > .cell',
-                selected: function(event, ui) {
-                    LAYERS[currentLayerIndex].cells.forEach(function(cell) {
+                selected: function (event, ui) {
+                    LAYERS[currentLayerIndex].cells.forEach(function (cell) {
                         cell.unselect();
                     })
-                    $('.ui-selected').each(function(i, selected) {
+                    $('.ui-selected').each(function (i, selected) {
                         row = $(selected).attr('x');
                         col = $(selected).attr('y');
-                        LAYERS[currentLayerIndex].cells.forEach(function(cell) {
+                        LAYERS[currentLayerIndex].cells.forEach(function (cell) {
                             if (cell.row == row && cell.col == col) {
                                 cell.select();
                                 console.log(cell)
@@ -567,7 +591,7 @@ function deleteLayer() {
     updateAllLayers();
     initLayerPreview();
     currentLayerIndex -= 1;
-    $("#layer_"+(currentLayerIndex-1)).prop("checked", true)
+    $("#layer_" + (currentLayerIndex - 1)).prop("checked", true)
     initializeLayerChange();
     makeGridFromLayer();
 }
@@ -603,9 +627,9 @@ function makeGridFromLayer() {
 
 function translateCells(xChange, yChange) {
     var selectedCells = LAYERS[currentLayerIndex].getSelected();
-    selectedCells.forEach(function(cell) {
-        cell.setRow(parseInt(cell.row)+yChange);
-        cell.setCol(parseInt(cell.col)+xChange);
+    selectedCells.forEach(function (cell) {
+        cell.setRow(parseInt(cell.row) + yChange);
+        cell.setCol(parseInt(cell.col) + xChange);
     })
     $('.ui-selected').removeClass('ui-selected');
     updateAllLayers();
@@ -701,7 +725,7 @@ function reflectX() {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'reflectX', selected_cells: nonEmptyCells});
+    addLog({ tool: 'reflectX', selected_cells: nonEmptyCells });
 }
 
 function reflectY() {
@@ -744,15 +768,15 @@ function reflectY() {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'reflectY', selected_cells: validCells});
+    addLog({ tool: 'reflectY', selected_cells: validCells });
 }
 
 function undo() {
     if (logs.action_sequence.length <= 1) {
         return;
     }
-    redoStates.push(logs.removeAction());
-    var lastState = logs.action_sequence[logs.action_sequence.length - 1];
+    redoStates.push(logsWithUndo.removeAction());
+    var lastState = logsWithUndo.lastAction();
     $('#output_grid_size').val(`${lastState.grid.length}x${lastState.grid[0].length}`);
     LAYERS = [];
     lastState.layer_list.forEach(function (layer) {
@@ -760,6 +784,7 @@ function undo() {
         LAYERS.push(new Layer(jsonLayer.cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
     });
     currentLayerIndex = lastState.currentLayer;
+    addLog({ tool: 'undo' }, true);
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
@@ -769,8 +794,9 @@ function redo() {
     if (!redoStates.length) {
         return;
     }
-    logs.action_sequence.push(redoStates.pop());
-    var lastState = logs.action_sequence[logs.action_sequence.length - 1];
+    // var lastState = logs.action_sequence[logs.action_sequence.length - 1];
+    var lastState = redoStates.pop();
+    logsWithUndo.action_sequence.push(lastState);
     $('#output_grid_size').val(`${lastState.grid.length}x${lastState.grid[0].length}`);
     LAYERS = [];
     lastState.layer_list.forEach(function (layer) {
@@ -778,6 +804,7 @@ function redo() {
         LAYERS.push(new Layer(jsonLayer.cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
     });
     currentLayerIndex = lastState.currentLayer;
+    addLog({tool : 'redo'}, true);
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
@@ -791,8 +818,9 @@ $(window).load(function () {
         "/tasklist"
     ).done(function (data) {
         TASKLIST = data;
-        types = ['selected_examples', 'training', 'evaluation']
-        types.forEach(function(t) {
+        types = ['MiniARC'];
+        // types = ['selected_examples', 'training', 'evaluation']
+        types.forEach(function (t) {
             task_with_type = TASKLIST.filter(task => task['type'] == t);
             $(`<h3 class="task_type">${t}</h3><p></p>`).appendTo($('#task_side_nav'))
             for (var i = 0; i < task_with_type.length; i++) {
@@ -865,7 +893,7 @@ $(document).ready(function () {
 
     $('button[name=tool_switching][id=tool_clear_selection]').click(function () {
         $('.ui-selected').removeClass('ui-selected');
-        LAYERS[currentLayerIndex].cells.forEach(function(selected) {
+        LAYERS[currentLayerIndex].cells.forEach(function (selected) {
             selected.unselect();
         })
     });

@@ -9,7 +9,6 @@ body {
     flex-direction: row;
     float: left;
     width: 100vw;
-    height: 90vh;
     transition: margin-left .5s;
     margin: auto;
     margin-top: 2px;
@@ -24,10 +23,20 @@ body {
 #demonstration_examples_view {
     display: flex;
     flex-direction: column;
-    width: 40%;
+    height: 100vh;
+    width: 50%;
     margin: 3px;
     padding: 5px;
     background-color: #d5d5d5;
+}
+
+#task_name {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 60%;
+    max-width: 400px;
 }
 
 #load_task_control_btns {
@@ -41,37 +50,52 @@ body {
 
 #task_preview {
     display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    width: 100%;
-    height: 200px;
+    flex-direction: column;
+    /* justify-content: space-evenly; */
+    /* width: 100%; */
+    overflow-y: scroll;
 }
 
-#input_pair {
+.pair_preview {
+    display: flex;
+    flex-direction: row;
+    height: 250px;
+    padding: 5px;
+    /* margin: 5px; */
+    border-bottom: solid 1px #a1a1a1;
+}
+
+.input_pair {
+    display: flex;
+    flex-direction: row;
     width: 40%;
-    height: 100px;
+    /* height: 100px; */
     justify-content: center;
     border-width: 1px;
     border-style: dotted;
     border: #111;
 }
 
-#demo_arrow {
+.arrow {
     width: 10%;
     height: 50px;
 }
 
-#output_pair {
+.output_pair {
+    display: flex;
+    flex-direction: row;
     width: 40%;
-    height: 100px;
+    /* height: 100px; */
     justify-content: center;
     border-width: 1px;
     border-style: dotted;
-    border: #111;
+    border: #111; 
 }
 
 #evaluation-input-view {
     margin-top: 5px;
+    width: 30%;
+    background-color: #d5d5d5;
 }
 
 #evaluation_input {
@@ -80,7 +104,7 @@ body {
     justify-content: space-evenly;
 }
 
-#input_test {
+/* #input_test {
     width: 50%;
     height: 100%;
 }
@@ -88,7 +112,7 @@ body {
 #question {
     width: 20%;
     height: 100%;
-}
+} */
 
 /*Output Grid Editor*/
 #evaluation_view {
@@ -145,6 +169,7 @@ button:focus {outline:0;}
 
 #layers {
     display: flex;
+    display: none;
     flex-direction: column;
     width: 20%;
     height: 100%;
@@ -264,11 +289,18 @@ input, button {
     margin-left: 0;
 }
 
+/* #task_preview {
+    display: flex;
+    flex-direction: row;
+} */
+
 /* .pair_preview {
+    display: flex;
+    flex-direction: row;
     height: 200px;
     padding: 5px;
     border-bottom: solid 1px #a1a1a1;
-} */
+}
 
 .input_preview {
     flex-grow: 3;
@@ -283,7 +315,7 @@ input, button {
 .arrow {
     flex-grow: 1;
     width: 10px;
-}
+} */
 
 .text {
     text-align: center;
@@ -414,8 +446,4 @@ button {
   border-color: #171e29;
   color: #171e29;
   fill: #171e29;
-}
-
-.padding {
-    /* visibility: hidden; */
 }

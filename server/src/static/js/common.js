@@ -175,12 +175,16 @@ class Log {
         this.user_id = user_id;
     }
 
-    addAction(action, grid, currentLayer, layer_list, time) {
-        this.action_sequence.push({action: action, grid: grid, currentLayer: currentLayer, layer_list: layer_list, time: time});
+    addAction(action, grid, currentLayer, layer_list, time, submit) {
+        this.action_sequence.push({action: action, grid: grid, currentLayer: currentLayer, layer_list: layer_list, time: time, submit: submit});
     }
 
     removeAction() {
         return this.action_sequence.pop();
+    }
+
+    lastAction() {
+        return this.action_sequence[this.action_sequence.length-1];
     }
 
     getJSONObject() {
