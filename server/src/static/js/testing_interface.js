@@ -627,6 +627,10 @@ function makeGridFromLayer() {
 
 function translateCells(xChange, yChange) {
     var selectedCells = LAYERS[currentLayerIndex].getSelected();
+    var selectedCopy = [];
+    selectedCells.forEach(function(cell) {
+        selectedCopy.push(new Cell(cell.row, cell.col, cell.val, cell.selected));
+    })
     selectedCells.forEach(function (cell) {
         cell.setRow(parseInt(cell.row) + yChange);
         cell.setCol(parseInt(cell.col) + xChange);
@@ -639,7 +643,7 @@ function translateCells(xChange, yChange) {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'translate', selected_cells: selectedCells, row_change: yChange, col_change: xChange });
+    addLog({ tool: 'translate', selected_cells: selectedCopy, row_change: yChange, col_change: xChange });
 }
 
 function rotateCells() {
@@ -657,8 +661,11 @@ function rotateCells() {
         }
     });
     var nonEmptyCells = [];
+    var selectedCopy = [];
     ind.forEach(function (idx) {
         nonEmptyCells.push(currCells[idx]);
+        currCell = currCells[idx];
+        selectedCopy.push(new Cell(currCell.row, currCell.col, currCell.val, currCell.selected));
     })
     var currCellsRow = nonEmptyCells.map(cell => cell.row);
     var currCellsCol = nonEmptyCells.map(cell => cell.col);
@@ -684,7 +691,7 @@ function rotateCells() {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'rotate', selected_cells: nonEmptyCells })
+    addLog({ tool: 'rotate', selected_cells: selectedCopy })
 }
 
 function reflectX() {
@@ -701,8 +708,11 @@ function reflectX() {
         }
     });
     var nonEmptyCells = [];
+    var selectedCopy = [];
     ind.forEach(function (idx) {
         nonEmptyCells.push(currCells[idx]);
+        currCell = currCells[idx];
+        selectedCopy.push(new Cell(currCell.row, currCell.col, currCell.val, currCell.selected));
     })
     var currCellsRow = nonEmptyCells.map(cell => cell.row);
     var currCellsCol = nonEmptyCells.map(cell => cell.col);
@@ -725,7 +735,7 @@ function reflectX() {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'reflectX', selected_cells: nonEmptyCells });
+    addLog({ tool: 'reflectX', selected_cells: selectedCopy });
 }
 
 function reflectY() {
@@ -742,8 +752,11 @@ function reflectY() {
         }
     });
     var nonEmptyCells = [];
+    var selectedCopy = [];
     ind.forEach(function (idx) {
         nonEmptyCells.push(currCells[idx]);
+        currCell = currCells[idx];
+        selectedCopy.push(new Cell(currCell.row, currCell.col, currCell.val, currCell.selected));
     })
     var currCellsRow = nonEmptyCells.map(cell => cell.row);
     var currCellsCol = nonEmptyCells.map(cell => cell.col);
@@ -768,7 +781,7 @@ function reflectY() {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'reflectY', selected_cells: validCells });
+    addLog({ tool: 'reflectY', selected_cells: selectedCopy });
 }
 
 function undo() {
@@ -927,9 +940,10 @@ $(document).ready(function () {
                 x = parseInt($(selected[i]).attr('x'));
                 y = parseInt($(selected[i]).attr('y'));
                 symbol = parseInt($(selected[i]).attr('symbol'));
-                // if (symbol > 0) {
-                COPY_PASTE_DATA.push([x, y, symbol]);
-                // }
+                source = $(selected[i]).parent().parent().attr('id');
+                if (symbol > 0) {
+                    COPY_PASTE_DATA.push([x, y, symbol, source]);
+                }
             }
             infoMsg('Cells copied! Select a target cell and press V to paste at location.');
             addLog({ tool: 'copy', copy_paste_data: COPY_PASTE_DATA });
@@ -949,6 +963,7 @@ $(document).ready(function () {
             jqGrid = $(selected.parent().parent()[0]);
 
             if (selected.length == 1) {
+                selectedCell = selected[0];
                 targetx = parseInt(selected.attr('x'));
                 targety = parseInt(selected.attr('y'));
 
@@ -978,7 +993,7 @@ $(document).ready(function () {
                         updateAllLayers();
                     }
                 }
-                addLog({ tool: 'paste', copy_paste_data: COPY_PASTE_DATA, row: $(cell).attr('x'), col: $(cell).attr('y') });
+                addLog({ tool: 'paste', copy_paste_data: COPY_PASTE_DATA, row: $(selected).attr('x'), col: $(selected).attr('y') });
             } else {
                 errorMsg('Can only paste at a specific location; only select *one* cell as paste destination.');
             }
