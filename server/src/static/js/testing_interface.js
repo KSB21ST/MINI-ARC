@@ -1,13 +1,13 @@
 
 // Internal state.
-var CURRENT_INPUT_GRID = new Grid(3, 3);
-var CURRENT_OUTPUT_GRID = new Grid(3, 3);
+var CURRENT_INPUT_GRID = new Grid(5, 5);
+var CURRENT_OUTPUT_GRID = new Grid(5, 5);
 var TEST_PAIRS = new Array();
 var CURRENT_TEST_PAIR_INDEX = 0;
 var COPY_PASTE_DATA = new Array();
 var SELECTED_DATA = new Array();
 var LAYERS = new Array();
-LAYERS.push(new Layer(new Array(), 0, 3, 3, 0));
+LAYERS.push(new Layer(new Array(), 0, 5, 5, 0));
 var currentLayerIndex = 0;
 var EXAMPLES = new Array();
 var currentExample = 0;
@@ -81,14 +81,14 @@ function resetTask() {
     prevTime = new Date()
     tries = 0;
     logSaved = false;
-    CURRENT_INPUT_GRID = new Grid(3, 3);
+    CURRENT_INPUT_GRID = new Grid(5, 5);
     TEST_PAIRS = new Array();
     CURRENT_TEST_PAIR_INDEX = 0;
     $('#task_preview').html('');
     resetOutputGrid();
     EXAMPLES = [];
     LAYERS = new Array();
-    LAYERS.push(new Layer(new Array(), 0, 3, 3, 0));
+    LAYERS.push(new Layer(new Array(), 0, 5, 5, 0));
     currentLayerIndex = 0;
     currentExample = 0;
 
@@ -172,9 +172,9 @@ function resizeOutputGrid() {
 
 function resetOutputGrid() {
     syncFromEditionGridToDataGrid();
-    CURRENT_OUTPUT_GRID = new Grid(3, 3);
+    CURRENT_OUTPUT_GRID = new Grid(5, 5);
     syncFromDataGridToEditionGrid();
-    $('#output_grid_size').val("3x3");
+    $('#output_grid_size').val("5x5");
     resizeOutputGrid();
     LAYERS[currentLayerIndex].height = CURRENT_OUTPUT_GRID.height;
     LAYERS[currentLayerIndex].width = CURRENT_OUTPUT_GRID.width;
