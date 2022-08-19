@@ -45,7 +45,7 @@ def getTaskList():
     return jsonify(data)
 
 @app.route('/tasklist/<taskname>', methods=['GET'])
-def getTask():
+def getTask(taskname):
     return
 
 @app.route('/', methods=['POST'])

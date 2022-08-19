@@ -194,7 +194,7 @@ class Log {
             action.layer_list.forEach(function(layer) {
                 layer_grid.push(layer.getGrid().grid);
             });
-            action_sequence_with_grids.push({action: action.action, grid: action.grid, currentLayer: action.currentLayer, layer_list: layer_grid, time: action.time});
+            action_sequence_with_grids.push({action: action.action, grid: action.grid, currentLayer: action.currentLayer, layer_list: layer_grid, submit: action.submit, time: action.time});
         });
         var obj = 
         {
