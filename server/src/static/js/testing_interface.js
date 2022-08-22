@@ -472,6 +472,7 @@ function initializeSelectable() {
                 filter: '> .row > .cell',
                 selected: function (event, ui) {
                     LAYERS[currentLayerIndex].cells.forEach(function (cell) {
+                        console.log(cell);
                         cell.unselect();
                     })
                     $('.ui-selected').each(function (i, selected) {
@@ -798,33 +799,40 @@ function undo() {
     LAYERS = [];
     lastState.layer_list.forEach(function (layer) {
         var jsonLayer = JSON.parse(JSON.stringify(layer));
-        LAYERS.push(new Layer(jsonLayer.cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
+        var cells = [];
+        jsonLayer.cells.forEach(function(cell) {
+            cells.push(new Cell(cell['row'], cell['col'], cell['val']));
+        });
+        LAYERS.push(new Layer(cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
     });
     currentLayerIndex = lastState.currentLayer;
-    addLog({ tool: 'undo' }, true);
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
+    addLog({ tool: 'undo' }, 0, true);
 }
 
 function redo() {
     if (!redoStates.length) {
         return;
     }
-    // var lastState = logs.action_sequence[logs.action_sequence.length - 1];
     var lastState = redoStates.pop();
     logsWithUndo.action_sequence.push(lastState);
     $('#output_grid_size').val(`${lastState.grid.length}x${lastState.grid[0].length}`);
     LAYERS = [];
     lastState.layer_list.forEach(function (layer) {
         var jsonLayer = JSON.parse(JSON.stringify(layer));
-        LAYERS.push(new Layer(jsonLayer.cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
+        var cells = [];
+        jsonLayer.cells.forEach(function(cell) {
+            cells.push(new Cell(cell['row'], cell['col'], cell['val']));
+        });
+        LAYERS.push(new Layer(cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
     });
     currentLayerIndex = lastState.currentLayer;
-    addLog({tool : 'redo'}, true);
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
+    addLog({tool : 'redo'}, 0, true);
 }
 
 // Initial event binding.
