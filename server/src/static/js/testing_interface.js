@@ -46,7 +46,7 @@ function addLog(action, submit, freezeUpdateUndo) {
     currTime = new Date()
     var time = currTime - prevTime
     prevTime = currTime
-    makeGridFromLayer();
+    // makeGridFromLayer();
     var gridCopy = [];
     for (var i = 0; i < CURRENT_OUTPUT_GRID.grid.length; i++) {
         gridCopy[i] = CURRENT_OUTPUT_GRID.grid[i].slice();
@@ -639,8 +639,12 @@ function translateCells(xChange, yChange) {
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
+    console.log(selectedCells);
     var validCells = selectedCells.filter(cell => (cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width));
+    console.log(validCells);
     for (var i = 0; i < validCells.length; i++) {
+        console.log(validCells[i].row + " " + validCells[i].col);
+        console.log( $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`))
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
     addLog({ tool: 'translate', selected_cells: selectedCopy, row_change: yChange, col_change: xChange });
@@ -766,7 +770,6 @@ function reflectY() {
     var maxCol = Math.max(...currCellsCol);
     ind.forEach(function (idx) {
         var cell = currCells[idx];
-        // var newCol = -(cell.col - minCol - Math.floor((maxCol-minCol)/2 + 1)) + minCol;
         var newCol = maxCol - cell.col + minCol;
         var newRow = cell.row;
         console.log(newCol + ' ' + newRow);
@@ -856,11 +859,17 @@ $(document).ready(function () {
         toolMode = $('input[name=tool_switching]:checked').val();
         var selectedCells = [];
         if (toolMode == 'select') {
+            selectedCells = [];
             $('.edition_grid').find('.ui-selected').each(function (i, cell) {
                 symbol = getSelectedSymbol();
                 setCellSymbol($(cell), symbol);
+                selectedCells.push(new Cell($(cell).attr('x'), $(cell).attr('y'), symbol));
                 LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol'), true));
                 selectedCells.push(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
+            });
+            makeGridFromLayer();
+            selectedCells.forEach(function(cell) {
+                $('.edition_grid').find(`[x=${cell.row}][y=${cell.col}]`).addClass('ui-selected');
             });
             addLog({ tool: 'select_fill', selected_cells: selectedCells });
         }
