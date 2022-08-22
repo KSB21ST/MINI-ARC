@@ -425,7 +425,8 @@ function submitSolution() {
         for (var j = 0; j < ref_row.length; j++) {
             if (ref_row[j] != submitted_output[i][j]) {
                 errorMsg('Wrong solution.');
-                addLog({ tool: "check", correct: false });
+                logs.action_sequence[logs.action_sequence.length-1]['submit'] = -1;
+                // addLog({ tool: "check", correct: false });
                 tries += 1
                 if (tries >= 3) {
                     saveLogs();
