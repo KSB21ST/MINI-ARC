@@ -136,7 +136,7 @@ function setUpEditionGridListeners(jqGrid) {
                 LAYERS[currentLayerIndex].addCell(affectedCells[i]);
             }
             syncFromDataGridToEditionGrid();
-            addLog({ tool: 'floodfill', symbol: symbol, row: cell.attr('x'), col: cell.attr('y'), cells: [...new Set(affectedCells)] });
+            addLog({ tool: 'floodfill', symbol: symbol, row: cell.attr('x'), col: cell.attr('y'), selected_cells: [...new Set(affectedCells)] });
         }
         else if (mode == 'edit') {
             // Else: fill just this cell.
@@ -1002,6 +1002,7 @@ $(document).ready(function () {
                         updateAllLayers();
                     }
                 }
+                makeGridFromLayer();
                 addLog({ tool: 'paste', copy_paste_data: COPY_PASTE_DATA, row: $(selected).attr('x'), col: $(selected).attr('y') });
             } else {
                 errorMsg('Can only paste at a specific location; only select *one* cell as paste destination.');
