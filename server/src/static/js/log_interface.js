@@ -4,6 +4,8 @@ var MAX_CELL_SIZE = 100;
 var LOG_LIST = [];
 var actions;
 var currentAction = 0;
+var INPUT_GRID;
+var TASKLIST;
 
 var defaultGridData = new Array();
 for (var i = 0; i < defaultGridData.length; i++) {
@@ -31,20 +33,25 @@ function getGrid() {
     symbol = act['symbol'];
     row = act['row'];
     col = act['col'];
-    height: act['height'];
-    width: act['width'];
+    height = act['height'];
+    width = act['width'];
     selected = act['selected_cells'];
     rowChange = act['row_change'];
     colChange = act['col_change'];
+    submit = actions[currentAction]['submit'];
+    time = actions[currentAction]['time'];
     currentGrid = convertSerializedGridToGridObject(gridData);
-    console.log(currentGrid)
-
+    
     fillJqGridWithData($('#main_grid'), currentGrid);
+    fillJqGridWithData($('#input_grid'), INPUT_GRID);
     fillJqGridWithData($('#clicked'), currentGrid);
     fillJqGridWithData($('#selected'), currentGrid);
     fitCellsToContainer($('#main_grid'), currentGrid.height, currentGrid.width, 400, 400);
-    fitCellsToContainer($('#clicked'), currentGrid.height, currentGrid.width, 200, 200);
-    fitCellsToContainer($('#selected'), currentGrid.height, currentGrid.width, 200, 200);
+    fitCellsToContainer($('#input_grid'), INPUT_GRID.height, INPUT_GRID.width, 150, 150);
+    fitCellsToContainer($('#clicked'), currentGrid.height, currentGrid.width, 150, 150);
+    fitCellsToContainer($('#selected'), currentGrid.height, currentGrid.width, 150, 150);
+    
+    
 
     var description = ""
     description += `tool: ${tool}\n`;
@@ -69,8 +76,41 @@ function getGrid() {
     if (colChange) {
         description += `col_change: ${colChange}\n`;
     }
+    if (time) {
+        description += `time: ${time}\n`;
+    }
+    if (submit) {
+        description += `submit: ${submit}\n`;
+    }
 
     document.getElementById('action_description').innerHTML = description
+
+    selectedCells = act['selected_cells'];
+    copyPasteData = act['copy_paste_data'];
+    $('.ui-selected').each((i, cell) => $(cell).removeClass('ui-selected'));
+    if (selectedCells) {
+        selectedCells.forEach(function(cell) {
+            r = cell['row'];
+            c = cell['col'];
+            $('#selected').find(`[x=${r}][y=${c}]`).addClass('ui-selected');
+        })
+    }
+    if (copyPasteData) {
+        copyPasteData.forEach(function(cell) {
+            r = cell[0];
+            c = cell[1];
+            source = cell[3];
+            console.log(source)
+            if (!source) {
+                $('#selected').find(`[x=${r}][y=${c}]`).addClass('ui-selected');
+            } else {
+                $('#input_grid').find(`[x=${r}][y=${c}]`).addClass('ui-selected');
+            }
+        })
+    }
+    if (row && col) {
+        $('#clicked').find(`[x=${row}][y=${col}]`).addClass('ui-selected');
+    }
 }
 
 function loadLog(task, user) {
@@ -79,6 +119,20 @@ function loadLog(task, user) {
     if (!selected.length) {
         return;
     }
+    // console.log(TASKLIST)
+    // console.log(task)
+    matching_task = TASKLIST.filter(t => t['task_name'] == task);
+    // console.log(matching_task)
+    if (matching_task.length) {
+        content = JSON.parse(matching_task[0]['content']);
+        test = content['test']
+        input = test[0]['input'];
+        INPUT_GRID = convertSerializedGridToGridObject(input);
+        // console.log(INPUT_GRID)
+        // fillJqGridWithData($('#input'), INPUT_GRID);
+        // fitCellsToContainer($('#input'), INPUT_GRID.height, INPUT_GRID.width, 150, 150);
+    }
+    
     currentLog = JSON.parse(selected[0][2]);
     actions = currentLog['action_sequence'];
     getGrid();
@@ -96,6 +150,12 @@ $(window).load(function () {
             log_item.appendTo($('#menu'));
             LOG_LIST.push([log['task_id'], log['user_id'], log['action_sequence']]);
         })
+        document.getElementById('menu').scrollTop = -document.getElementById('menu').scrollHeight;
+    })
+    $.getJSON(
+        "/tasklist"
+    ).done(function (data) {
+        TASKLIST = data;
     })
 })
 

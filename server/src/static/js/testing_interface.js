@@ -46,7 +46,7 @@ function addLog(action, submit, freezeUpdateUndo) {
     currTime = new Date()
     var time = currTime - prevTime
     prevTime = currTime
-    makeGridFromLayer();
+    // makeGridFromLayer();
     var gridCopy = [];
     for (var i = 0; i < CURRENT_OUTPUT_GRID.grid.length; i++) {
         gridCopy[i] = CURRENT_OUTPUT_GRID.grid[i].slice();
@@ -136,7 +136,7 @@ function setUpEditionGridListeners(jqGrid) {
                 LAYERS[currentLayerIndex].addCell(affectedCells[i]);
             }
             syncFromDataGridToEditionGrid();
-            addLog({ tool: 'floodfill', symbol: symbol, row: cell.attr('x'), col: cell.attr('y'), cells: [...new Set(affectedCells)] });
+            addLog({ tool: 'floodfill', symbol: symbol, row: cell.attr('x'), col: cell.attr('y'), selected_cells: [...new Set(affectedCells)] });
         }
         else if (mode == 'edit') {
             // Else: fill just this cell.
@@ -425,7 +425,8 @@ function submitSolution() {
         for (var j = 0; j < ref_row.length; j++) {
             if (ref_row[j] != submitted_output[i][j]) {
                 errorMsg('Wrong solution.');
-                addLog({ tool: "check", correct: false });
+                logs.action_sequence[logs.action_sequence.length-1]['submit'] = -1;
+                // addLog({ tool: "check", correct: false });
                 tries += 1
                 if (tries >= 3) {
                     saveLogs();
@@ -471,6 +472,7 @@ function initializeSelectable() {
                 filter: '> .row > .cell',
                 selected: function (event, ui) {
                     LAYERS[currentLayerIndex].cells.forEach(function (cell) {
+                        console.log(cell);
                         cell.unselect();
                     })
                     $('.ui-selected').each(function (i, selected) {
@@ -627,6 +629,10 @@ function makeGridFromLayer() {
 
 function translateCells(xChange, yChange) {
     var selectedCells = LAYERS[currentLayerIndex].getSelected();
+    var selectedCopy = [];
+    selectedCells.forEach(function(cell) {
+        selectedCopy.push(new Cell(cell.row, cell.col, cell.val, cell.selected));
+    })
     selectedCells.forEach(function (cell) {
         cell.setRow(parseInt(cell.row) + yChange);
         cell.setCol(parseInt(cell.col) + xChange);
@@ -635,11 +641,15 @@ function translateCells(xChange, yChange) {
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
+    console.log(selectedCells);
     var validCells = selectedCells.filter(cell => (cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width));
+    console.log(validCells);
     for (var i = 0; i < validCells.length; i++) {
+        console.log(validCells[i].row + " " + validCells[i].col);
+        console.log( $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`))
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'translate', selected_cells: selectedCells, row_change: yChange, col_change: xChange });
+    addLog({ tool: 'translate', selected_cells: selectedCopy, row_change: yChange, col_change: xChange });
 }
 
 function rotateCells() {
@@ -657,8 +667,11 @@ function rotateCells() {
         }
     });
     var nonEmptyCells = [];
+    var selectedCopy = [];
     ind.forEach(function (idx) {
         nonEmptyCells.push(currCells[idx]);
+        currCell = currCells[idx];
+        selectedCopy.push(new Cell(currCell.row, currCell.col, currCell.val, currCell.selected));
     })
     var currCellsRow = nonEmptyCells.map(cell => cell.row);
     var currCellsCol = nonEmptyCells.map(cell => cell.col);
@@ -684,7 +697,7 @@ function rotateCells() {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'rotate', selected_cells: nonEmptyCells })
+    addLog({ tool: 'rotate', selected_cells: selectedCopy })
 }
 
 function reflectX() {
@@ -701,8 +714,11 @@ function reflectX() {
         }
     });
     var nonEmptyCells = [];
+    var selectedCopy = [];
     ind.forEach(function (idx) {
         nonEmptyCells.push(currCells[idx]);
+        currCell = currCells[idx];
+        selectedCopy.push(new Cell(currCell.row, currCell.col, currCell.val, currCell.selected));
     })
     var currCellsRow = nonEmptyCells.map(cell => cell.row);
     var currCellsCol = nonEmptyCells.map(cell => cell.col);
@@ -725,7 +741,7 @@ function reflectX() {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'reflectX', selected_cells: nonEmptyCells });
+    addLog({ tool: 'reflectX', selected_cells: selectedCopy });
 }
 
 function reflectY() {
@@ -742,8 +758,11 @@ function reflectY() {
         }
     });
     var nonEmptyCells = [];
+    var selectedCopy = [];
     ind.forEach(function (idx) {
         nonEmptyCells.push(currCells[idx]);
+        currCell = currCells[idx];
+        selectedCopy.push(new Cell(currCell.row, currCell.col, currCell.val, currCell.selected));
     })
     var currCellsRow = nonEmptyCells.map(cell => cell.row);
     var currCellsCol = nonEmptyCells.map(cell => cell.col);
@@ -753,7 +772,6 @@ function reflectY() {
     var maxCol = Math.max(...currCellsCol);
     ind.forEach(function (idx) {
         var cell = currCells[idx];
-        // var newCol = -(cell.col - minCol - Math.floor((maxCol-minCol)/2 + 1)) + minCol;
         var newCol = maxCol - cell.col + minCol;
         var newRow = cell.row;
         console.log(newCol + ' ' + newRow);
@@ -768,7 +786,7 @@ function reflectY() {
     for (var i = 0; i < validCells.length; i++) {
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
-    addLog({ tool: 'reflectY', selected_cells: validCells });
+    addLog({ tool: 'reflectY', selected_cells: selectedCopy });
 }
 
 function undo() {
@@ -781,33 +799,40 @@ function undo() {
     LAYERS = [];
     lastState.layer_list.forEach(function (layer) {
         var jsonLayer = JSON.parse(JSON.stringify(layer));
-        LAYERS.push(new Layer(jsonLayer.cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
+        var cells = [];
+        jsonLayer.cells.forEach(function(cell) {
+            cells.push(new Cell(cell['row'], cell['col'], cell['val']));
+        });
+        LAYERS.push(new Layer(cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
     });
     currentLayerIndex = lastState.currentLayer;
-    addLog({ tool: 'undo' }, true);
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
+    addLog({ tool: 'undo' }, 0, true);
 }
 
 function redo() {
     if (!redoStates.length) {
         return;
     }
-    // var lastState = logs.action_sequence[logs.action_sequence.length - 1];
     var lastState = redoStates.pop();
     logsWithUndo.action_sequence.push(lastState);
     $('#output_grid_size').val(`${lastState.grid.length}x${lastState.grid[0].length}`);
     LAYERS = [];
     lastState.layer_list.forEach(function (layer) {
         var jsonLayer = JSON.parse(JSON.stringify(layer));
-        LAYERS.push(new Layer(jsonLayer.cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
+        var cells = [];
+        jsonLayer.cells.forEach(function(cell) {
+            cells.push(new Cell(cell['row'], cell['col'], cell['val']));
+        });
+        LAYERS.push(new Layer(cells, jsonLayer.z, jsonLayer.height, jsonLayer.width, jsonLayer.id));
     });
     currentLayerIndex = lastState.currentLayer;
-    addLog({tool : 'redo'}, true);
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
+    addLog({tool : 'redo'}, 0, true);
 }
 
 // Initial event binding.
@@ -843,11 +868,17 @@ $(document).ready(function () {
         toolMode = $('input[name=tool_switching]:checked').val();
         var selectedCells = [];
         if (toolMode == 'select') {
+            selectedCells = [];
             $('.edition_grid').find('.ui-selected').each(function (i, cell) {
                 symbol = getSelectedSymbol();
                 setCellSymbol($(cell), symbol);
+                selectedCells.push(new Cell($(cell).attr('x'), $(cell).attr('y'), symbol));
                 LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol'), true));
                 selectedCells.push(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
+            });
+            makeGridFromLayer();
+            selectedCells.forEach(function(cell) {
+                $('.edition_grid').find(`[x=${cell.row}][y=${cell.col}]`).addClass('ui-selected');
             });
             addLog({ tool: 'select_fill', selected_cells: selectedCells });
         }
@@ -927,9 +958,10 @@ $(document).ready(function () {
                 x = parseInt($(selected[i]).attr('x'));
                 y = parseInt($(selected[i]).attr('y'));
                 symbol = parseInt($(selected[i]).attr('symbol'));
-                // if (symbol > 0) {
-                COPY_PASTE_DATA.push([x, y, symbol]);
-                // }
+                source = $(selected[i]).parent().parent().attr('id');
+                if (symbol > 0) {
+                    COPY_PASTE_DATA.push([x, y, symbol, source]);
+                }
             }
             infoMsg('Cells copied! Select a target cell and press V to paste at location.');
             addLog({ tool: 'copy', copy_paste_data: COPY_PASTE_DATA });
@@ -949,6 +981,7 @@ $(document).ready(function () {
             jqGrid = $(selected.parent().parent()[0]);
 
             if (selected.length == 1) {
+                selectedCell = selected[0];
                 targetx = parseInt(selected.attr('x'));
                 targety = parseInt(selected.attr('y'));
 
@@ -978,7 +1011,8 @@ $(document).ready(function () {
                         updateAllLayers();
                     }
                 }
-                addLog({ tool: 'paste', copy_paste_data: COPY_PASTE_DATA, row: $(cell).attr('x'), col: $(cell).attr('y') });
+                makeGridFromLayer();
+                addLog({ tool: 'paste', copy_paste_data: COPY_PASTE_DATA, row: $(selected).attr('x'), col: $(selected).attr('y') });
             } else {
                 errorMsg('Can only paste at a specific location; only select *one* cell as paste destination.');
             }

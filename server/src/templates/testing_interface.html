@@ -68,9 +68,9 @@
             </div>
 
             <div class="text" id="task_demo_header">
-                <button id="prev_example">Prev</button>
-                Task demonstration <span id="current_example_id">0</span>/<span id="total_examples">0</span>
-                <button id="next_example">Next</button>
+                <!-- <button id="prev_example">Prev</button> -->
+                Task demonstration
+                <!-- <button id="next_example">Next</button> -->
             </div>
 
             <div class="preview" id="task_preview">
@@ -116,7 +116,7 @@
                     </div>
 
                     <div id="output_grid">
-                        <div class="edition_grid selectable_grid">
+                        <div id="output" class="edition_grid selectable_grid">
                             <div class="row">
                                 <div class="cell" symbol="0" x="0" y="0"></div>
                                 <div class="cell" symbol="0" x="0" y="1"></div>
@@ -176,7 +176,7 @@
                                 <span class="tooltip" id="tooltip_rotate">rotate clockwise</span>
                             </div>
 
-                            <div>
+                            <div id="object_tools">
                                 <button class="extra_tools" id="flip_horizontal" onclick="reflectY()">
                                     <i class="bi bi-border-middle"></i>
                                 </button>
