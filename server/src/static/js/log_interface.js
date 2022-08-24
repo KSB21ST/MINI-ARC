@@ -113,9 +113,9 @@ function getGrid() {
     }
 }
 
-function loadLog(task, user) {
+function loadLog(id, task, user) {
     currentAction = 0;
-    selected = LOG_LIST.filter(log => log[0] == task && log[1] == user);
+    selected = LOG_LIST.filter(log => log[0] == id);
     if (!selected.length) {
         return;
     }
@@ -133,7 +133,7 @@ function loadLog(task, user) {
         // fitCellsToContainer($('#input'), INPUT_GRID.height, INPUT_GRID.width, 150, 150);
     }
     
-    currentLog = JSON.parse(selected[0][2]);
+    currentLog = JSON.parse(selected[0][1]);
     actions = currentLog['action_sequence'];
     getGrid();
 }
@@ -146,9 +146,9 @@ $(window).load(function () {
         var LOGS = data;
         console.log(LOGS)
         LOGS.forEach(function(log) {
-            log_item = $(`<a onclick='loadLog("${log['task_id']}", "${log['user_id']}")'>${log['task_id']}_${log['user_id']}</a>`);
+            log_item = $(`<a onclick='loadLog("${log['id']}", "${log['task_id']}", "${log['user_id']}")'>${log['task_id']}_${log['user_id']}</a>`);
             log_item.appendTo($('#menu'));
-            LOG_LIST.push([log['task_id'], log['user_id'], log['action_sequence']]);
+            LOG_LIST.push([log['id'], log['action_sequence']]);
         })
         document.getElementById('menu').scrollTop = -document.getElementById('menu').scrollHeight;
     })

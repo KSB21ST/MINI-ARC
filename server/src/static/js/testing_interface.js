@@ -25,7 +25,7 @@ var logsWithUndo = new Log("", "");
 var redoStates = new Array();
 
 // user id
-const user_id = Date.now().toString(36) + Math.random().toString(36).substr(2);
+var user_id = Date.now().toString(36) + Math.random().toString(36).substr(2);
 
 // time
 var prevTime = 0
@@ -33,6 +33,7 @@ var currTime = 0
 
 // Task List
 var TASKLIST = new Array();
+var currentTask = "";
 
 var keyState = {};
 onkeydown = onkeyup = (event) => {
@@ -93,6 +94,16 @@ function resetTask() {
     currentExample = 0;
 
     addLog({tool: 'start'});
+}
+
+function repeatTask() {
+    loadTaskFromDb(currentTask);
+    closeContinue();
+}
+
+function newTask() {
+    randomTask();
+    closeContinue();
 }
 
 function refreshEditionGrid(jqGrid, dataGrid, pad) {
@@ -328,6 +339,7 @@ function loadTaskFromFile(e) {
 }
 
 function loadTaskFromDb(task_name) {
+    currentTask = task_name;
     matching_task = TASKLIST.filter(task => task['task_name'] == task_name);
     if (!matching_task.length) {
         return;
@@ -339,6 +351,16 @@ function loadTaskFromDb(task_name) {
     logs = new Log(task_name, user_id);
     logsWithUndo = new Log(task_name, user_id);
     addLog({tool : 'start'});
+    copyFromInput();
+}
+
+function start() {
+    username_txt = $('#user_name').val()
+    if (!username_txt) {
+        return;
+    }
+    user_id += "_" + username_txt;
+    randomTask();
 }
 
 function randomTask() {
@@ -350,14 +372,17 @@ function randomTask() {
     var json = JSON.parse(task['content']);
     loadJSONTask(json['train'], json['test']);
     infoMsg("Loaded task training/" + task_subset["task_name"]);
+    currentTask = task['task_name'];
     display_task_name(task['task_name'], task, task.length);
     logs = new Log(task['task_name'], user_id);
     logsWithUndo = new Log(task['task_name'], user_id);
     addLog({tool : 'start'});
+    copyFromInput();
 }
 
 function openTaskList() {
     $("#task_side_nav").width("250px");
+    $("#task_list").width("250px");
     $("#workspace").css('margin-left', '250px');
 }
 
@@ -390,20 +415,33 @@ function nextTestInput() {
     $('#total_test_input_count_display').html(test.length);
 }
 
-function saveLogs() {
+function closeContinue() {
+    $('#continue_modal').css("visibility", "hidden");
+}
+
+function saveLogs(log_list, correct) {
+    if (!log_list) {
+        log_list = logs
+    }
     if (logSaved) {
         return;
     }
     $.ajax({
         type: 'POST',
         url: window.location.href,
-        data: logs.getString(),
+        data: log_list.getString(),
         dataType: 'json',
         contentType: 'application/json; charset=utf-8'
     }).done(function (msg) {
-        console.log("Data Saved: \n" + logs.getString());
+        
     });
     logSaved = true;
+    if (correct) {
+        $('#task_result').text("Correct!")
+    } else {
+        $('#task_result').text("Incorrect")
+    }
+    $('#continue_modal').css("visibility", "visible");
 }
 
 function submitSolution() {
@@ -416,9 +454,9 @@ function submitSolution() {
         // addLog({ tool: "check", correct: false });
         tries += 1
         if (tries >= 3) {
-            saveLogs();
+            saveLogs(logs, false);
         }
-        return
+        return;
     }
     for (var i = 0; i < reference_output.length; i++) {
         ref_row = reference_output[i];
@@ -429,16 +467,16 @@ function submitSolution() {
                 // addLog({ tool: "check", correct: false });
                 tries += 1
                 if (tries >= 3) {
-                    saveLogs();
+                    saveLogs(logs, false);
                 }
-                return
+                return;
             }
         }
 
     }
     logs.action_sequence[logs.action_sequence.length-1]['submit'] = 1;
     // addLog({ tool: "check", correct: true });
-    saveLogs();
+    saveLogs(logs, true);
     infoMsg('Correct solution!');
 }
 
@@ -472,7 +510,7 @@ function initializeSelectable() {
                 filter: '> .row > .cell',
                 selected: function (event, ui) {
                     LAYERS[currentLayerIndex].cells.forEach(function (cell) {
-                        console.log(cell);
+                        // console.log(cell);
                         cell.unselect();
                     })
                     $('.ui-selected').each(function (i, selected) {
@@ -481,7 +519,7 @@ function initializeSelectable() {
                         LAYERS[currentLayerIndex].cells.forEach(function (cell) {
                             if (cell.row == row && cell.col == col) {
                                 cell.select();
-                                console.log(cell)
+                                // console.log(cell)
                             }
                         })
                     })
@@ -504,8 +542,8 @@ function initializeLayerChange() {
 
     $('.ui-selected').removeClass('ui-selected');
     initializeSelectable();
-    console.log(`layer ${currentLayerIndex}`);
-    console.log(currLayer.cells);
+    // console.log(`layer ${currentLayerIndex}`);
+    // console.log(currLayer.cells);
     for (var i = 0; i < currLayer.cells.length; i++) {
         var currCell = currLayer.cells[i];
         setCellSymbol($('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`), currCell.val);
@@ -641,12 +679,12 @@ function translateCells(xChange, yChange) {
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
-    console.log(selectedCells);
+    // console.log(selectedCells);
     var validCells = selectedCells.filter(cell => (cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width));
-    console.log(validCells);
+    // console.log(validCells);
     for (var i = 0; i < validCells.length; i++) {
-        console.log(validCells[i].row + " " + validCells[i].col);
-        console.log( $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`))
+        // console.log(validCells[i].row + " " + validCells[i].col);
+        // console.log( $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`))
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
     addLog({ tool: 'translate', selected_cells: selectedCopy, row_change: yChange, col_change: xChange });
@@ -685,7 +723,7 @@ function rotateCells() {
         var cell = currCells[idx];
         var newCol = -(parseInt(cell.row) - maxRow + Math.floor(height / 2)) + maxCol - Math.floor(width / 2) + ((height % 2 == 0));
         var newRow = (parseInt(cell.col) - maxCol + Math.floor(width / 2)) + maxRow - Math.floor(height / 2);
-        console.log(newCol + ' ' + newRow);
+        // console.log(newCol + ' ' + newRow);
         currCells[idx].row = (newRow);
         currCells[idx].col = (newCol);
         selectedCells.push(new Cell(currCells[idx].row, currCells[idx].col, currCells[idx].val));
@@ -729,7 +767,7 @@ function reflectX() {
         var newCol = cell.col;
         var newRow = maxRow - cell.row + minRow;
         // var newRow = -(cell.row - minRow - Math.floor((maxRow-minRow)/2)) + minRow;
-        console.log(newCol + ' ' + newRow);
+        // console.log(newCol + ' ' + newRow);
         currCells[idx].row = (newRow);
         currCells[idx].col = (newCol);
         selectedCells.push(new Cell(currCells[idx].row, currCells[idx].col, currCells[idx].val));
@@ -774,7 +812,7 @@ function reflectY() {
         var cell = currCells[idx];
         var newCol = maxCol - cell.col + minCol;
         var newRow = cell.row;
-        console.log(newCol + ' ' + newRow);
+        // console.log(newCol + ' ' + newRow);
         currCells[idx].row = (newRow);
         currCells[idx].col = (newCol);
         selectedCells.push(new Cell(currCells[idx].row, currCells[idx].col, currCells[idx].val));
@@ -850,9 +888,9 @@ $(window).load(function () {
             $(`<h3 class="task_type">${t}</h3><p></p>`).appendTo($('#task_side_nav'))
             for (var i = 0; i < task_with_type.length; i++) {
                 task_item = $(`<a onclick=loadTaskFromDb("${task_with_type[i]['task_name']}")>${task_with_type[i]['task_name']}</a>`);
-                task_item.appendTo($('#task_side_nav'));
+                task_item.appendTo($('#task_list'));
             }
-            $('<hr>').appendTo($('#task_side_nav'))
+            $('<hr>').appendTo($('#task_list'));
         })
     })
 })

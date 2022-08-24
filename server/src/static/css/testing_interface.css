@@ -356,7 +356,7 @@ input, button {
     top: 0;
     left: 0;
     background-color: #111; 
-    overflow-x: hidden;
+    overflow: hidden;
     padding-top: 60px;
     transition: 0.5s;
 }
@@ -370,6 +370,15 @@ input, button {
 }
 
 .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+
+#task_list a {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
   font-size: 25px;
@@ -379,7 +388,22 @@ input, button {
 }
 
 .sidenav a:hover {
+    color: #f1f1f1;
+}
+
+#task_list a:hover {
   color: #f1f1f1;
+}
+
+#task_list {
+    height: 100%;
+    width: 0;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111; 
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .tooltip {
@@ -446,4 +470,35 @@ button {
   border-color: #171e29;
   color: #171e29;
   fill: #171e29;
+}
+
+#continue_modal {
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    width: 100%;
+    visibility: hidden;
+}
+
+#continue_modal_content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#continue_buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
 }

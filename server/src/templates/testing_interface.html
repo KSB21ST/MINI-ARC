@@ -41,16 +41,30 @@
 
     <div id="modal_bg">
         <div id="modal">
-            <div>Welcome to the ARC testing interface. <br /> Click on "Random task" to
-                load a random task.</div>
+            <div>Welcome to the ARC testing interface. <br /> Enter your name below and press start.</div>
             <br />
             <!-- <input type="file" class="load_task" /> -->
-            <button onclick="randomTask()" id="random_task_btn">Random task</button>
+            <input type="text" id="user_name"/>
+            <button onclick="start()" id="start_btn">start</button>
+        </div>
+    </div>
+
+    <div id="continue_modal">
+        <div id="continue_modal_content">
+            <span class="close" onclick="closeContinue()">&times;</span>
+            <p id="task_result"></p>
+            <hr>
+            <div id="continue_buttons">
+                <button class="danger" id="cancel" onclick="closeContinue()">Cancel</button>
+                <button class="secondary" id="repeat_task" onclick="repeatTask()">Repeat Task</button>
+                <button class="primary" id="new_task" onclick="newTask()">New Task</button>
+            </div>
         </div>
     </div>
 
     <div id="task_side_nav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeTaskList()">&times;</a>
+        <div id="task_list"></div>
     </div>
 
     <div id="workspace">
