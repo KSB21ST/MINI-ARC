@@ -34,6 +34,7 @@ var currTime = 0
 // Task List
 var TASKLIST = new Array();
 var currentTask = "";
+var taskIndex = 0;
 
 var keyState = {};
 onkeydown = onkeyup = (event) => {
@@ -369,6 +370,10 @@ function randomTask() {
     task_subset = TASKLIST.filter(t => t['type'] == subset);
     var task_index = Math.floor(Math.random() * task_subset.length);
     var task = task_subset[task_index];
+    //added this part for Happy ARC Day2
+    // task = TASKLIST.find(t => t['task_name'].includes('Felipe_Centralize_l6aei788udv3m'));
+    //
+    task = TASKLIST[taskIndex]
     var json = JSON.parse(task['content']);
     loadJSONTask(json['train'], json['test']);
     infoMsg("Loaded task training/" + task_subset["task_name"]);
@@ -378,6 +383,7 @@ function randomTask() {
     logsWithUndo = new Log(task['task_name'], user_id);
     addLog({tool : 'start'});
     copyFromInput();
+    taskIndex = (taskIndex + 1) % TASKLIST.length
 }
 
 function openTaskList() {
@@ -881,7 +887,7 @@ $(window).load(function () {
         "/tasklist"
     ).done(function (data) {
         TASKLIST = data;
-        types = ['MiniARC'];
+        types = ['MiniARC', 'task1', 'task2'];
         // types = ['selected_examples', 'training', 'evaluation']
         types.forEach(function (t) {
             task_with_type = TASKLIST.filter(task => task['type'] == t);
