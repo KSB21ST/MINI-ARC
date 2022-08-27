@@ -9,7 +9,7 @@ from dash.dependencies import Input, Output, State
 
 from utils import *
 
-log_graph = getGraph(data_dir = "../data/MiniARC_Logs", task="Minhyuk_TopPoint_l6aei8s9pjo8fioevd")
+log_graph = getGraph(data_dir = "/Users/sheikh/ARC/PARC/data/event_Logs", task="0_Felipe_Centralize_l6aei788udv3muok2ka")
 pyvis_graph(log_graph, directed=True, no_label=True)
 
 styles = {
@@ -32,7 +32,7 @@ app.layout = html.Div([
     cyto.Cytoscape(
         id='net', 
         elements=cyto_nodes+cyto_edges, 
-        layout={'name': 'breadthfirst', 'directed': True}, 
+        layout={'name': 'circle', 'directed': True}, 
         style={'width': '100%', 'height': '450px'}
     ),
     html.Pre(id='node-json', style=styles['pre'])
