@@ -1,4 +1,34 @@
-# PARC (PowerPoint ARC)
+# Mini-ARC
+Subin Kim, Prin Phunyaphibarn, Donghyun Ahn, Sundong Kim
+
+A link to our paper can be found below:
+[OpenReview](https://openreview.net/forum?id=F4RNpByoqP)
+
+# Manual Instructions
+
+Get dependencies:
+~~~
+$ pip3 install flask
+~~~
+
+Initialize DB:
+~~~
+$ cd server/src
+$ flask init-db
+Initialized the database.
+~~~
+
+Start the interface:
+~~~
+$ cd server/src
+$ python3 app.py
+~~~
+
+Mini-ARC : http://localhost/testset/approved
+
+Test generation interface: http://localhost/testset
+
+# O2ARC (Object-Oriented ARC)
 
 A modified ARC task interface which includes new actions and primitives:
 
