@@ -538,18 +538,11 @@ function initializeSelectable() {
 function initializeLayerChange() {
     currentLayerIndex = $('input[name=layer]:checked').val();
     infoMsg(`layer ${currentLayerIndex} selected`);
-    // var currLayer = LAYERS.filter(layer => layer.id == currentLayerIndex);
     var currLayer = LAYERS[currentLayerIndex];
-    // if (!currLayer.length) {
-    //     return;
-    // }
-    // currLayer = currLayer[0];
     currLayer.cells = currLayer.cells.filter(cell => cell.val > 0);
 
     $('.ui-selected').removeClass('ui-selected');
     initializeSelectable();
-    // console.log(`layer ${currentLayerIndex}`);
-    // console.log(currLayer.cells);
     for (var i = 0; i < currLayer.cells.length; i++) {
         var currCell = currLayer.cells[i];
         setCellSymbol($('.edition_grid').find(`[x=${currCell.row}][y=${currCell.col}]`), currCell.val);
@@ -562,7 +555,6 @@ function initializeLayerChange() {
 function updateLayer(id) {
     var layerSlot = $('#layer_' + id);
     var jqInputGrid = layerSlot.find('.grid_preview');
-    // var layer = LAYERS.find(layer => layer.id == id);
     var layer = LAYERS[id];
     if (layer == undefined) {
         return;
@@ -594,8 +586,6 @@ function addLayer() {
 
     selected = $('.edition_grid').find('.ui-selected');
     if (selected.length == 0) {
-        // errorMsg('Select a target cell on the output grid.');
-        // return;
         targetx = 0;
         targety = 0;
     } else {
@@ -685,19 +675,14 @@ function translateCells(xChange, yChange) {
     updateAllLayers();
     initLayerPreview();
     makeGridFromLayer();
-    // console.log(selectedCells);
     var validCells = selectedCells.filter(cell => (cell.row >= 0 && cell.col >= 0 && cell.row < CURRENT_OUTPUT_GRID.height && cell.col < CURRENT_OUTPUT_GRID.width));
-    // console.log(validCells);
     for (var i = 0; i < validCells.length; i++) {
-        // console.log(validCells[i].row + " " + validCells[i].col);
-        // console.log( $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`))
         $('.edition_grid').find(`[x=${validCells[i].row}][y=${validCells[i].col}]`).addClass('ui-selected');
     }
     addLog({ tool: 'translate', selected_cells: selectedCopy, row_change: yChange, col_change: xChange });
 }
 
 function rotateCells() {
-    // rotate 90 degrees clockwise
     var currCells = LAYERS[currentLayerIndex].cells;
     var selectedCells = new Array();
     var ind = new Array();
@@ -729,7 +714,6 @@ function rotateCells() {
         var cell = currCells[idx];
         var newCol = -(parseInt(cell.row) - maxRow + Math.floor(height / 2)) + maxCol - Math.floor(width / 2) + ((height % 2 == 0));
         var newRow = (parseInt(cell.col) - maxCol + Math.floor(width / 2)) + maxRow - Math.floor(height / 2);
-        // console.log(newCol + ' ' + newRow);
         currCells[idx].row = (newRow);
         currCells[idx].col = (newCol);
         selectedCells.push(new Cell(currCells[idx].row, currCells[idx].col, currCells[idx].val));
@@ -772,8 +756,6 @@ function reflectX() {
         var cell = currCells[idx];
         var newCol = cell.col;
         var newRow = maxRow - cell.row + minRow;
-        // var newRow = -(cell.row - minRow - Math.floor((maxRow-minRow)/2)) + minRow;
-        // console.log(newCol + ' ' + newRow);
         currCells[idx].row = (newRow);
         currCells[idx].col = (newCol);
         selectedCells.push(new Cell(currCells[idx].row, currCells[idx].col, currCells[idx].val));
@@ -818,7 +800,6 @@ function reflectY() {
         var cell = currCells[idx];
         var newCol = maxCol - cell.col + minCol;
         var newRow = cell.row;
-        // console.log(newCol + ' ' + newRow);
         currCells[idx].row = (newRow);
         currCells[idx].col = (newCol);
         selectedCells.push(new Cell(currCells[idx].row, currCells[idx].col, currCells[idx].val));
@@ -882,13 +863,11 @@ function redo() {
 // Initial event binding.
 
 $(window).load(function () {
-    // $('#start_page').modal('show');
     $.getJSON(
         "/tasklist"
     ).done(function (data) {
         TASKLIST = data;
         types = ['MiniARC', 'task1', 'task2'];
-        // types = ['selected_examples', 'training', 'evaluation']
         types.forEach(function (t) {
             task_with_type = TASKLIST.filter(task => task['type'] == t);
             $(`<h3 class="task_type">${t}</h3><p></p>`).appendTo($('#task_side_nav'))
@@ -957,7 +936,6 @@ $(document).ready(function () {
             currentExample = currentExample + 1;
             addLog({ tool: "change_example", example: currentExample });
         }
-        // currentExample = Math.min(EXAMPLES.length-1, currentExample+1);
         $('#current_example_id').html(currentExample + 1);
         fillPairPreview(EXAMPLES[currentExample][0], EXAMPLES[currentExample][1]);
     });

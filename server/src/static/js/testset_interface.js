@@ -80,8 +80,6 @@ function resetTask() {
     currentExample = 0;
     updateAllLayers();
     initLayerPreview();
-
-    // addLog({tool: 'start'});
 }
 
 function refreshEditionGrid(jqGrid, dataGrid) {
@@ -138,7 +136,6 @@ function setUpEditionGridListeners(jqGrid) {
                 }
             }
             initLayerPreview();
-            // syncFromEditionGridToDataGrid();
             syncFromDataGridToEditionGrid();
         }
         else if (mode == 'edit') {
@@ -155,7 +152,6 @@ function setUpEditionGridListeners(jqGrid) {
             }
             initLayerPreview();
             syncFromEditionGridToDataGrid();
-            // addLog({tool: 'edit', symbol: symbol, row: cell.attr('x'), col: cell.attr('y')});
         }
         updateLayer(currentLayerIndex);
     });
@@ -163,7 +159,6 @@ function setUpEditionGridListeners(jqGrid) {
 
 function resizeOutputGrid() {
     size = $('#output_grid_size').val();
-    // size = parseSizeTuple(size);
     height = 5;
     width = 5;
 
@@ -179,8 +174,6 @@ function resizeOutputGrid() {
     }
     updateAllLayers();
     initLayerPreview();
-    // addLog({tool: 'resizeOutputGrid', height: height, width: width});
-    
 }
 
 function resetOutputGrid() {
@@ -303,7 +296,6 @@ function loadJSONTask(train, test) {
         values = pair['output'];
         output_grid = convertSerializedGridToGridObject(values)
         EXAMPLES.push([input_grid, output_grid]);
-        // fillPairPreview(i, input_grid, output_grid);
     }
     fillPairPreview(EXAMPLES[0][0], EXAMPLES[0][1]);
     $('#current_example_id').html('1');
@@ -325,10 +317,6 @@ function display_task_name(task_name, task_index, number_of_tasks) {
     big_space = '&nbsp;'.repeat(4); 
     document.getElementById('task_name').innerHTML = (
         'Task name:' + big_space + task_name + big_space 
-        // + (
-        //     task_index===null ? '' :
-        //     ( String(task_index) + ' out of ' + String(number_of_tasks) )
-        // )
     );
 }
 
@@ -374,7 +362,6 @@ function randomTask() {
             }
             logs = new Log(task['name'].split('.')[0], user_id);
             loadJSONTask(train, test);
-            //$('#load_task_file_input')[0].value = "";
             infoMsg("Loaded task training/" + task["name"]);
             display_task_name(task['name'], task_index, tasks.length);
         })
@@ -530,7 +517,6 @@ function initializeLayerChange() {
         }
     }
     syncFromEditionGridToDataGrid();
-    // addLog({tool: 'layerChange', new_layer: currentLayerIndex})
 }
 
 function updateLayer(id) {
@@ -567,8 +553,6 @@ function addLayer() {
 
     selected = $('.edition_grid').find('.ui-selected');
     if (selected.length == 0) {
-        // errorMsg('Select a target cell on the output grid.');
-        // return;
         targetx = 0;
         targety = 0;
     }else{
@@ -657,7 +641,6 @@ function translateCells(xChange, yChange) {
 }
 
 function rotateCells() {
-    // rotate 90 degrees clockwise
     var currCells = LAYERS[currentLayerIndex].cells;
     var selectedCells = new Array();
     var ind = new Array();
@@ -767,7 +750,6 @@ $(document).ready(function () {
         symbol_preview.addClass('selected-symbol-preview');
 
         toolMode = $('input[name=tool_switching]:checked').val();
-        // var selectedCells = [];
         if (toolMode == 'select') {
             $('.edition_grid').find('.ui-selected').each(function(i, cell) {
                 symbol = getSelectedSymbol();
@@ -780,14 +762,8 @@ $(document).ready(function () {
                 } else {
                     TESTSETS[currentExample].output_cells[row][col] = symbol;
                 }
-                
-                // LAYERS[currentLayerIndex].addCell(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
-                // selectedCells.push(new Cell($(cell).attr('x'), $(cell).attr('y'), $(cell).attr('symbol')));
             });
-            // addLog({tool: 'select_fill', selected_cells: selectedCells});
         }
-        // LAYERS[currentLayerIndex].cells = LAYERS[currentLayerIndex].cells.filter(cell => cell.val > 0);
-        // updateLayer(currentLayerIndex);
         initLayerPreview();
         syncFromEditionGridToDataGrid();
     });
@@ -809,7 +785,6 @@ $(document).ready(function () {
             currentExample = currentExample - 1;
             addLog({ tool: "change_example", example: currentExample });
         }
-        // currentExample = Math.max(0, currentExample-1);
         $('#current_example_id').html(currentExample+1);
         fillPairPreview(EXAMPLES[currentExample][0], EXAMPLES[currentExample][1]);
     });
@@ -819,7 +794,6 @@ $(document).ready(function () {
             currentExample = currentExample + 1;
             addLog({ tool: "change_example", example: currentExample });
         }
-        // currentExample = Math.min(EXAMPLES.length-1, currentExample+1);
         $('#current_example_id').html(currentExample+1);
         fillPairPreview(EXAMPLES[currentExample][0], EXAMPLES[currentExample][1]);
     });

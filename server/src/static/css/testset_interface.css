@@ -79,13 +79,6 @@ body {
     background: rgb(28, 184, 65);
 }
 
-/* #submit_final_btn {
-    color: black;
-    border-radius: 4px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-    background: rgb(253, 202, 134);
-} */
-
 #submit_solution_btn:active {
   background: blue;
 }

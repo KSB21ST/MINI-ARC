@@ -126,7 +126,6 @@ def get_disapproved_test_list():
 @app.route('/testset/queryone', methods=['POST', 'GET'])
 def get_test_one():
     json_idx = request.args.get('index')
-    # query_ = "SELECT * from testsets limit 1 offset " + json_idx
     query_ = "SELECT * from testsets WHERE test_id='" + json_idx + "'"
     try:
         cur = db.get_db().cursor()

@@ -104,16 +104,6 @@ body {
     justify-content: space-evenly;
 }
 
-/* #input_test {
-    width: 50%;
-    height: 100%;
-}
-
-#question {
-    width: 20%;
-    height: 100%;
-} */
-
 /*Output Grid Editor*/
 #evaluation_view {
     width: 40%;
@@ -121,13 +111,6 @@ body {
     padding: 3px;
     background-color: #d5d5d5;
 }
-
-/* #evaluation_output_editor {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-color: #d5d5d5;
-} */
 
 #edition_view {
     display: flex;
@@ -210,16 +193,11 @@ button:focus {outline:0;}
     width: 100%;
     height: 100%;
     margin: 2px;
-    /* top: 2px;
-    left: 2px; */
     border: 1px solid black;
-    /* transition: all ease .5s; */
     transform: translate(-12.5px, 0);
 }
 
 input[class="layer_button"]:checked + .layer_selector {
-    /* border-color: #0055ff; 
-    box-shadow: 0px 0px 6px 2px #0055ff; */
     background-color: aliceblue;
     opacity: 50%;
 }
@@ -259,8 +237,6 @@ input[class="layer_button"]:checked + .layer_selector {
 }
 
 input[name="tool_switching"]:checked + label {
-    /* border-color: #0055ff; 
-    box-shadow: 0px 0px 6px 2px #0055ff; */
     border: 2px solid black;
     background-color: dimgray;
 }
@@ -277,10 +253,6 @@ input[name="tool_switching"]:checked + label {
     float: left;
 }
 
-/* label {
-    margin-left: 10px;
-} */
-
 input, button {
     margin-left: 10px;
 }
@@ -288,34 +260,6 @@ input, button {
 #resize_btn {
     margin-left: 0;
 }
-
-/* #task_preview {
-    display: flex;
-    flex-direction: row;
-} */
-
-/* .pair_preview {
-    display: flex;
-    flex-direction: row;
-    height: 200px;
-    padding: 5px;
-    border-bottom: solid 1px #a1a1a1;
-}
-
-.input_preview {
-    flex-grow: 3;
-    height: 175px;
-    width: 175px;
-}
-.output_preview {
-    flex-grow: 3;
-    height: 175px;
-    width: 175px;
-}
-.arrow {
-    flex-grow: 1;
-    width: 10px;
-} */
 
 .text {
     text-align: center;

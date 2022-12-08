@@ -82,8 +82,6 @@ function showApproveTestSet(id) {
             $('.cardLabel').remove();
             var layerlabel = $('<div class="cardLabel"><h6>' + id + '</h6><h6>madeBy: '+test_obj['user_id']+'</h6><h6>'+test_obj['description']+'</h6></div>')
             layerlabel.appendTo('#layer_panel')
-            // $('.edit_btn').remove();
-            // var edit_btn = $('<div class="edit_btn"><button onclick="editTestSet(\'' + id + '\')" id="approve_solution_btn">Edit</button></div>')
             edit_btn.appendTo('#layer_panel')
         });
 }
@@ -131,12 +129,6 @@ function approveSet(id) {
         async: false,
         contentType: 'application/json; charset=utf-8'
     }).done(function(msg) {
-        // location.reload();
-        // if(approval==='1') {
-        //     infoMsg(`Approved testset ${id}`)
-        // }else{
-        //     infoMsg(`Disapproved testset ${id}`)
-        // }
     });
     location.reload();
 }
@@ -154,8 +146,6 @@ function deleteSet(id) {
         async: false,
         contentType: 'application/json; charset=utf-8'
     }).done(function(msg) {
-        // location.reload();
-        // infoMsg(`Deleted testset ${id}`)
     });
     location.reload();
 }

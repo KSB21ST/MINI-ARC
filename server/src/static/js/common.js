@@ -271,8 +271,6 @@ function fitCellsToContainer(jqGrid, height, width, containerHeight, containerWi
     size = Math.min(MAX_CELL_SIZE, size);
     jqGrid.find('.cell').css('height', size + 'px');
     jqGrid.find('.cell').css('width', size + 'px');
-    // jqGrid.find('.padding').css('height', 0);
-    // jqGrid.find('.padding').css('width', 0);
 }
 
 function fillJqGridWithData(jqGrid, dataGrid, pad) {
