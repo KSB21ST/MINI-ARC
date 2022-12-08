@@ -230,7 +230,6 @@ function searchAdminTestSet() {
 
 function MovePage(url, newurl){
     var urlString = location.href;
-    console.log(urlString.split('/'))
     var oldURL = url
     var changeURL = newurl
     if (urlString.match(oldURL)){
