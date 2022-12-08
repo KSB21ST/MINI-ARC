@@ -103,23 +103,24 @@ def getTaskList():
         cur.execute("SELECT * from tasklist")
         data = [dict((cur.description[i][0], value) \
                 for i, value in enumerate(row)) for row in cur.fetchall()]
-        for idx in range(len(task1)):
-            for i in data:
-                if(task1[idx] in i['task_name']):
-                    i['type'] = 'task1'
-                    i['task_name'] = str(idx) + "_" + i['task_name']
-                    selected.append(i)
+        # for idx in range(len(task1)):
+        #     for i in data:
+        #         if(task1[idx] in i['task_name']):
+        #             i['type'] = 'task1'
+        #             i['task_name'] = str(idx) + "_" + i['task_name']
+        #             selected.append(i)
         
-        for idx in range(len(task2)):
-            for i in data:
-                if(task2[idx] in i['task_name']):
-                    i['type'] = 'task2'
-                    i['task_name'] = str(idx) + "_" + i['task_name']
-                    selected.append(i)
-        selected.append(data[0])
+        # for idx in range(len(task2)):
+        #     for i in data:
+        #         if(task2[idx] in i['task_name']):
+        #             i['type'] = 'task2'
+        #             i['task_name'] = str(idx) + "_" + i['task_name']
+        #             selected.append(i)
+        # selected.append(data[0])
     except Exception as e:
         print(e)
-    return jsonify(selected)
+    # return jsonify(selected)
+    return jsonify(data)
 
 @app.route('/tasklist/<taskname>', methods=['GET'])
 def getTask(taskname):
