@@ -1,8 +1,12 @@
 # Mini-ARC
 Subin Kim, Prin Phunyaphibarn, Donghyun Ahn, Sundong Kim
+Neuro Causal and Symbolic AI Workshop @ the 36th Neural Information Processing Systems (NeurIPS) Conference
 
 A link to our paper can be found below:
-[OpenReview](https://openreview.net/forum?id=F4RNpByoqP)
+[Playgrounds for Abstraction and Reasoning](https://openreview.net/forum?id=F4RNpByoqP), 
+[poster](https://neurips.cc/media/PosterPDFs/NeurIPS%202022/57706.png?t=1669741859.5469003)
+
+Please check the live interface [here](http://ksb21st.pythonanywhere.com/)
 
 # Manual Instructions
 
