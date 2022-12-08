@@ -29,9 +29,10 @@ $ cd server/src
 $ python3 app.py
 ~~~
 
-Mini-ARC : http://localhost/testset/approved
+Mini-ARC : Please check the './data/MiniARC' folder
 
 Test generation interface: http://localhost/testset
+administrator interface: http://localhost/admin
 
 # O2ARC (Object-Oriented ARC)
 
