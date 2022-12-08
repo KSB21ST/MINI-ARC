@@ -16,110 +16,16 @@ db.init_app(app)
 def show():
     return render_template('testing_interface.html')
 
-@app.route('/logs')
-def show_logs():
-    return render_template("log_interface.html")
-
-@app.route('/log_db')
-def getLogs():
-    logs = []
-    try:
-        cur = db.get_db().cursor()
-        cur.execute("SELECT * from logs")
-        data = [dict((cur.description[i][0], value) \
-               for i, value in enumerate(row)) for row in cur.fetchall()]
-    except Exception as e:
-        print(e)
-    return jsonify(data)
-
 @app.route('/tasklist', methods=['GET'])
-# def getTaskList():
-#     data = []
-#     try:
-#         cur = db.get_db().cursor()
-#         cur.execute("SELECT * from tasklist")
-#         data = [dict((cur.description[i][0], value) \
-#                for i, value in enumerate(row)) for row in cur.fetchall()]
-#     except Exception as e:
-#         print(e)
-#     return jsonify(data)
-
 def getTaskList():
-    test_task = ['wenchao_diagonal_flip_l6abdiipodvgey6tbdf']
-    task1 = ['Felipe_Centralize_l6aei788udv3m', 
-    'Bega_rotating_colors_l6acdi323jol47enccp', 
-    'Sheikh_Simple_Occlusion_Corrected_l6aem8yo7dxiyb3i5g4',
-    'Jaehyun_define_boundary_l6aeugn2pfna6pvwdt',
-    'Sharon_3%22ㄴ%22s_l6bksw4pe',
-    'Chaeyoon_Stretch_the_object_ho',
-    'Minhyuk_OrangeToYellow_l6aasjv',
-    'Jaehyun_reshape_the_top_left_2x2_to_the_bottom_right_2x2_l6ae262gcpe3lw9b2p',
-    'Felipe_Fill_the_black_patches_l6bk',
-    'Minji_2x2_grid_at_the_bottom-right_indicates_the_rotation_for_the_3x3_grid_on_the_upper-left_l6aajdd8e987ucg7wmp',
-    'Jaehyun_flip_to_the_long_side_l6ac65n6z6qn8i2lsw',
-    'Chaeyoon_Change_color_of_object_clockwise_l6bk9tti405ajm30vuv',
-    'Tony_Good_layer_l69nn5lz6kk4z4szffo',
-    'Sheikh_One_Color_Sequence_l6',
-    'Jaehyun_Extracting_diagonal_color_l6ab8vmgwv3s18vt7dq',
-    'Minji_Flip_color!_l6ab8jog1gzd12',
-    'Kien_Bouncing_Ball_l6acvhhkgcb',
-    'Sundong_Colony_Expansion_2_l6d2q1yx5npw0qdrnzn',
-    'Minhyuk_FloodFill_l6ab6wvu67ltk',
-    'Jaehyun_wave_propagation_l6afe4he1mhixwh8v9e',
-    'wenchao_flip_based_on_the_line',
-    'Sharon_ExpandnContract_l6ab75',
-    'Sheikh_One_Color_Gravity_l6bk9t38ni3lwbapno',
-    'Chaeyoon_Count_the_number_of',
-    'Sheikh_Simple_Box_Moving_l6aapas5si5cuue2txa']
-    task2 = ['Sheikh_One_Color_Multiply_by_two_l6bkmzmkvfs83xelwq8',
-    'Sheikh_Simple_Color_Switch_l6ab',
-    'Chaeyoon_Put_away_overlapping_rectangles_l6afs0vwh2o0ztvftrs',
-    'anar_count_green_and_color_red__l6ae4occ03osbzmznmgi',
-    'Sheikh_Filling_Corner_Corrected_l6bhlma1gimq40v7dyb',
-    'Bega_Reflection_l6ab2g1dkofxrxht5h',
-    'Jaehyun_clockwise_rotation_l6acrhm6kqqbr4w69i8',
-    'Hyunkyu_Change_the_location_l6',
-    'Jaehyun_find_single_cells_l6afg6g',
-    'wenchao_complete_square_l6bk',
-    'Sheikh_One_Color_Simple_Stuff_l6bkg9unb1kgovxkon6',
-    'Jaehyun_parting_cross_l6acqil00ywf88hqnrpm',
-    'Hyunkyu_Razer_reflection_l6afnlpp4vzn49nkx93',
-    'Minhyuk_AscendingOrder_l6abjqzwwo7mhobq52',
-    'Jaehyun_inter_and_outer_blue_sq',
-    'Minji_Tiling_l6aed6qtpdz0r7firb',
-    'Jaehyun_stretch_vertically_l6acwq',
-    'Jaehyun_filling_in_the_3x3_square',
-    'Minji_Tetris__l6ab7fu64lvutswrt',
-    'Felipe_Expansion_and_Interpolation_l6acqdnnv8tlnxpx19',
-    'wenchao_diagonal_flip_l6abdiipo',
-    'Chaeyoon_Fit_the_object_to_the_gray_area_l6ael6as2vofatntvzb',
-    'Eunji_orange_vs_blue_l6abmp2nf',
-    'Bega_going_up_l6acmlt1nkjxwh6',
-    'Jaehyun_connect_the_dots_to_']
     data = []
-    selected = []
     try:
         cur = db.get_db().cursor()
         cur.execute("SELECT * from tasklist")
         data = [dict((cur.description[i][0], value) \
-                for i, value in enumerate(row)) for row in cur.fetchall()]
-        # for idx in range(len(task1)):
-        #     for i in data:
-        #         if(task1[idx] in i['task_name']):
-        #             i['type'] = 'task1'
-        #             i['task_name'] = str(idx) + "_" + i['task_name']
-        #             selected.append(i)
-        
-        # for idx in range(len(task2)):
-        #     for i in data:
-        #         if(task2[idx] in i['task_name']):
-        #             i['type'] = 'task2'
-        #             i['task_name'] = str(idx) + "_" + i['task_name']
-        #             selected.append(i)
-        # selected.append(data[0])
+               for i, value in enumerate(row)) for row in cur.fetchall()]
     except Exception as e:
         print(e)
-    # return jsonify(selected)
     return jsonify(data)
 
 @app.route('/tasklist/<taskname>', methods=['GET'])
@@ -128,22 +34,8 @@ def getTask(taskname):
 
 @app.route('/', methods=['POST'])
 def store_log():
-    json_obj = request.json
-    try:
-        con = db.get_db()
-        con.execute(
-            "INSERT INTO logs (task_id, user_id, action_sequence) VALUES (?, ?, ?)", (json_obj.get('task').split('.')[0], json_obj.get('user_id'), json.dumps(json_obj))
-        )
-        con.commit()
-    except:
-        print("An error has occurred while inserting new data.")
-    
-    # Save to File
-    file_name = "-".join([json_obj.get('task').split('.')[0], json_obj.get('user_id')]) + ".json"
-    with open(os.path.join("../../data/event_Logs", file_name), "w") as f:
-        f.write(json.dumps(json_obj))
-
-    return render_template('testing_interface.html')
+    # store logs
+    return
 
 @app.route('/testset')
 def show_testset():
