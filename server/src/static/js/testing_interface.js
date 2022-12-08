@@ -355,13 +355,23 @@ function loadTaskFromDb(task_name) {
     copyFromInput();
 }
 
-function start() {
+function start_test() {
     username_txt = $('#user_name').val()
     if (!username_txt) {
         return;
     }
     user_id += "_" + username_txt;
     randomTask();
+}
+
+function start_create() {
+    username_txt = $('#user_name').val()
+    if (!username_txt) {
+        return;
+    }
+    user_id += "_" + username_txt;
+    history.pushState(null, null, 'testset')
+    window.location.reload();
 }
 
 function randomTask() {

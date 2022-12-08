@@ -289,7 +289,13 @@ input, button {
 }
 
 #modal input {
-    margin-left: 70px;
+    /* margin-left: 70px; */
+    margin: auto;
+}
+
+#modal button {
+    /* margin-left: 70px; */
+    margin: auto;
 }
 
 .sidenav {
