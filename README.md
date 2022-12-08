@@ -1,12 +1,11 @@
 # Mini-ARC
-Subin Kim, Prin Phunyaphibarn, Donghyun Ahn, Sundong Kim
-
+Subin Kim, Prin Phunyaphibarn, Donghyun Ahn, Sundong Kim<br/>
 Published in Neuro Causal and Symbolic AI Workshop @ the 36th Neural Information Processing Systems (NeurIPS) Conference
 
-A link to our paper can be found below:
+A link to our paper can be found here:
 [Playgrounds for Abstraction and Reasoning](https://openreview.net/forum?id=F4RNpByoqP), 
 [poster](https://neurips.cc/media/PosterPDFs/NeurIPS%202022/57706.png?t=1669741859.5469003)
-
+<br/>
 Please check the live interface [HERE](http://ksb21st.pythonanywhere.com/).
 
 # Manual Instructions
@@ -29,9 +28,8 @@ $ cd server/src
 $ python3 app.py
 ~~~
 
-Mini-ARC : Please check the '[./data/MiniARC](https://github.com/KSB21ST/MINI-ARC/tree/master/data/MiniARC)' folder
-
-Test generation interface: http://localhost/testset
+Mini-ARC : Please check the '[./data/MiniARC](https://github.com/KSB21ST/MINI-ARC/tree/master/data/MiniARC)' folder <br/>
+Test generation interface: http://localhost/testset <br/>
 administrator interface: http://localhost/admin
 
 # O2ARC (Object-Oriented ARC)
