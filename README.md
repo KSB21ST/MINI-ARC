@@ -29,7 +29,7 @@ $ cd server/src
 $ python3 app.py
 ~~~
 
-Mini-ARC : Please check the './data/MiniARC' folder
+Mini-ARC : Please check the '[./data/MiniARC](https://github.com/KSB21ST/MINI-ARC/tree/master/data/MiniARC)' folder
 
 Test generation interface: http://localhost/testset
 administrator interface: http://localhost/admin
