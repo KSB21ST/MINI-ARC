@@ -7,7 +7,7 @@ A link to our paper can be found below:
 [Playgrounds for Abstraction and Reasoning](https://openreview.net/forum?id=F4RNpByoqP), 
 [poster](https://neurips.cc/media/PosterPDFs/NeurIPS%202022/57706.png?t=1669741859.5469003)
 
-Please check the live interface [here](http://ksb21st.pythonanywhere.com/).
+Please check the live interface [HERE](http://ksb21st.pythonanywhere.com/).
 
 # Manual Instructions
 
