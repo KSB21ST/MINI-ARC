@@ -16,6 +16,21 @@ db.init_app(app)
 def show():
     return render_template('testing_interface.html')
 
+@app.route('/logs')
+def show_logs():
+    return render_template("log_interface.html")
+
+@app.route('/log_db')
+def getLogs():
+    try:
+        cur = db.get_db().cursor()
+        cur.execute("SELECT * from logs")
+        data = [dict((cur.description[i][0], value) \
+               for i, value in enumerate(row)) for row in cur.fetchall()]
+    except Exception as e:
+        print(e)
+    return jsonify(data)
+
 @app.route('/tasklist', methods=['GET'])
 def getTaskList():
     data = []
