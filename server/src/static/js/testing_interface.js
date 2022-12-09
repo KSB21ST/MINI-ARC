@@ -374,6 +374,16 @@ function start_create() {
     window.location.reload();
 }
 
+function start_logs() {
+    username_txt = $('#user_name').val()
+    if (!username_txt) {
+        return;
+    }
+    user_id += "_" + username_txt;
+    history.pushState(null, null, 'logs')
+    window.location.reload();
+}
+
 function randomTask() {
     resetTask();
     var subset = "MiniARC";

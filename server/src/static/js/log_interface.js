@@ -138,10 +138,12 @@ $(window).load(function () {
     ).done(function (data) {
         var LOGS = data;
         console.log(LOGS)
+        cnt = 0
         LOGS.forEach(function(log) {
-            log_item = $(`<a onclick='loadLog("${log['id']}", "${log['task_id']}", "${log['user_id']}")'>trace_of_${log['user_id']}_${log['user_id']}</a>`);
+            log_item = $(`<a onclick='loadLog("${log['id']}", "${log['task_id']}", "${log['user_id']}")'>trace_${cnt}_${log['user_id']}_${log['user_id']}</a>`);
             log_item.appendTo($('#menu'));
             LOG_LIST.push([log['id'], log['action_sequence']]);
+            cnt += 1
         })
         document.getElementById('menu').scrollTop = -document.getElementById('menu').scrollHeight;
     })
