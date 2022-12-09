@@ -29,6 +29,7 @@ $ python3 app.py
 ~~~
 
 Mini-ARC : Please check the '[./data/MiniARC](https://github.com/KSB21ST/MINI-ARC/tree/master/data/MiniARC)' folder <br/>
+sample Mini-ARC trace : Please check the '[./data/MiniARC_traces](https://github.com/KSB21ST/MINI-ARC/tree/master/data/MiniARC_traces)' folder. These are sample traces of the Mini-ARC problem <i>diagonal_flip_l6abdiipodvgey6tbdf</i>. <br/>
 Test generation interface: http://localhost/testset <br/>
 administrator interface: http://localhost/testset/admin
 
