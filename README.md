@@ -6,7 +6,7 @@ A link to our paper can be found here:
 [Playgrounds for Abstraction and Reasoning](https://openreview.net/forum?id=F4RNpByoqP), 
 [poster](https://neurips.cc/media/PosterPDFs/NeurIPS%202022/57706.png?t=1669741859.5469003)
 <br/>
-Please check the live interface [HERE](http://ksb21st.pythonanywhere.com/).
+Please check out the updated interface [HERE](http://bit.ly/ARC-GIST).
 
 # Manual Instructions
 
